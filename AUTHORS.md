@@ -4,12 +4,16 @@
   <a href="https://talentys.eu" target="_blank">
     <img src="https://talentys.eu/logo.png" alt="Talentys Data" width="250"/>
   </a>
+  <br/>
+  <a href="https://www.linkedin.com/company/talentysdata" target="_blank">
+    <img src="https://img.shields.io/badge/LinkedIn-Talentys%20Data-blue?style=flat&logo=linkedin" alt="Talentys Data LinkedIn"/>
+  </a>
 </p>
 
 ## 🌟 Project Creator & Maintainer
 
 **Mustapha Fonsau**
-- 🏢 Organization: [Talentys](https://talentys.eu) - Data Engineering & Analytics
+- 🏢 Organization: [Talentys](https://talentys.eu) | [LinkedIn](https://www.linkedin.com/company/talentysdata) - Data Engineering & Analytics
 - 💼 LinkedIn: [linkedin.com/in/mustapha-fonsau](https://www.linkedin.com/in/mustapha-fonsau/)
 - 🐙 GitHub: [github.com/Monsau](https://github.com/Monsau)
 - 📧 Email: mfonsau@talentys.eu
@@ -20,7 +24,7 @@
 
 This project was created with passion to provide a professional, open-source data platform solution accessible to teams worldwide through multilingual documentation covering 18 languages.
 
-**Supported by [Talentys](https://talentys.eu)** - Data Engineering and Analytics Excellence
+**Supported by [Talentys](https://talentys.eu) | [LinkedIn](https://www.linkedin.com/company/talentysdata)** - Data Engineering and Analytics Excellence
 
 ### Special Recognition
 

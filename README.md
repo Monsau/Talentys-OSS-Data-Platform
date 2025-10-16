@@ -14,7 +14,7 @@
     <img src="https://talentys.eu/logo.png" alt="Supported by Talentys Data" width="200"/>
   </a>
   <br/>
-  <em>Supported by <a href="https://talentys.eu">Talentys</a> - Data Engineering & Analytics Excellence</em>
+  <em>Supported by <a href="https://talentys.eu">Talentys</a> | <a href="https://www.linkedin.com/company/talentysdata">LinkedIn</a> - Data Engineering & Analytics Excellence</em>
 </p>
 
 > 📖 **Main documentation in English.** Translations available in 17 additional languages below.
@@ -307,7 +307,7 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) file for 
 
 ## Acknowledgments
 
-**Supported by [Talentys](https://talentys.eu)** - Data Engineering and Analytics Excellence
+**Supported by [Talentys](https://talentys.eu) | [LinkedIn](https://www.linkedin.com/company/talentysdata)** - Data Engineering and Analytics Excellence
 
 Built with enterprise-grade open-source technologies:
 - [Airbyte](https://airbyte.com/) - Data integration platform (300+ connectors)
@@ -324,7 +324,7 @@ Built with enterprise-grade open-source technologies:
 ## 📧 Contact
 
 **Author:** Mustapha Fonsau
-- 🏢 **Organization:** [Talentys](https://talentys.eu)
+- 🏢 **Organization:** [Talentys](https://talentys.eu) | [LinkedIn](https://www.linkedin.com/company/talentysdata)
 - 💼 **LinkedIn:** [linkedin.com/in/mustapha-fonsau](https://www.linkedin.com/in/mustapha-fonsau/)
 - 🐙 **GitHub:** [github.com/Monsau](https://github.com/Monsau)
 - 📧 **Email:** mfonsau@talentys.eu
@@ -340,4 +340,4 @@ For technical assistance:
 
 **Version 1.0.0** | **2025-10-16** | **Production Ready**
 
-Made with ❤️ by [Mustapha Fonsau](https://www.linkedin.com/in/mustapha-fonsau/) | Supported by [Talentys](https://talentys.eu)
+Made with ❤️ by [Mustapha Fonsau](https://www.linkedin.com/in/mustapha-fonsau/) | Supported by [Talentys](https://talentys.eu) | [LinkedIn](https://www.linkedin.com/company/talentysdata)
