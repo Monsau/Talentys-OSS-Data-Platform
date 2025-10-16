@@ -1,6 +1,3 @@
-﻿# Deployment Architecture
-
-```mermaid
 graph TB
     subgraph "Docker Network: data-platform"
         subgraph "Ingestion Layer"
@@ -44,26 +41,3 @@ graph TB
     style DR fill:#f96,stroke:#333,stroke-width:3px
     style DBT fill:#69f,stroke:#333,stroke-width:2px
     style SUP fill:#6f9,stroke:#333,stroke-width:2px
-```
-
-## Ports
-
-| Service | Port | Description |
-|---------|------|-------------|
-| Airbyte Webapp | 8000 | Web UI for configuration |
-| Airbyte API | 8001 | REST API for automation |
-| Dremio UI | 9047 | Web interface |
-| Dremio Flight | 32010 | Arrow Flight API |
-| Superset | 8088 | BI platform |
-| PostgreSQL | 5432 | Database |
-| MinIO Console | 9001 | Object storage UI |
-| MinIO API | 9000 | S3 API |
-| Elasticsearch | 9200 | Search API |
-
-## Container Dependencies
-
-1. **Airbyte**  PostgreSQL (metadata storage)
-2. **Airbyte**  MinIO (data destination)
-3. **Dremio**  MinIO (read Bronze/Silver/Gold layers)
-4. **dbt**  Dremio (transform data)
-5. **Superset**  PostgreSQL & Dremio (query data)
