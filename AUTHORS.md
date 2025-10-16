@@ -1,5 +1,11 @@
 # 👥 Authors & Contributors
 
+<p align="center">
+  <a href="https://talentys.eu" target="_blank">
+    <img src="https://talentys.eu/logo.png" alt="Talentys Data" width="250"/>
+  </a>
+</p>
+
 ## 🌟 Project Creator & Maintainer
 
 **Mustapha Fonsau**

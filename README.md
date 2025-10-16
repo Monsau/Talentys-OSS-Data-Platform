@@ -9,6 +9,14 @@
 
 **Created by:** [Mustapha Fonsau](https://www.linkedin.com/in/mustapha-fonsau/) | [GitHub](https://github.com/Monsau)
 
+<p align="center">
+  <a href="https://talentys.eu" target="_blank">
+    <img src="https://talentys.eu/logo.png" alt="Supported by Talentys Data" width="200"/>
+  </a>
+  <br/>
+  <em>Supported by <a href="https://talentys.eu">Talentys</a> - Data Engineering & Analytics Excellence</em>
+</p>
+
 > 📖 **Main documentation in English.** Translations available in 17 additional languages below.
 
 ---
