@@ -5,6 +5,55 @@
 
 ---
 
+## 🎯 QUICK START
+
+### Automatic Orchestration (Recommended)
+
+Use **orchestrate_platform.py** for one-command deployment:
+
+```bash
+# Windows PowerShell
+$env:PYTHONIOENCODING="utf-8"
+python -u orchestrate_platform.py
+
+# Linux/Mac
+python orchestrate_platform.py
+```
+
+**This script automatically:**
+1. ✅ Checks prerequisites (Docker, Docker Compose, Python)
+2. ✅ Starts all Docker services
+3. ✅ Launches Airbyte for data integration
+4. ✅ Configures dbt environment and runs models
+5. ✅ Synchronizes Dremio data to PostgreSQL
+6. ✅ Creates Superset dashboards
+7. ✅ Generates Open Data HTML dashboard
+
+**Output:**
+- Real-time progress with emojis (ℹ️ ✅ ❌ ⚠️)
+- Step-by-step execution status
+- Final deployment summary
+- Service URLs and credentials
+
+**Options:**
+```bash
+python orchestrate_platform.py --help              # Show all options
+python orchestrate_platform.py --skip-infrastructure  # Skip Docker start
+python orchestrate_platform.py --workspace /path    # Custom workspace
+```
+
+### Manual Launch
+
+```bash
+# Start main services
+docker-compose up -d
+
+# Start with Airbyte
+docker-compose -f docker-compose.yml -f docker-compose-airbyte-stable.yml up -d
+```
+
+---
+
 ## 📊 ACTIVE SERVICES
 
 ### 1. Base Infrastructure

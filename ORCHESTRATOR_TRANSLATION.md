@@ -312,3 +312,200 @@ The `orchestrate_platform.py` file is now:
 - ✅ **Ready for international open-source distribution**
 
 **Status**: 🎉 **v1.0 RELEASE COMPLETE**
+
+---
+
+## Usage Guide
+
+### Basic Usage
+
+```bash
+# Automatic complete deployment
+python orchestrate_platform.py
+
+# Windows PowerShell (recommended for Unicode support)
+$env:PYTHONIOENCODING="utf-8"
+python -u orchestrate_platform.py
+```
+
+### Command-Line Options
+
+```bash
+# Show help and all available options
+python orchestrate_platform.py --help
+
+# Skip Docker infrastructure deployment (if already running)
+python orchestrate_platform.py --skip-infrastructure
+
+# Specify custom workspace path
+python orchestrate_platform.py --workspace /path/to/workspace
+
+# Example: Skip infra with custom workspace
+python orchestrate_platform.py --skip-infrastructure --workspace C:\my-project
+```
+
+### What the Orchestrator Does
+
+**Step-by-step execution:**
+
+1. **Prerequisites Check** (Step 0)
+   - ✅ Verifies Docker installation
+   - ✅ Verifies Docker Compose installation
+   - ✅ Verifies Python installation
+
+2. **Docker Infrastructure** (Step 1)
+   - ✅ Stops existing containers
+   - ✅ Starts Dremio, PostgreSQL, MinIO, Elasticsearch
+   - ✅ Starts Apache Superset and Airflow
+   - ✅ Launches Airbyte for data integration
+   - ✅ Waits 60 seconds for services to stabilize
+   - ✅ Verifies containers are running
+
+3. **Apache Superset** (Step 2)
+   - ✅ Deploys Superset if not included in main stack
+   - ✅ Waits 30 seconds for readiness
+
+4. **dbt Environment** (Step 3)
+   - ✅ Creates Python virtual environment if needed
+   - ✅ Installs dependencies from requirements.txt
+
+5. **dbt Models** (Step 4)
+   - ✅ Runs `dbt debug` to verify configuration
+   - ✅ Executes `dbt run --select phase3_all_in_one`
+   - ✅ Runs `dbt test` for data quality validation
+
+6. **Dremio Synchronization** (Step 5)
+   - ✅ Synchronizes Dremio data to PostgreSQL
+   - ✅ Uses sync_dremio_realtime.py script
+
+7. **Superset Dashboards** (Step 6)
+   - ✅ Creates Dashboard 1 (PostgreSQL data)
+   - ✅ Creates Dashboard 2 (Dremio data)
+
+8. **Open Data Dashboard** (Step 7)
+   - ✅ Generates HTML dashboard for Open Data
+
+**Final Output:**
+- Summary of completed and failed steps
+- List of available dashboards with URLs
+- Service access information
+- Total execution time
+
+### Expected Output
+
+```
+╔════════════════════════════════════════════════════════════╗
+║                                                            ║
+║       DATA PLATFORM AUTO-BUILD ORCHESTRATION               ║
+║                                                            ║
+║  Automatic complete platform deployment                    ║
+║                                                            ║
+╚════════════════════════════════════════════════════════════╝
+
+[10:30:15] ℹ️ Checking prerequisites
+[10:30:16] ✅ Docker installed - OK
+[10:30:17] ✅ Docker Compose installed - OK
+[10:30:18] ✅ Python installed - OK
+[10:30:19] ✅ All prerequisites satisfied
+
+============================================================
+STEP 1: DOCKER INFRASTRUCTURE DEPLOYMENT
+============================================================
+[10:30:20] ℹ️ Stopping existing containers...
+[10:30:25] ✅ Stopping existing containers - OK
+[10:30:26] ℹ️ Starting Dremio + PostgreSQL + MinIO + Elasticsearch...
+[10:30:35] ✅ Starting services - OK
+[10:30:36] ℹ️ Starting Airbyte...
+[10:30:45] ✅ Launching Airbyte (Data Integration) - OK
+[10:30:46] ℹ️ Waiting for services to start (60 seconds)...
+
+... (Steps 2-7) ...
+
+============================================================
+DEPLOYMENT SUMMARY
+============================================================
+
+✅ COMPLETED STEPS:
+   ✅ Prerequisites
+   ✅ Infrastructure
+   ✅ Superset
+   ✅ dbt Environment
+   ✅ dbt Models
+   ✅ Dremio Sync
+   ✅ Superset Dashboards
+   ✅ Open Data Dashboard
+
+📊 AVAILABLE DASHBOARDS:
+   • Dremio UI: http://localhost:9047 (admin/admin123)
+   • Superset Dashboard 1: http://localhost:8088/superset/dashboard/1/
+   • Superset Dashboard 2 (Dremio): http://localhost:8088/superset/dashboard/2/
+   • Open Data HTML: file:///c:/projets/dremiodbt/opendata/dashboard.html
+
+🔄 SYNCHRONIZATION:
+   • Manual: python scripts\sync_dremio_realtime.py
+   • Auto: python scripts\sync_dremio_realtime.py --continuous 5
+
+📄 DOCUMENTATION:
+   • SUPERSET_DREMIO_FINAL.md (complete guide)
+   • PHASE3_COMPLETE_SUMMARY.md
+
+============================================================
+🎉 COMPLETE DEPLOYMENT SUCCESSFUL!
+============================================================
+
+[10:45:30] ℹ️ Total time: 900.5 seconds
+```
+
+### Troubleshooting
+
+**Issue: Unicode characters not displaying correctly on Windows**
+```bash
+# Solution: Set Python encoding before running
+$env:PYTHONIOENCODING="utf-8"
+python -u orchestrate_platform.py
+```
+
+**Issue: "Prerequisites not satisfied, stopping"**
+- Ensure Docker Desktop is running
+- Verify Docker Compose is installed
+- Check Python version with `python --version`
+
+**Issue: "Infrastructure deployment failed"**
+- Check Docker logs: `docker-compose logs`
+- Verify ports are not in use: `netstat -ano | findstr :9047`
+- Ensure sufficient disk space (20+ GB)
+
+**Issue: Airbyte failed to start**
+- This is optional, orchestrator continues anyway
+- Check Airbyte logs: `docker logs airbyte-server`
+- Verify docker-compose-airbyte-stable.yml exists
+
+### Integration with CI/CD
+
+```yaml
+# Example GitHub Actions workflow
+name: Deploy Data Platform
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run orchestrator
+        run: python orchestrate_platform.py --skip-infrastructure
+```
+
+### Documentation References
+
+For detailed information, see:
+- **QUICK_START.md** - Quick start guide with Airbyte examples
+- **PLATFORM_STATUS.md** - Current platform status and service URLs
+- **README.md** - Main project documentation in 18 languages
+

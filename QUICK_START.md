@@ -2,17 +2,51 @@
 
 ## 📦 One-Command Launch
 
-Start the complete data platform with **all services** including Airbyte:
+### Option 1: Automatic Orchestration (Recommended)
+
+Use the **orchestrate_platform.py** script for automatic deployment with all configurations:
 
 ```bash
-docker-compose -f docker-compose.yml -f docker-compose-airbyte-stable.yml up -d
-```
-
-Or use the orchestrator for automatic configuration:
-
-```bash
+# Windows PowerShell
 $env:PYTHONIOENCODING="utf-8"
 python -u orchestrate_platform.py
+
+# Linux/Mac
+python orchestrate_platform.py
+```
+
+**What it does:**
+- ✅ Checks prerequisites (Docker, Docker Compose, Python)
+- ✅ Starts all Docker services (Dremio, PostgreSQL, MinIO, Elasticsearch)
+- ✅ Launches Airbyte for data integration
+- ✅ Configures dbt environment
+- ✅ Runs dbt models and tests
+- ✅ Synchronizes Dremio data to PostgreSQL
+- ✅ Creates Superset dashboards automatically
+- ✅ Generates Open Data dashboard
+
+**Options:**
+```bash
+# Show help
+python orchestrate_platform.py --help
+
+# Skip infrastructure deployment (if already running)
+python orchestrate_platform.py --skip-infrastructure
+
+# Custom workspace path
+python orchestrate_platform.py --workspace /path/to/workspace
+```
+
+### Option 2: Manual Docker Launch
+
+Start services manually:
+
+```bash
+# Start main stack
+docker-compose up -d
+
+# Start with Airbyte
+docker-compose -f docker-compose.yml -f docker-compose-airbyte-stable.yml up -d
 ```
 
 ---

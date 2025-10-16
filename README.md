@@ -66,7 +66,28 @@ graph LR
 - Minimum 8 GB RAM
 - 20 GB available disk space
 
-### Installation
+### One-Command Deployment
+
+Use the **orchestrate_platform.py** script for automatic setup:
+
+```bash
+# Automatic complete deployment
+python orchestrate_platform.py
+
+# Windows PowerShell
+$env:PYTHONIOENCODING="utf-8"
+python -u orchestrate_platform.py
+```
+
+**What it does:**
+- ✅ Validates prerequisites
+- ✅ Starts all Docker services
+- ✅ Configures Airbyte, Dremio, dbt
+- ✅ Runs data transformations
+- ✅ Creates Superset dashboards
+- ✅ Provides deployment summary
+
+### Manual Installation
 
 ```bash
 # Clone repository
@@ -77,6 +98,9 @@ cd data-platform-iso-opensource
 pip install -r requirements.txt
 
 # Start infrastructure
+docker-compose -f docker-compose.yml -f docker-compose-airbyte-stable.yml up -d
+
+# Or use make commands
 make up
 
 # Verify installation
