@@ -299,6 +299,8 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) file for 
 
 ## Acknowledgments
 
+**Supported by [Talentys](https://talentys.eu)** - Data Engineering and Analytics Excellence
+
 Built with enterprise-grade open-source technologies:
 - [Airbyte](https://airbyte.com/) - Data integration platform (300+ connectors)
 - [Dremio](https://www.dremio.com/) - Data lakehouse platform
@@ -314,6 +316,7 @@ Built with enterprise-grade open-source technologies:
 ## 📧 Contact
 
 **Author:** Mustapha Fonsau
+- 🏢 **Organization:** [Talentys](https://talentys.eu)
 - 💼 **LinkedIn:** [linkedin.com/in/mustapha-fonsau](https://www.linkedin.com/in/mustapha-fonsau/)
 - 🐙 **GitHub:** [github.com/Monsau](https://github.com/Monsau)
 - 📧 **Email:** mfonsau@talentys.eu
@@ -329,4 +332,4 @@ For technical assistance:
 
 **Version 1.0.0** | **2025-10-16** | **Production Ready**
 
-Made with ❤️ by [Mustapha Fonsau](https://www.linkedin.com/in/mustapha-fonsau/) for enterprise data teams worldwide.
+Made with ❤️ by [Mustapha Fonsau](https://www.linkedin.com/in/mustapha-fonsau/) | Supported by [Talentys](https://talentys.eu)

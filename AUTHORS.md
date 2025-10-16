@@ -3,6 +3,7 @@
 ## 🌟 Project Creator & Maintainer
 
 **Mustapha Fonsau**
+- 🏢 Organization: [Talentys](https://talentys.eu) - Data Engineering & Analytics
 - 💼 LinkedIn: [linkedin.com/in/mustapha-fonsau](https://www.linkedin.com/in/mustapha-fonsau/)
 - 🐙 GitHub: [github.com/Monsau](https://github.com/Monsau)
 - 📧 Email: mfonsau@talentys.eu
@@ -12,6 +13,8 @@
 ## 🙏 Acknowledgments
 
 This project was created with passion to provide a professional, open-source data platform solution accessible to teams worldwide through multilingual documentation covering 18 languages.
+
+**Supported by [Talentys](https://talentys.eu)** - Data Engineering and Analytics Excellence
 
 ### Special Recognition
 
