@@ -18,6 +18,12 @@ import subprocess
 import json
 from pathlib import Path
 
+# Fix encodage Windows
+if sys.platform == 'win32':
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer, 'strict')
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
+
 class DataPlatformOrchestrator:
     """Orchestrateur complet de la plateforme de données"""
     
@@ -104,11 +110,21 @@ class DataPlatformOrchestrator:
         # Démarrer l'infrastructure principale
         success, _ = self.run_command(
             "docker-compose up -d",
-            "Démarrage Dremio + PostgreSQL + MinIO + Elasticsearch"
+            "Démarrage Dremio + PostgreSQL + MinIO + Elasticsearch + Superset + Airflow"
         )
         if not success:
             self.steps_failed.append("Infrastructure")
             return False
+        
+        # Démarrer Airbyte
+        self.log("Démarrage Airbyte...", "INFO")
+        success, _ = self.run_command(
+            "docker-compose -f docker-compose.yml -f docker-compose-airbyte.yml up -d",
+            "Lancement Airbyte (Data Integration)",
+            check=False
+        )
+        if not success:
+            self.log("Airbyte n'a pas démarré (optionnel, continuons)", "WARNING")
         
         # Attendre que les services soient prêts
         self.log("Attente du démarrage des services (60 secondes)...", "INFO")
