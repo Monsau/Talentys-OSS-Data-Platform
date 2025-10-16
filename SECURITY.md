@@ -1,15 +1,15 @@
 # 🛡️ SECURITY POLICY
 
+**Security Contact:** [Mustapha Fonsau](https://www.linkedin.com/in/mustapha-fonsau/) | [GitHub](https://github.com/Monsau)
+
 ## 🔒 Supported Versions
 
 We release patches for security vulnerabilities for the following versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 3.2.x   | :white_check_mark: |
-| 3.1.x   | :white_check_mark: |
-| 3.0.x   | :x:                |
-| < 3.0   | :x:                |
+| 1.0.x   | :white_check_mark: |
+| < 1.0   | :x:                |
 
 ---
 
@@ -21,7 +21,7 @@ We release patches for security vulnerabilities for the following versions:
 
 Please report security vulnerabilities by emailing:
 
-**security@yourproject.com** (⚠️ **REMPLACER PAR VOTRE EMAIL**)
+**mfonsau@talentys.eu** or contact via [LinkedIn](https://www.linkedin.com/in/mustapha-fonsau/)
 
 ### What to Include
 

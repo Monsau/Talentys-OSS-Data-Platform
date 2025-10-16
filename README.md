@@ -1,11 +1,13 @@
-# 🚀 Data Platform
+# 🚀 Data Platform - ISO Opensource
 
 **Enterprise Data Lakehouse Solution**
 
-[![Version](https://img.shields.io/badge/version-3.2.5-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
 [![Python](https://img.shields.io/badge/Python-3.11+-green.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/docs-18%20languages-success.svg)](docs/i18n/)
+
+**Created by:** [Mustapha Fonsau](https://www.linkedin.com/in/mustapha-fonsau/) | [GitHub](https://github.com/Monsau)
 
 > 📖 **Main documentation in English.** Translations available in 17 additional languages below.
 

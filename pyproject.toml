@@ -3,18 +3,18 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dremiodbt"
+name = "data-plateforme-iso-opensource"
 version = "1.0.0"
-description = "Data Platform: Dremio + dbt + Apache Superset + OpenMetadata Integration"
+description = "Data Platform ISO Opensource: Airbyte + Dremio + dbt + Apache Superset - Enterprise Data Lakehouse"
 readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [
-    {name = "Data Platform Team", email = "data@example.com"}
+    {name = "Mustapha Fonsau", email = "mfonsau@talentys.eu"}
 ]
-keywords = ["dremio", "dbt", "superset", "openmetadata", "data-platform", "data-quality"]
+keywords = ["data-platform", "dremio", "dbt", "superset", "airbyte", "data-lakehouse", "openmetadata", "data-quality"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Database",
@@ -70,10 +70,11 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/dremiodbt"
-Documentation = "https://github.com/yourusername/dremiodbt/docs"
-Repository = "https://github.com/yourusername/dremiodbt"
-Issues = "https://github.com/yourusername/dremiodbt/issues"
+Homepage = "https://github.com/Monsau/data-plateforme-iso-opensource"
+Documentation = "https://github.com/Monsau/data-plateforme-iso-opensource/blob/main/README.md"
+Repository = "https://github.com/Monsau/data-plateforme-iso-opensource"
+Issues = "https://github.com/Monsau/data-plateforme-iso-opensource/issues"
+"Author LinkedIn" = "https://www.linkedin.com/in/mustapha-fonsau/"
 
 [project.scripts]
 dremiodbt = "dremio_connector.cli:main"

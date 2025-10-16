@@ -1,4 +1,6 @@
-# Contributing to OpenMetadata Dremio Connector
+# Contributing to Data Platform ISO Opensource
+
+**Project Maintainer:** [Mustapha Fonsau](https://www.linkedin.com/in/mustapha-fonsau/) | [GitHub](https://github.com/Monsau)
 
 [English](#english) | [Français](#français)
 
@@ -25,8 +27,8 @@ We welcome contributions from the community! Here's how you can help:
 
 1. **Fork the repository**
    ```bash
-   git clone https://github.com/yourusername/openmetadata-dremio-connector.git
-   cd openmetadata-dremio-connector
+   git clone https://github.com/Monsau/data-plateforme-iso-opensource.git
+   cd data-plateforme-iso-opensource
    ```
 
 2. **Create a feature branch**
