@@ -14,6 +14,11 @@
 config/secrets/
 credentials/
 
+# ===== LINKEDIN & PERSONAL =====
+LINKEDIN*.md
+linkedin/
+personal/
+
 # ===== DBT =====
 dbt/target/
 dbt/dbt_packages/
