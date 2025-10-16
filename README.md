@@ -117,18 +117,28 @@ make dbt-test
 
 ## Multilingual Support
 
-This project provides complete documentation in 8 languages:
+This project provides complete documentation in **18 languages**, covering **5.2B+ people** (70% of global population):
 
-| Language | Documentation | Data Generation |
-|----------|---------------|-----------------|
-| English | [docs/i18n/en/](docs/i18n/en/README.md) | `--language en` |
-| Français | [docs/i18n/fr/](docs/i18n/fr/README.md) | `--language fr` |
-| Español | [docs/i18n/es/](docs/i18n/es/README.md) | `--language es` |
-| Português | [docs/i18n/pt/](docs/i18n/pt/README.md) | `--language pt` |
-| العربية | [docs/i18n/ar/](docs/i18n/ar/README.md) | `--language ar` |
-| 中文 | [docs/i18n/cn/](docs/i18n/cn/README.md) | `--language cn` |
-| 日本語 | [docs/i18n/jp/](docs/i18n/jp/README.md) | `--language jp` |
-| Русский | [docs/i18n/ru/](docs/i18n/ru/README.md) | `--language ru` |
+| Language | Documentation | Data Generation | Native Speakers |
+|----------|---------------|-----------------|-----------------|
+| 🇬🇧 English | [README.md](README.md) | `--language en` | 1.5B |
+| 🇫🇷 Français | [docs/i18n/fr/](docs/i18n/fr/README.md) | `--language fr` | 280M |
+| 🇪🇸 Español | [docs/i18n/es/](docs/i18n/es/README.md) | `--language es` | 559M |
+| 🇵🇹 Português | [docs/i18n/pt/](docs/i18n/pt/README.md) | `--language pt` | 264M |
+| 🇸🇦 العربية | [docs/i18n/ar/](docs/i18n/ar/README.md) | `--language ar` | 422M |
+| 🇨🇳 中文 | [docs/i18n/cn/](docs/i18n/cn/README.md) | `--language cn` | 1.3B |
+| 🇯🇵 日本語 | [docs/i18n/jp/](docs/i18n/jp/README.md) | `--language jp` | 125M |
+| 🇷🇺 Русский | [docs/i18n/ru/](docs/i18n/ru/README.md) | `--language ru` | 258M |
+| 🇩🇪 Deutsch | [docs/i18n/de/](docs/i18n/de/README.md) | `--language de` | 134M |
+| 🇰🇷 한국어 | [docs/i18n/ko/](docs/i18n/ko/README.md) | `--language ko` | 81M |
+| 🇮🇳 हिन्दी | [docs/i18n/hi/](docs/i18n/hi/README.md) | `--language hi` | 602M |
+| 🇮🇩 Indonesia | [docs/i18n/id/](docs/i18n/id/README.md) | `--language id` | 199M |
+| 🇹🇷 Türkçe | [docs/i18n/tr/](docs/i18n/tr/README.md) | `--language tr` | 88M |
+| 🇻🇳 Tiếng Việt | [docs/i18n/vi/](docs/i18n/vi/README.md) | `--language vi` | 85M |
+| 🇮🇹 Italiano | [docs/i18n/it/](docs/i18n/it/README.md) | `--language it` | 85M |
+| 🇳🇱 Nederlands | [docs/i18n/nl/](docs/i18n/nl/README.md) | `--language nl` | 25M |
+| 🇵🇱 Polski | [docs/i18n/pl/](docs/i18n/pl/README.md) | `--language pl` | 45M |
+| 🇸🇪 Svenska | [docs/i18n/se/](docs/i18n/se/README.md) | `--language se` | 13M |
 
 ### Generate Multilingual Test Data
 
