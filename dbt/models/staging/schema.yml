@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: Staging layer for customers
+    columns:
+      - name: customer_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+      - name: customer_name
+      - name: email
+        tests:
+          - not_null
+
+  - name: stg_orders
+    description: Staging layer for orders
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+      - name: order_date
+      - name: amount
+
+  - name: stg_minio_sales
+    description: Staging layer for MinIO sales data
+    columns:
+      - name: sale_id
+        tests:
+          - unique
+          - not_null
+      - name: sale_date
+        tests:
+          - not_null
+      - name: category
+      - name: product_name
+      - name: quantity
+      - name: total_amount
+
+  - name: stg_minio_customers
+    description: Staging layer for MinIO external customers
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_name
+      - name: email

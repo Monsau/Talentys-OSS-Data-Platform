@@ -1,0 +1,310 @@
+version: '3.8'
+
+services:
+  # ====================================
+  # DREMIO - Data Lake Engine
+  # ====================================
+  dremio:
+    image: dremio/dremio-oss:latest
+    ports:
+      - "9047:9047"      # UI Web
+      - "31010:31010"    # JDBC/PostgreSQL Interface
+      - "45678:45678"    # ODBC
+      - "32010:32010"    # Arrow Flight
+    container_name: dremio
+    hostname: dremio
+    volumes:
+      - dremio-data:/opt/dremio/data
+      - dremio-conf:/opt/dremio/conf
+    environment:
+      # Configuration mémoire
+      - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Xms2g -Xmx8g -Ddremio.flight.enabled=true
+      # Activer l'interface PostgreSQL JDBC
+      - DREMIO_ENABLE_POSTGRES_PROTOCOL=true
+      # Configuration réseau
+      - DREMIO_MAX_MEMORY_SIZE_MB=8192
+    networks:
+      - dremio-network
+    depends_on:
+      - minio
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9047"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+  # ====================================
+  # POSTGRESQL - Business Database
+  # ====================================
+  postgres:
+    image: postgres:15
+    container_name: dremio-postgres
+    hostname: dremio-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: business_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - dremio-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d business_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ====================================
+  # MINIO - S3-Compatible Object Storage
+  # ====================================
+  minio:
+    image: minio/minio:latest
+    container_name: dremio-minio
+    hostname: dremio-minio
+    ports:
+      - "9000:9000"      # API
+      - "9001:9001"      # Console
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+    networks:
+      - dremio-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  # ====================================
+  # POLARIS CATALOG - Iceberg Tables
+  # ====================================
+  polaris:
+    image: apache/polaris:latest
+    container_name: dremio-polaris
+    ports:
+      - "8181:8181"      # Polaris API
+    environment:
+      # Configuration Polaris
+      - POLARIS_HOST=0.0.0.0
+      - POLARIS_PORT=8181
+      # Configuration stockage (MinIO)
+      - AWS_ACCESS_KEY_ID=minio_admin
+      - AWS_SECRET_ACCESS_KEY=minio_password
+      - AWS_ENDPOINT_URL=http://minio:9000
+      - AWS_REGION=us-east-1
+    volumes:
+      - polaris-data:/opt/polaris/data
+    networks:
+      - dremio-network
+    depends_on:
+      - minio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8181/api/catalog/v1/config"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ====================================
+  # OPENMETADATA - Metadata Management
+  # ====================================
+  mysql:
+    image: mysql:8.0
+    container_name: openmetadata-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: openmetadata_root_password
+      MYSQL_USER: openmetadata_user
+      MYSQL_PASSWORD: openmetadata_password
+      MYSQL_DATABASE: openmetadata_db
+    ports:
+      - "3307:3306"      # Éviter conflit avec PostgreSQL
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - dremio-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    container_name: dremio-elasticsearch
+    hostname: dremio-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - dremio-network
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  openmetadata-server:
+    image: docker.getcollate.io/openmetadata/server:1.9.7
+    container_name: openmetadata-server
+    environment:
+      # Database Configuration
+      - DB_DRIVER_CLASS=com.mysql.cj.jdbc.Driver
+      - DB_SCHEME=mysql
+      - DB_USE_SSL=false
+      - DB_USER=openmetadata_user
+      - DB_USER_PASSWORD=openmetadata_password
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - OM_DATABASE=openmetadata_db
+      
+      # Elasticsearch Configuration
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_SCHEME=http
+      
+      # Authentication
+      - AUTHORIZER_CLASS_NAME=org.openmetadata.service.security.DefaultAuthorizer
+      - AUTHORIZER_REQUEST_FILTER=org.openmetadata.service.security.JwtFilter
+      - AUTHORIZER_ADMIN_PRINCIPALS=[admin]
+      - AUTHORIZER_INGESTION_PRINCIPALS=[ingestion-bot]
+      - AUTHORIZER_PRINCIPAL_DOMAIN=open-metadata.org
+      
+      # JWT Configuration
+      - RSA_PUBLIC_KEY_FILE_PATH=./conf/public_key.der
+      - RSA_PRIVATE_KEY_FILE_PATH=./conf/private_key.der
+      - JWT_ISSUER=open-metadata.org
+      - JWT_KEY_ID=Gb389a-9f76-gdjs-a92j-0242bk94356
+    ports:
+      - "8585:8585"
+    depends_on:
+      - mysql
+      - elasticsearch
+    networks:
+      - dremio-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8585/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+  # ====================================
+  # AIRFLOW - Workflow Orchestration
+  # ====================================
+  airflow-init:
+    image: apache/airflow:2.7.0
+    container_name: airflow-init
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://dbt_user:dbt_password@postgres:5432/dbt_analytics
+      - AIRFLOW__CORE__FERNET_KEY=jJ_9sz0g0OHxsfxOoSfdFdmk3ysNmPRnH3TUAbz3IHA=
+      - _AIRFLOW_DB_UPGRADE=true
+      - _AIRFLOW_WWW_USER_CREATE=true
+      - _AIRFLOW_WWW_USER_USERNAME=admin
+      - _AIRFLOW_WWW_USER_PASSWORD=admin
+    networks:
+      - dremio-network
+    depends_on:
+      - postgres
+    command: >
+      bash -c "
+        airflow db upgrade &&
+        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com
+      "
+
+  airflow-webserver:
+    image: apache/airflow:2.7.0
+    container_name: airflow-webserver
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://dbt_user:dbt_password@postgres:5432/dbt_analytics
+      - AIRFLOW__CORE__FERNET_KEY=jJ_9sz0g0OHxsfxOoSfdFdmk3ysNmPRnH3TUAbz3IHA=
+      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+    networks:
+      - dremio-network
+    depends_on:
+      - airflow-init
+    command: webserver
+
+  airflow-scheduler:
+    image: apache/airflow:2.7.0
+    container_name: airflow-scheduler
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://dbt_user:dbt_password@postgres:5432/dbt_analytics
+      - AIRFLOW__CORE__FERNET_KEY=jJ_9sz0g0OHxsfxOoSfdFdmk3ysNmPRnH3TUAbz3IHA=
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+    networks:
+      - dremio-network
+    depends_on:
+      - airflow-init
+    command: scheduler
+
+# ====================================
+# VOLUMES PERSISTENCE
+# ====================================
+volumes:
+  # Dremio
+  dremio-data:
+    driver: local
+  dremio-conf:
+    driver: local
+    
+  # Databases
+  postgres-data:
+    driver: local
+  mysql-data:
+    driver: local
+    
+  # Object Storage
+  minio-data:
+    driver: local
+    
+  # Catalog
+  polaris-data:
+    driver: local
+    
+  # Search & Metadata
+  elasticsearch-data:
+    driver: local
+
+# ====================================
+# NETWORKS
+# ====================================
+networks:
+  dremio-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

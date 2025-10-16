@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  superset-redis:
+    image: redis:7.2-alpine
+    container_name: superset-redis
+    restart: unless-stopped
+    volumes:
+      - superset-redis-data:/data
+    networks:
+      - superset-network
+
+  superset-db:
+    image: postgres:15-alpine
+    container_name: superset-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: superset
+      POSTGRES_USER: superset
+      POSTGRES_PASSWORD: superset
+    volumes:
+      - superset-db-data:/var/lib/postgresql/data
+    networks:
+      - superset-network
+
+  superset:
+    image: apache/superset:3.0.0
+    container_name: superset
+    restart: unless-stopped
+    depends_on:
+      - superset-db
+      - superset-redis
+    ports:
+      - "8088:8088"
+    environment:
+      # Database
+      SUPERSET_LOAD_EXAMPLES: "no"
+      DATABASE_DIALECT: postgresql
+      DATABASE_USER: superset
+      DATABASE_PASSWORD: superset
+      DATABASE_HOST: superset-db
+      DATABASE_PORT: 5432
+      DATABASE_DB: superset
+      
+      # Redis
+      REDIS_HOST: superset-redis
+      REDIS_PORT: 6379
+      
+      # Secret key (change in production!)
+      SUPERSET_SECRET_KEY: "superset_secret_key_change_me_in_production"
+      
+      # Admin credentials
+      SUPERSET_ADMIN_USERNAME: admin
+      SUPERSET_ADMIN_PASSWORD: admin
+      SUPERSET_ADMIN_EMAIL: admin@dremio.local
+      
+    volumes:
+      - superset-data:/app/superset_home
+      - ./superset_config.py:/app/pythonpath/superset_config.py:ro
+    networks:
+      - superset-network
+      - dremiodbt_dremio-network  # Connect to Dremio network
+    command: >
+      sh -c "
+        superset db upgrade &&
+        superset fab create-admin --username admin --firstname Admin --lastname User --email admin@dremio.local --password admin &&
+        superset init &&
+        /usr/bin/run-server.sh
+      "
+
+volumes:
+  superset-redis-data:
+    driver: local
+  superset-db-data:
+    driver: local
+  superset-data:
+    driver: local
+
+networks:
+  superset-network:
+    driver: bridge
+  dremiodbt_dremio-network:
+    external: true  # Use existing Dremio network
+
+# Usage:
+# docker-compose -f docker-compose-superset.yml up -d
+# Access: http://localhost:8088
+# Login: admin / admin
+#
+# Connect to Dremio:
+# - Database Type: Other
+# - SQLAlchemy URI: dremio://admin:admin123@dremio-dremio:9047/dremio;SSL=0
+# - Or PostgreSQL: postgresql://postgres:postgres@dremio-postgres:5432/business_db

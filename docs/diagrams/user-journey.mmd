@@ -1,0 +1,60 @@
+﻿# User Journey
+
+```mermaid
+journey
+    title Data Citizen Journey
+    section Discovery
+        Read README: 5: DataAnalyst, DataEngineer, Developer
+        Explore docs: 4: DataAnalyst, DataEngineer
+        Check architecture: 4: DataEngineer, Developer
+    section Setup
+        Install dependencies: 3: DataEngineer, Developer
+        Start services: 3: DataEngineer, Developer
+        Verify setup: 4: DataEngineer, Developer
+    section Ingestion
+        Configure Airbyte source: 4: DataEngineer
+        Configure Airbyte destination: 4: DataEngineer
+        Create sync connection: 5: DataEngineer
+        Monitor sync jobs: 4: DataEngineer
+    section Processing
+        Access Dremio: 5: DataAnalyst, DataEngineer
+        Run dbt models: 4: DataEngineer
+        Validate data quality: 5: DataEngineer
+    section Analytics
+        View dashboards: 5: DataAnalyst
+        Create reports: 4: DataAnalyst
+        Share insights: 5: DataAnalyst
+    section Advanced
+        Custom transformations: 3: DataEngineer
+        API integration: 3: Developer
+        Performance tuning: 3: DataEngineer
+```
+
+## Personas
+
+- **Data Analyst**: Focus on dashboards and insights (Superset)
+- **Data Engineer**: Focus on pipelines, quality, and transformations (Airbyte, dbt, Dremio)
+- **Developer**: Focus on integrations and APIs (REST APIs, Arrow Flight)
+
+## Typical Workflows
+
+### Data Engineer Workflow
+1. Configure Airbyte source connector (PostgreSQL, API, etc.)
+2. Set up Airbyte destination (MinIO S3)
+3. Create and schedule sync connection
+4. Develop dbt models for transformation
+5. Run data quality tests
+6. Monitor pipeline health
+
+### Data Analyst Workflow
+1. Access Superset dashboard
+2. Explore available datasets
+3. Create charts and visualizations
+4. Build comprehensive dashboards
+5. Share with stakeholders
+
+### Developer Workflow
+1. Use Airbyte API for pipeline automation
+2. Query Dremio via Arrow Flight for performance
+3. Integrate dbt programmatically
+4. Embed Superset dashboards in applications

@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: phase3_stg_postgres_customers
+    description: "Phase 3: Customers depuis PostgreSQL"
+    columns:
+      - name: customer_id
+        description: "ID unique du client"
+        tests:
+          - not_null
+          - unique
+
+  - name: phase3_stg_minio_customers
+    description: "Phase 3: Customers depuis MinIO"
+    columns:
+      - name: customer_id
+        description: "ID unique du client"
+
+  - name: int_customer_comparison
+    description: "Comparaison détaillée des données clients entre sources"
+    columns:
+      - name: customer_id
+        description: "ID du client"
+        tests:
+          - not_null
+
+  - name: mart_customer_360
+    description: "Vue 360° des clients avec métriques de qualité"
+    columns:
+      - name: total_customers
+        description: "Nombre total de clients uniques"
+        tests:
+          - not_null
+      - name: coverage_rate_pct
+        description: "Pourcentage de clients présents dans les deux sources"
+
+  - name: mart_data_quality_report
+    description: "Rapport de qualité des données multi-sources"
+    columns:
+      - name: overall_status
+        description: "Statut global de qualité"
+        tests:
+          - accepted_values:
+              values: ['EXCELLENT', 'GOOD', 'WARNING', 'CRITICAL']

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 3 - Data Quality Dashboard (Open Data)</title>
+    
+    <!-- Chart.js (Open Source - MIT License) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Tailwind CSS (Open Source - MIT License) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        .status-excellent { background: linear-gradient(135deg, #10b981, #059669); }
+        .status-good { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .status-warning { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .status-critical { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        
+        .metric-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-8 shadow-lg">
+        <div class="container mx-auto px-4">
+            <h1 class="text-4xl font-bold mb-2">📊 Phase 3 - Data Quality Dashboard</h1>
+            <p class="text-blue-100">Multi-source comparison: PostgreSQL vs MinIO</p>
+            <div class="mt-4 flex items-center gap-4">
+                <span class="bg-white/20 px-4 py-2 rounded-full text-sm">🌍 Open Data</span>
+                <span class="bg-white/20 px-4 py-2 rounded-full text-sm">🔓 ODbL License</span>
+                <span class="bg-white/20 px-4 py-2 rounded-full text-sm" id="last-update">⏱️ Loading...</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto px-4 py-8">
+        
+        <!-- Overall Status Banner -->
+        <div id="status-banner" class="rounded-xl text-white p-6 mb-8 shadow-xl">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold mb-2">Overall Status: <span id="overall-status">Loading...</span></h2>
+                    <p class="text-white/90" id="status-description">Analyzing data quality...</p>
+                </div>
+                <div class="text-6xl" id="status-emoji">⏳</div>
+            </div>
+        </div>
+
+        <!-- Key Metrics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            
+            <div class="metric-card bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-gray-600 font-semibold">Total Customers</h3>
+                    <span class="text-3xl">👥</span>
+                </div>
+                <p class="text-4xl font-bold text-gray-800" id="total-customers">-</p>
+                <p class="text-sm text-gray-500 mt-2">Unique records across sources</p>
+            </div>
+
+            <div class="metric-card bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-gray-600 font-semibold">Coverage Rate</h3>
+                    <span class="text-3xl">🎯</span>
+                </div>
+                <p class="text-4xl font-bold text-blue-600" id="coverage-rate">-</p>
+                <p class="text-sm text-gray-500 mt-2">Records in both sources</p>
+            </div>
+
+            <div class="metric-card bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-gray-600 font-semibold">Email Quality</h3>
+                    <span class="text-3xl">📧</span>
+                </div>
+                <p class="text-4xl font-bold text-green-600" id="email-quality">-</p>
+                <p class="text-sm text-gray-500 mt-2">Matching email addresses</p>
+            </div>
+
+            <div class="metric-card bg-white rounded-xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-gray-600 font-semibold">Country Quality</h3>
+                    <span class="text-3xl">🌍</span>
+                </div>
+                <p class="text-4xl font-bold text-purple-600" id="country-quality">-</p>
+                <p class="text-sm text-gray-500 mt-2">Matching country data</p>
+            </div>
+
+        </div>
+
+        <!-- Charts Row -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            
+            <!-- Source Distribution Chart -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">📊 Source Distribution</h3>
+                <div class="chart-container">
+                    <canvas id="sourceChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Quality Metrics Chart -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">📈 Quality Metrics</h3>
+                <div class="chart-container">
+                    <canvas id="qualityChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Detailed Issues Table -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">🔍 Detailed Comparison (All Records)</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Customer ID</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Source Status</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Email Status</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Country Status</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="issues-table" class="divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="6" class="px-4 py-8 text-center text-gray-500">
+                                Loading data...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Open Data Info -->
+        <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl shadow-lg p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">🌍 Open Data Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">📄 License</h4>
+                    <p class="text-sm text-gray-600">Open Data Commons Open Database License (ODbL)</p>
+                    <p class="text-xs text-gray-500 mt-1">You are free to share, create, and adapt this data</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-700 mb-2">📦 Data Sources</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• PostgreSQL: <code class="bg-gray-200 px-2 py-1 rounded">postgresql://localhost:5432/business_db</code></li>
+                        <li>• MinIO: <code class="bg-gray-200 px-2 py-1 rounded">http://localhost:9000</code></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-4 flex gap-4">
+                <a href="phase3_opendata.json" download class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    ⬇️ Download Full Dataset (JSON)
+                </a>
+                <a href="phase3_metrics.json" download class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                    ⬇️ Download Metrics Only
+                </a>
+                <a href="phase3_details.json" download class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                    ⬇️ Download Details Only
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-sm">Built with ❤️ using Open Source tools: Chart.js, Tailwind CSS, dbt</p>
+            <p class="text-xs text-gray-400 mt-2">Phase 3 - Data Quality Dashboard v1.0.0</p>
+        </div>
+    </footer>
+
+    <script>
+        // Load Open Data
+        async function loadData() {
+            try {
+                const response = await fetch('phase3_opendata.json');
+                const data = await response.json();
+                
+                // Update metadata
+                document.getElementById('last-update').textContent = 
+                    `⏱️ Updated: ${new Date(data.metadata.date_published).toLocaleString()}`;
+                
+                // Update metrics
+                const metrics = data.summary.overview;
+                document.getElementById('total-customers').textContent = metrics.total_customers;
+                document.getElementById('coverage-rate').textContent = `${metrics.coverage_rate_pct}%`;
+                document.getElementById('email-quality').textContent = `${metrics.email_quality_pct}%`;
+                document.getElementById('country-quality').textContent = `${metrics.country_quality_pct}%`;
+                
+                // Update status banner
+                const statusBanner = document.getElementById('status-banner');
+                const statusText = document.getElementById('overall-status');
+                const statusEmoji = document.getElementById('status-emoji');
+                const statusDesc = document.getElementById('status-description');
+                
+                statusText.textContent = metrics.overall_status;
+                
+                switch(metrics.overall_status) {
+                    case 'EXCELLENT':
+                        statusBanner.className = 'status-excellent rounded-xl text-white p-6 mb-8 shadow-xl';
+                        statusEmoji.textContent = '🌟';
+                        statusDesc.textContent = 'Perfect data quality across all sources!';
+                        break;
+                    case 'GOOD':
+                        statusBanner.className = 'status-good rounded-xl text-white p-6 mb-8 shadow-xl';
+                        statusEmoji.textContent = '✅';
+                        statusDesc.textContent = 'Great data quality with minor issues.';
+                        break;
+                    case 'WARNING':
+                        statusBanner.className = 'status-warning rounded-xl text-white p-6 mb-8 shadow-xl';
+                        statusEmoji.textContent = '⚠️';
+                        statusDesc.textContent = 'Some data quality issues detected. Review recommended.';
+                        break;
+                    case 'CRITICAL':
+                        statusBanner.className = 'status-critical rounded-xl text-white p-6 mb-8 shadow-xl';
+                        statusEmoji.textContent = '🚨';
+                        statusDesc.textContent = 'Critical data quality issues! Immediate action required.';
+                        break;
+                }
+                
+                // Create charts
+                createSourceChart(metrics);
+                createQualityChart(metrics);
+                
+                // Populate issues table
+                populateIssuesTable(data.details);
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Error loading data. Please ensure phase3_opendata.json exists.');
+            }
+        }
+        
+        function createSourceChart(metrics) {
+            const ctx = document.getElementById('sourceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Both Sources', 'PostgreSQL Only', 'MinIO Only'],
+                    datasets: [{
+                        data: [metrics.both_sources, metrics.postgres_only, metrics.minio_only],
+                        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createQualityChart(metrics) {
+            const ctx = document.getElementById('qualityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Coverage', 'Email Quality', 'Country Quality'],
+                    datasets: [{
+                        label: 'Quality Percentage',
+                        data: [metrics.coverage_rate_pct, metrics.email_quality_pct, metrics.country_quality_pct],
+                        backgroundColor: ['#3b82f6', '#10b981', '#8b5cf6'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        function populateIssuesTable(details) {
+            const tbody = document.getElementById('issues-table');
+            tbody.innerHTML = '';
+            
+            // Show ALL records, not just issues
+            // Filter only issues (mismatches or missing data) - COMMENTED OUT
+            // const issues = details.filter(d => 
+            //     d.source_status !== 'both_sources' || 
+            //     d.email_status !== 'match' || 
+            //     d.country_status !== 'match'
+            // );
+            
+            const issues = details; // Show ALL records
+            
+            if (issues.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-green-600">✅ No data found!</td></tr>';
+                return;
+            }
+            
+            issues.forEach(issue => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-gray-50';
+                
+                const statusBadge = (status) => {
+                    const colors = {
+                        'match': 'bg-green-100 text-green-800',
+                        'mismatch': 'bg-red-100 text-red-800',
+                        'missing': 'bg-yellow-100 text-yellow-800',
+                        'both_sources': 'bg-blue-100 text-blue-800',
+                        'postgres_only': 'bg-purple-100 text-purple-800',
+                        'minio_only': 'bg-orange-100 text-orange-800'
+                    };
+                    return `<span class="px-2 py-1 rounded-full text-xs font-semibold ${colors[status]}">${status.replace('_', ' ')}</span>`;
+                };
+                
+                let details = [];
+                if (issue.email_status === 'mismatch') {
+                    details.push(`Email: ${issue.postgres_email} ≠ ${issue.minio_email}`);
+                }
+                if (issue.country_status === 'mismatch') {
+                    details.push(`Country: ${issue.postgres_country} ≠ ${issue.minio_country}`);
+                }
+                if (issue.source_status === 'postgres_only') {
+                    details.push('Missing in MinIO');
+                }
+                if (issue.source_status === 'minio_only') {
+                    details.push('Missing in PostgreSQL');
+                }
+                
+                row.innerHTML = `
+                    <td class="px-4 py-3 text-sm font-medium text-gray-900">${issue.customer_id}</td>
+                    <td class="px-4 py-3 text-sm text-gray-700">${issue.name || 'N/A'}</td>
+                    <td class="px-4 py-3 text-sm">${statusBadge(issue.source_status)}</td>
+                    <td class="px-4 py-3 text-sm">${statusBadge(issue.email_status)}</td>
+                    <td class="px-4 py-3 text-sm">${statusBadge(issue.country_status)}</td>
+                    <td class="px-4 py-3 text-sm text-gray-600">${details.join('; ')}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>

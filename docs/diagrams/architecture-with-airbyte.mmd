@@ -1,0 +1,112 @@
+````mermaid.radar
+# System Architecture with Airbyte
+
+```mermaid
+graph TB
+    subgraph "Data Sources"
+        EXT[External Sources]
+        API[REST APIs]
+        DB[Databases]
+        FILES[Files & CSV]
+    end
+    
+    subgraph "Data Ingestion Layer"
+        AB[Airbyte Platform<br/>Data Integration]
+    end
+    
+    subgraph "Data Storage Layer"
+        PG[PostgreSQL<br/>Transactional DB]
+        S3[MinIO S3<br/>Object Storage]
+        ES[Elasticsearch<br/>Search Engine]
+    end
+    
+    subgraph "Data Processing Layer"
+        DR[Dremio Lakehouse<br/>Query Engine]
+        DBT[dbt<br/>Transformations]
+    end
+    
+    subgraph "Visualization Layer"
+        SUP[Apache Superset<br/>Business Intelligence]
+        DASH[Interactive Dashboards]
+    end
+    
+    EXT -->|Extract| AB
+    API -->|Extract| AB
+    DB -->|Extract| AB
+    FILES -->|Extract| AB
+    AB -->|Load| PG
+    AB -->|Load| S3
+    PG -->|Read| DR
+    S3 -->|Read| DR
+    ES -->|Search| DR
+    DR -->|Source| DBT
+    DBT -->|Write| DR
+    DR -->|Arrow Flight| SUP
+    SUP -->|Render| DASH
+    
+    style AB fill:#615EFF,stroke:#333,stroke-width:3px,color:#fff
+    style DR fill:#FDB515,stroke:#333,stroke-width:4px,color:#000
+    style DBT fill:#FF694B,stroke:#333,stroke-width:2px,color:#fff
+    style SUP fill:#20A7C9,stroke:#333,stroke-width:2px,color:#fff
+    style S3 fill:#C72E49,stroke:#333,stroke-width:2px,color:#fff
+    style PG fill:#336791,stroke:#333,stroke-width:2px,color:#fff
+```
+
+## Platform Components
+
+### Data Ingestion
+- **Airbyte** (v0.50+): Open-source data integration platform
+  - **Ports**: 8000 (UI), 8001 (API)
+  - **Function**: Extract data from 300+ sources
+  - **Features**: CDC, Normalization, Custom connectors
+
+### Data Storage
+- **PostgreSQL** (v16): Relational database for structured data
+  - **Port**: 5432
+  - **Function**: Transactional storage, metadata
+  
+- **MinIO**: S3-compatible object storage for data lake
+  - **Ports**: 9000 (API), 9001 (Console)
+  - **Function**: Raw and processed data storage
+  
+- **Elasticsearch** (v8.15): Distributed search and analytics engine
+  - **Port**: 9200
+  - **Function**: Full-text search, log analytics
+
+### Data Processing
+- **Dremio** (v24.0): Data lakehouse platform with query acceleration
+  - **Ports**: 9047 (HTTP), 32010 (Arrow Flight)
+  - **Function**: Unified query layer across data sources
+  - **Features**: Reflection acceleration, semantic layer
+  
+- **dbt** (v1.10+): Data transformation tool (SQL-based)
+  - **Function**: Transform raw data into analytics-ready tables
+  - **Features**: Testing, documentation, version control
+
+### Visualization
+- **Apache Superset** (v3.0): Modern business intelligence platform
+  - **Port**: 8088
+  - **Function**: Interactive dashboards and visualizations
+  - **Features**: SQL IDE, chart library, alerting
+
+## Data Flow
+
+```
+External Data → Airbyte (Extract & Load) → Storage (S3/PostgreSQL) →
+Dremio (Query Layer) → dbt (Transform) → Dremio (Serve) →
+Superset (Visualize) → End Users
+```
+
+## Technology Stack
+
+| Layer | Technology | Version | Purpose |
+|-------|------------|---------|---------|
+| **Ingestion** | Airbyte | 0.50+ | Data integration |
+| **Storage** | MinIO | Latest | Object storage (S3) |
+| **Storage** | PostgreSQL | 16 | Relational database |
+| **Search** | Elasticsearch | 8.15 | Search and analytics |
+| **Lakehouse** | Dremio | 24.0 | Query acceleration |
+| **Transform** | dbt | 1.10+ | Data transformation |
+| **BI** | Superset | 3.0 | Business intelligence |
+
+````

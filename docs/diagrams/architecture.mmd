@@ -1,0 +1,41 @@
+# System Architecture
+
+```mermaid
+graph TB
+    subgraph "Data Sources"
+        PG[PostgreSQL]
+        S3[MinIO S3]
+        ES[Elasticsearch]
+    end
+    
+    subgraph "Data Processing"
+        DR[Dremio Lakehouse]
+        DBT[dbt Transformations]
+    end
+    
+    subgraph "Visualization"
+        SUP[Apache Superset]
+        DASH[Dashboards]
+    end
+    
+    PG --> DR
+    S3 --> DR
+    ES --> DR
+    DR --> DBT
+    DBT --> DR
+    DR -->|Arrow Flight| SUP
+    SUP --> DASH
+    
+    style DR fill:#f9f,stroke:#333,stroke-width:4px
+    style DBT fill:#bbf,stroke:#333,stroke-width:2px
+    style SUP fill:#bfb,stroke:#333,stroke-width:2px
+```
+
+## Components
+
+- **Dremio**: Data lakehouse platform (port 9047)
+- **dbt**: Data transformation tool
+- **Superset**: Business intelligence platform (port 8088)
+- **PostgreSQL**: Transactional database (port 5432)
+- **MinIO**: S3-compatible object storage (port 9001)
+- **Elasticsearch**: Search and analytics (port 9200)

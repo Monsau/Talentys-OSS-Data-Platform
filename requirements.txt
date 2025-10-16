@@ -1,0 +1,117 @@
+# ==========================================
+# DATA PLATFORM - REQUIREMENTS (PRODUCTION)
+# ==========================================
+# Version: 3.0.0
+# Date: 2025-10-15
+# Python: >=3.11
+# Features: Multilingual support (8 languages)
+# ==========================================
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📊 DBT (DATA BUILD TOOL)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+dbt-core>=1.10.0,<2.0.0
+dbt-dremio>=1.9.0
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🗄️ DATABASE DRIVERS
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+psycopg2-binary>=2.9.11         # PostgreSQL driver
+pyarrow>=21.0.0                 # Apache Arrow (Dremio Flight)
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📊 APACHE SUPERSET (Dashboard)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Note: Superset déployé via Docker
+# sqlalchemy-dremio>=3.0.4      # Driver Dremio (incompatible avec Superset 3.0)
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📦 DATA PROCESSING
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+pandas>=2.2.0                   # Data manipulation
+numpy>=1.26.0                   # Numerical computing
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🌐 HTTP & API
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+requests>=2.32.0                # HTTP library
+urllib3>=2.2.0                  # HTTP client
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ☁️ CLOUD STORAGE (MinIO / S3)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+minio>=7.2.0                    # MinIO client
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🔍 SEARCH (Elasticsearch)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+elasticsearch>=8.15.0           # Elasticsearch client
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🛠️ UTILITIES
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PyYAML>=6.0.2                   # YAML parsing
+click>=8.1.7                    # CLI framework
+python-dotenv>=1.0.1            # Environment variables
+colorama>=0.4.6                 # Terminal colors
+schedule>=1.2.2                 # Job scheduling
+python-dateutil>=2.9.0          # Date utilities
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🌍 MULTILINGUAL DATA GENERATION
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+faker>=37.11.0                  # Multilingual fake data generator
+# Supports: EN, FR, ES, PT, AR, CN, JP, RU + 50 more locales
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📊 OPENMETADATA (Optionnel)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Décommenter si besoin:
+# openmetadata-ingestion[postgres,dbt]==1.9.7
+
+# ==========================================
+# NOTES D'INSTALLATION
+# ==========================================
+#
+# 1. Créer un environnement virtuel:
+#    python -m venv venv
+#    venv\Scripts\activate          (Windows)
+#    source venv/bin/activate       (Linux/Mac)
+#
+# 2. Installer les dépendances:
+#    pip install --upgrade pip
+#    pip install -r requirements.txt
+#
+# 3. Pour le développement:
+#    pip install -r requirements-dev.txt
+#
+# 4. Pour vérifier les packages outdated:
+#    pip list --outdated
+#
+# 5. Pour générer un fichier lock:
+#    pip freeze > requirements-lock.txt
+#
+# ==========================================
+# COMPATIBILITÉ
+# ==========================================
+#
+# Python: 3.11, 3.12, 3.13
+# OS: Windows, Linux, macOS
+# Docker: 20.10+
+# Docker Compose: 2.0+
+#
+# ==========================================
+# VERSIONS TESTÉES (2025-10-15)
+# ==========================================
+#
+# dbt-core: 1.10.13
+# dbt-dremio: 1.9.0
+# psycopg2-binary: 2.9.11
+# pyarrow: 21.0.0
+# pandas: 2.2.3
+# numpy: 1.26.4
+# requests: 2.32.5
+# minio: 7.2.12
+# elasticsearch: 8.15.1
+#
+# ==========================================

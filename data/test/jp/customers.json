@@ -1,0 +1,67 @@
+[
+  {
+    "id":"67338a9f-6783-4b7c-9811-cdf030b3da8d",
+    "name":"加藤 明美",
+    "email":"pmatsumoto@example.com",
+    "phone":"090-5674-7670",
+    "address":"山形県立川市中宮祠13丁目2番19号 コーポ美原町229",
+    "city":"府中市",
+    "country":"セイシェル",
+    "company":"有限会社田中情報",
+    "job_title":"電気工事士",
+    "created_at":"2025-05-26T22:25:26",
+    "language":"jp"
+  },
+  {
+    "id":"d3dc67fe-5382-41e8-b9d5-c538670bff07",
+    "name":"前田 桃子",
+    "email":"mnishimura@example.net",
+    "phone":"080-9300-1898",
+    "address":"熊本県新宿区麹町26丁目6番13号",
+    "city":"山武市",
+    "country":"マダガスカル",
+    "company":"松本食品株式会社",
+    "job_title":"公務員",
+    "created_at":"2025-01-28T18:15:54",
+    "language":"jp"
+  },
+  {
+    "id":"4903c38d-5deb-4639-a7cc-5e67651bbd8e",
+    "name":"山本 知実",
+    "email":"chiyo10@example.org",
+    "phone":"070-9921-0092",
+    "address":"石川県富里市鍛冶ケ沢34丁目15番10号 シャルム千束927",
+    "city":"横浜市青葉区",
+    "country":"ピトケアン諸島",
+    "company":"合同会社井上印刷",
+    "job_title":"航海士",
+    "created_at":"2025-05-08T15:41:22",
+    "language":"jp"
+  },
+  {
+    "id":"d6356d9f-0726-4642-ba2b-593ada5adade",
+    "name":"吉田 智也",
+    "email":"suzukiasuka@example.com",
+    "phone":"090-5284-6202",
+    "address":"奈良県新宿区三筋32丁目26番12号 パーク隼町979",
+    "city":"香取郡東庄町",
+    "country":"ニュージーランド",
+    "company":"鈴木ガス合同会社",
+    "job_title":"大学教授",
+    "created_at":"2025-06-23T01:34:15",
+    "language":"jp"
+  },
+  {
+    "id":"bb65c6f7-753c-47c1-84d0-7f8dcd572b22",
+    "name":"鈴木 知実",
+    "email":"tsubasasuzuki@example.com",
+    "phone":"080-8473-1291",
+    "address":"富山県横浜市港北区丸の内ＪＰタワー23丁目5番3号",
+    "city":"八千代市",
+    "country":"マラウィ",
+    "company":"井上通信有限会社",
+    "job_title":"農家",
+    "created_at":"2025-08-09T08:19:09",
+    "language":"jp"
+  }
+]

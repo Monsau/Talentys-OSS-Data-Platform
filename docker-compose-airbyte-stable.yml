@@ -1,0 +1,161 @@
+# ====================================
+# AIRBYTE INTEGRATION - VERSION STABLE 1.8
+# ====================================
+# Ce fichier ajoute Airbyte à la stack existante avec des versions stables
+# Usage: docker-compose -f docker-compose-airbyte-stable.yml up -d
+
+version: '3.8'
+
+services:
+  # ====================================
+  # AIRBYTE - Data Integration Platform
+  # Version: 1.8.0 (Août 2025 - Stable)
+  # ====================================
+  
+  # Airbyte Bootloader - Initialize database
+  airbyte-bootloader:
+    image: airbyte/bootloader:1.8.0
+    container_name: airbyte-bootloader
+    environment:
+      - DATABASE_URL=jdbc:postgresql://dremio-postgres:5432/airbyte
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres123
+      - LOG_LEVEL=INFO
+    networks:
+      - dremio-network
+
+  # Airbyte Server - Backend API
+  airbyte-server:
+    image: airbyte/server:1.8.0
+    container_name: airbyte-server
+    hostname: airbyte-server
+    ports:
+      - "8001:8001"      # API
+    environment:
+      - DATABASE_URL=jdbc:postgresql://dremio-postgres:5432/airbyte
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres123
+      - CONFIG_ROOT=/data
+      - WORKSPACE_ROOT=/tmp/workspace
+      - TRACKING_STRATEGY=logging
+      - WORKER_ENVIRONMENT=docker
+      - LOG_LEVEL=INFO
+      - WEBAPP_URL=http://localhost:8001
+      - API_URL=http://localhost:8001
+      - INTERNAL_API_HOST=airbyte-server:8001
+    volumes:
+      - airbyte-workspace:/tmp/workspace
+      - airbyte-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - airbyte-temporal
+    networks:
+      - dremio-network
+
+  # Airbyte Temporal - Workflow engine
+  airbyte-temporal:
+    image: temporalio/auto-setup:1.24.2
+    container_name: airbyte-temporal
+    hostname: airbyte-temporal
+    ports:
+      - "7233:7233"      # gRPC
+    environment:
+      - DB=postgres12
+      - POSTGRES_SEEDS=dremio-postgres
+      - DB_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PWD=postgres123
+      - POSTGRES_TLS_ENABLED=false
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
+      - LOG_LEVEL=info
+    volumes:
+      - airbyte-temporal:/etc/temporal/config/dynamicconfig
+    networks:
+      - dremio-network
+
+  # Airbyte Worker - Execute sync jobs
+  airbyte-worker:
+    image: airbyte/worker:1.8.0
+    container_name: airbyte-worker
+    hostname: airbyte-worker
+    environment:
+      - DATABASE_URL=jdbc:postgresql://dremio-postgres:5432/airbyte
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres123
+      - AIRBYTE_VERSION=1.8.0
+      - CONFIG_ROOT=/data
+      - WORKSPACE_ROOT=/tmp/workspace
+      - LOCAL_ROOT=/tmp/airbyte_local
+      - WEBAPP_URL=http://airbyte-server:8001
+      - API_URL=http://airbyte-server:8001
+      - INTERNAL_API_HOST=airbyte-server:8001
+      - TEMPORAL_HOST=airbyte-temporal:7233
+      - TRACKING_STRATEGY=logging
+      - WORKER_ENVIRONMENT=docker
+      - LOG_LEVEL=INFO
+    volumes:
+      - airbyte-workspace:/tmp/workspace
+      - airbyte-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - airbyte-server
+      - airbyte-temporal
+    networks:
+      - dremio-network
+
+  # Airbyte Cron - Scheduled tasks
+  airbyte-cron:
+    image: airbyte/cron:1.8.0
+    container_name: airbyte-cron
+    hostname: airbyte-cron
+    environment:
+      - DATABASE_URL=jdbc:postgresql://dremio-postgres:5432/airbyte
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres123
+      - AIRBYTE_VERSION=1.8.0
+      - WORKSPACE_ROOT=/tmp/workspace
+      - WORKER_ENVIRONMENT=docker
+      - LOG_LEVEL=INFO
+      - TEMPORAL_HOST=airbyte-temporal:7233
+      - INTERNAL_API_HOST=airbyte-server:8001
+    volumes:
+      - airbyte-workspace:/tmp/workspace
+    depends_on:
+      - airbyte-server
+    networks:
+      - dremio-network
+
+  # Airbyte Connector Builder Server
+  airbyte-connector-builder-server:
+    image: airbyte/connector-builder-server:1.8.0
+    container_name: airbyte-connector-builder-server
+    hostname: airbyte-connector-builder-server
+    ports:
+      - "8003:8003"
+    environment:
+      - AIRBYTE_VERSION=1.8.0
+      - CDK_VERSION=0.1.0
+      - CDK_ENTRYPOINT=connector_builder.entrypoint
+      - CDK_PYTHON=/usr/local/bin/python
+      - PYTHON_VERSION=3.10
+    networks:
+      - dremio-network
+
+# ====================================
+# VOLUMES
+# ====================================
+volumes:
+  airbyte-workspace:
+    name: airbyte-workspace
+  airbyte-data:
+    name: airbyte-data
+  airbyte-temporal:
+    name: airbyte-temporal
+
+# ====================================
+# NETWORKS
+# ====================================
+networks:
+  dremio-network:
+    name: dremiodbt_dremio-network
+    external: true

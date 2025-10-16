@@ -1,0 +1,64 @@
+{
+  "version": "3.0.0",
+  "default_language": "en",
+  "supported_languages": [
+    "en",
+    "fr",
+    "es",
+    "pt",
+    "ar",
+    "cn",
+    "jp",
+    "ru"
+  ],
+  "data_generation": {
+    "locale_mapping": {
+      "en": "en_US",
+      "fr": "fr_FR",
+      "es": "es_ES",
+      "pt": "pt_BR",
+      "ar": "ar_SA",
+      "cn": "zh_CN",
+      "jp": "ja_JP",
+      "ru": "ru_RU"
+    },
+    "faker_providers": {
+      "person": [
+        "name",
+        "email",
+        "phone_number"
+      ],
+      "address": [
+        "address",
+        "city",
+        "country"
+      ],
+      "company": [
+        "company",
+        "job"
+      ],
+      "internet": [
+        "url",
+        "domain_name"
+      ],
+      "date_time": [
+        "date",
+        "time",
+        "datetime"
+      ]
+    },
+    "output_format": {
+      "csv": {
+        "delimiter": ",",
+        "encoding": "utf-8"
+      },
+      "json": {
+        "indent": 2,
+        "ensure_ascii": false
+      },
+      "parquet": {
+        "compression": "snappy"
+      }
+    }
+  }
+}

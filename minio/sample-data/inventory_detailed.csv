@@ -1,0 +1,16 @@
+product_id,category,brand,product_name,supplier,cost,retail_price,margin_pct,inventory_on_hand,reorder_level,last_ordered,discontinued
+P001,Electronics,Apple,"iPhone 15 Pro",TechSupply Inc.,899.00,1299.00,30.8,245,50,2025-01-08,false
+P002,Electronics,Samsung,"Galaxy S24 Ultra",GlobalTech Ltd.,750.00,1199.00,37.4,189,40,2025-01-10,false
+P003,Furniture,IKEA,"Office Desk Modern",FurnishDirect,120.00,199.99,40.0,67,20,2025-01-05,false
+P004,Sports,Nike,"Running Shoes Air Max",SportEquip Co.,85.00,159.99,46.9,123,30,2025-01-12,false
+P005,Electronics,Dell,"Laptop XPS 13",ComputerWorld,850.00,1399.99,39.3,89,15,2025-01-07,false
+P006,Appliances,Dyson,"Vacuum V15 Detect",HomeAppliances,320.00,549.99,41.8,56,25,2025-01-09,false
+P007,Books,Penguin,"Data Science Handbook",BookDistrib,25.00,49.99,50.0,234,50,2025-01-15,false
+P008,Clothing,Levi's,"Jeans 501 Original",FashionHub,45.00,89.99,50.0,178,40,2025-01-11,false
+P009,Sports,Yoga Works,"Premium Yoga Mat",WellnessSupply,28.00,69.99,60.0,145,35,2025-01-13,false
+P010,Electronics,Apple,"Smart Watch Series 9",TechSupply Inc.,320.00,449.99,28.9,112,25,2025-01-14,false
+P011,Furniture,Herman Miller,"Ergonomic Chair Aeron",OfficeElite,780.00,1295.00,39.8,23,10,2025-01-06,false
+P012,Books,O'Reilly,"Machine Learning Guide",TechBooks Ltd,35.00,79.99,56.3,167,30,2025-01-16,false
+P013,Electronics,LG,"4K Monitor 27 inch",DisplayTech,280.00,449.99,37.8,78,20,2025-01-04,false
+P014,Appliances,Breville,"Coffee Machine Barista",KitchenPro,180.00,329.99,45.4,45,15,2025-01-17,false
+P015,Clothing,Patagonia,"Outdoor Jacket Better Sweater",OutdoorGear,95.00,179.99,47.2,89,25,2024-12-28,false

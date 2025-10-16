@@ -1,0 +1,42 @@
+﻿# Data Flow
+
+```mermaid
+sequenceDiagram
+    participant Src as Data Sources
+    participant Ab as Airbyte
+    participant Min as MinIO
+    participant Dr as Dremio
+    participant Dbt as dbt
+    participant Pg as PostgreSQL
+    participant Sup as Superset
+    
+    Src->>Ab: 1. Connect sources
+    Ab->>Min: 2. Extract & load (Bronze)
+    Min->>Dr: 3. Mount S3 data
+    Dr->>Dbt: 4. Read for transformation
+    Dbt->>Dbt: 5. Transform & test
+    Dbt->>Dr: 6. Write results (Silver/Gold)
+    Dr->>Pg: 7. Sync via Arrow Flight
+    Pg->>Sup: 8. Query for viz
+    Sup->>Sup: 9. Generate dashboards
+```
+
+## Flow Steps
+
+1. **Connection**: Airbyte connects to 300+ data sources (APIs, databases, files)
+2. **Extraction**: Airbyte extracts data using full refresh, incremental, or CDC modes
+3. **Loading**: Raw data loaded into MinIO (Bronze layer) in Parquet format
+4. **Mounting**: Dremio mounts MinIO as S3-compatible data source
+5. **Reading**: dbt reads from Dremio sources
+6. **Transformation**: dbt applies SQL transformations (staging  intermediate  facts/dims  marts)
+7. **Testing**: 21 data quality tests executed
+8. **Storage**: Transformed data written to Silver and Gold layers in MinIO
+9. **Synchronization**: Arrow Flight sync to PostgreSQL for BI performance
+10. **Querying**: Superset queries PostgreSQL and Dremio directly
+11. **Visualization**: Dashboards and reports rendered in real-time
+
+## Data Layers
+
+- **Bronze**: Raw data from Airbyte (minimal transformation)
+- **Silver**: Cleaned and standardized data from dbt
+- **Gold**: Business-ready aggregated data for analytics

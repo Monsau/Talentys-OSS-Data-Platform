@@ -1,0 +1,65 @@
+{
+  "sales_metrics": {
+    "period": "2025-Q1",
+    "regions": [
+      {
+        "region": "North America",
+        "countries": ["USA", "Canada"],
+        "total_revenue": 2456789.50,
+        "total_orders": 15234,
+        "avg_order_value": 161.25,
+        "top_categories": ["Electronics", "Furniture", "Sports"]
+      },
+      {
+        "region": "Europe", 
+        "countries": ["France", "Germany", "UK", "Italy", "Spain"],
+        "total_revenue": 3567890.25,
+        "total_orders": 22456,
+        "avg_order_value": 158.90,
+        "top_categories": ["Electronics", "Appliances", "Clothing"]
+      },
+      {
+        "region": "Asia Pacific",
+        "countries": ["Japan", "Korea", "Singapore", "Australia"],
+        "total_revenue": 1234567.80,
+        "total_orders": 9876,
+        "avg_order_value": 125.05,
+        "top_categories": ["Electronics", "Books", "Sports"]
+      }
+    ],
+    "product_performance": {
+      "best_sellers": [
+        {"sku": "SKU-LAPTOP-001", "units_sold": 1205, "revenue": 1566350.95},
+        {"sku": "SKU-PHONE-002", "units_sold": 2340, "revenue": 1637766.00},
+        {"sku": "SKU-MONITOR-006", "units_sold": 856, "revenue": 513144.44}
+      ],
+      "trending_up": [
+        {"sku": "SKU-WATCH-010", "growth_rate": 45.6},
+        {"sku": "SKU-YOGA-009", "growth_rate": 38.2},
+        {"sku": "SKU-DESK-008", "growth_rate": 32.1}
+      ]
+    },
+    "customer_segments": {
+      "platinum": {"count": 245, "avg_spend": 2890.45, "retention_rate": 95.2},
+      "gold": {"count": 1234, "avg_spend": 1567.89, "retention_rate": 87.5},
+      "silver": {"count": 3456, "avg_spend": 890.23, "retention_rate": 72.3},
+      "bronze": {"count": 5678, "avg_spend": 345.67, "retention_rate": 58.9}
+    }
+  },
+  "operational_metrics": {
+    "inventory": {
+      "total_products": 15234,
+      "low_stock_items": 89,
+      "out_of_stock_items": 12,
+      "warehouse_utilization": 78.5
+    },
+    "fulfillment": {
+      "avg_processing_time_hours": 24.5,
+      "same_day_delivery_rate": 23.8,
+      "next_day_delivery_rate": 67.2,
+      "return_rate": 4.2
+    }
+  },
+  "generated_at": "2025-10-14T15:15:00Z",
+  "data_source": "Business Intelligence System v2.1"
+}

@@ -1,0 +1,42 @@
+version: 2
+
+sources:
+  - name: postgres_business
+    description: "Source PostgreSQL avec données business"
+    database: PostgreSQL_BusinessDB
+    schema: public
+    tables:
+      - name: customers
+        description: "Table customers depuis PostgreSQL"
+        columns:
+          - name: id
+            description: "ID client"
+            tests:
+              - not_null
+              - unique
+          - name: first_name
+          - name: last_name
+          - name: email
+          - name: created_at
+            
+      - name: orders
+        description: "Table orders depuis PostgreSQL"
+        columns:
+          - name: id
+            description: "ID commande"
+          - name: customer_id
+            description: "Référence au client"
+          - name: amount
+          - name: status
+          - name: order_date
+
+  - name: minio_data
+    description: "Données depuis MinIO (via Dremio)"
+    database: MinIO_DemoData
+    schema: demo
+    tables:
+      - name: customers
+        description: "Customers depuis MinIO"
+        
+      - name: sales
+        description: "Sales depuis MinIO"

@@ -1,0 +1,69 @@
+﻿# Deployment Architecture
+
+```mermaid
+graph TB
+    subgraph "Docker Network: data-platform"
+        subgraph "Ingestion Layer"
+            AB_WEB[Airbyte Webapp<br/>:8000]
+            AB_SRV[Airbyte Server<br/>:8001]
+            AB_WRK[Airbyte Worker]
+            AB_DB[Airbyte DB]
+        end
+        
+        subgraph "Storage Layer"
+            PG[PostgreSQL<br/>:5432]
+            MN[MinIO<br/>:9000,:9001]
+            ES[Elasticsearch<br/>:9200]
+        end
+        
+        subgraph "Processing Layer"
+            DR[Dremio<br/>:9047,:32010]
+            DBT[dbt Container]
+        end
+        
+        subgraph "Presentation Layer"
+            SUP[Superset<br/>:8088]
+        end
+    end
+    
+    AB_WEB -->|Manage| AB_SRV
+    AB_SRV -->|Schedule| AB_WRK
+    AB_WRK -->|Extract & Load| MN
+    AB_SRV -->|Metadata| AB_DB
+    
+    DBT -.->|Transform| DR
+    DR -->|Arrow Flight| PG
+    DR -->|Read S3| MN
+    DR -->|Query| PG
+    SUP -->|Query| PG
+    SUP -->|Direct Query| DR
+    
+    style AB_WEB fill:#615EFF,color:#fff,stroke:#333,stroke-width:2px
+    style AB_SRV fill:#615EFF,color:#fff,stroke:#333,stroke-width:2px
+    style AB_WRK fill:#615EFF,color:#fff,stroke:#333,stroke-width:2px
+    style DR fill:#f96,stroke:#333,stroke-width:3px
+    style DBT fill:#69f,stroke:#333,stroke-width:2px
+    style SUP fill:#6f9,stroke:#333,stroke-width:2px
+```
+
+## Ports
+
+| Service | Port | Description |
+|---------|------|-------------|
+| Airbyte Webapp | 8000 | Web UI for configuration |
+| Airbyte API | 8001 | REST API for automation |
+| Dremio UI | 9047 | Web interface |
+| Dremio Flight | 32010 | Arrow Flight API |
+| Superset | 8088 | BI platform |
+| PostgreSQL | 5432 | Database |
+| MinIO Console | 9001 | Object storage UI |
+| MinIO API | 9000 | S3 API |
+| Elasticsearch | 9200 | Search API |
+
+## Container Dependencies
+
+1. **Airbyte**  PostgreSQL (metadata storage)
+2. **Airbyte**  MinIO (data destination)
+3. **Dremio**  MinIO (read Bronze/Silver/Gold layers)
+4. **dbt**  Dremio (transform data)
+5. **Superset**  PostgreSQL & Dremio (query data)

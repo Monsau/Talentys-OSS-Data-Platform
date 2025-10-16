@@ -1,0 +1,117 @@
+version: 2
+
+models:
+  - name: phase3_all_in_one
+    description: |
+      Comparaison complète multi-sources PostgreSQL vs MinIO avec métriques de qualité.
+      Ce modèle effectue un FULL OUTER JOIN pour détecter les écarts de données.
+    
+    columns:
+      - name: total_customers
+        description: "Nombre total de customers uniques (PostgreSQL + MinIO)"
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: postgres_count
+        description: "Nombre de customers dans PostgreSQL"
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: minio_count
+        description: "Nombre de customers dans MinIO"
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: both_sources
+        description: "Nombre de customers présents dans les deux sources"
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: postgres_only
+        description: "Nombre de customers uniquement dans PostgreSQL"
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: minio_only
+        description: "Nombre de customers uniquement dans MinIO"
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: coverage_rate_pct
+        description: "Taux de couverture (both_sources / total_customers * 100)"
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: email_matches
+        description: "Nombre d'emails identiques entre les deux sources"
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: email_mismatches
+        description: "Nombre d'emails différents entre les deux sources"
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: email_quality_pct
+        description: "Qualité des emails (matches / total * 100)"
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: country_matches
+        description: "Nombre de pays identiques entre les deux sources"
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: country_mismatches
+        description: "Nombre de pays différents entre les deux sources"
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: country_quality_pct
+        description: "Qualité des pays (matches / total * 100)"
+        tests:
+          - not_null:
+              config:
+                severity: error
+
+      - name: overall_status
+        description: "Statut global: EXCELLENT (coverage 100% + 0 mismatches), GOOD (coverage >= 95%), WARNING (coverage >= 80%), CRITICAL (< 80%)"
+        tests:
+          - not_null:
+              config:
+                severity: error
+          - accepted_values:
+              values: ['EXCELLENT', 'GOOD', 'WARNING', 'CRITICAL']
+              config:
+                severity: error
+
+      - name: report_timestamp
+        description: "Date et heure de génération du rapport"
+        tests:
+          - not_null:
+              config:
+                severity: error

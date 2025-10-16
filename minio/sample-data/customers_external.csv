@@ -1,0 +1,16 @@
+customer_id,first_name,last_name,email,phone,address,city,country,registration_date,customer_tier,total_lifetime_value
+1001,Alice,Johnson,alice.johnson@email.com,+1-555-0201,"123 Main St",Seattle,USA,2024-01-15,Gold,2456.78
+1002,Bob,Williams,bob.williams@email.com,+1-555-0202,"456 Oak Ave",Portland,USA,2024-02-20,Silver,1234.56
+1003,Carol,Brown,carol.brown@email.com,+1-555-0203,"789 Pine St",Denver,USA,2024-03-10,Bronze,567.89
+1004,David,Miller,david.miller@email.com,+44-20-1234567,"10 Downing St",London,UK,2024-01-25,Platinum,4567.89
+1005,Emma,Davis,emma.davis@email.com,+33-1-23456789,"25 Rue de Rivoli",Paris,France,2024-02-14,Gold,3456.78
+1006,Frank,Wilson,frank.wilson@email.com,+49-30-12345678,"Unter den Linden 1",Berlin,Germany,2024-03-05,Silver,2345.67
+1007,Grace,Moore,grace.moore@email.com,+39-06-12345678,"Via Roma 100",Rome,Italy,2024-01-30,Bronze,1234.56
+1008,Henry,Taylor,henry.taylor@email.com,+34-91-1234567,"Gran Via 50",Madrid,Spain,2024-02-18,Gold,3567.89
+1009,Ivy,Anderson,ivy.anderson@email.com,+46-8-12345678,"Drottninggatan 10",Stockholm,Sweden,2024-03-12,Silver,2456.78
+1010,Jack,Thomas,jack.thomas@email.com,+31-20-1234567,"Damrak 75",Amsterdam,Netherlands,2024-01-22,Platinum,5678.90
+1011,Kate,Jackson,kate.jackson@email.com,+41-44-1234567,"Bahnhofstrasse 1",Zurich,Switzerland,2024-02-28,Gold,4321.09
+1012,Leo,White,leo.white@email.com,+32-2-1234567,"Rue Neuve 123",Brussels,Belgium,2024-03-08,Bronze,1567.89
+1013,Mia,Harris,mia.harris@email.com,+43-1-1234567,"Graben 15",Vienna,Austria,2024-01-18,Silver,2890.45
+1014,Noah,Martin,noah.martin@email.com,+420-2-1234567,"Wenceslas Square 1",Prague,Czech Republic,2024-02-25,Gold,3678.90
+1015,Olivia,Garcia,olivia.garcia@email.com,+351-21-1234567,"Rua Augusta 200",Lisbon,Portugal,2024-03-15,Bronze,1789.23

@@ -1,0 +1,210 @@
+# ====================================
+# AIRBYTE INTEGRATION
+# ====================================
+# Ce fichier ajoute Airbyte à la stack existante
+# Usage: docker-compose -f docker-compose.yml -f docker-compose-airbyte.yml up -d
+
+version: '3.8'
+
+services:
+  # ====================================
+  # AIRBYTE - Data Integration Platform
+  # ====================================
+  
+  # Airbyte Bootloader - Initialize database
+  airbyte-bootloader:
+    image: airbyte/bootloader:latest
+    container_name: airbyte-bootloader
+    environment:
+      - DATABASE_HOST=dremio-postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres123
+      - DATABASE_DB=airbyte
+      - LOG_LEVEL=INFO
+    networks:
+      - dremio-network
+
+  # Airbyte Database (uses existing PostgreSQL)
+  # Note: Airbyte will create its own schema in the existing postgres container
+
+  # Airbyte Server - Backend API
+  airbyte-server:
+    image: airbyte/server:latest
+    container_name: airbyte-server
+    hostname: airbyte-server
+    ports:
+      - "8001:8001"      # API
+    environment:
+      - DATABASE_HOST=dremio-postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres123
+      - DATABASE_DB=airbyte
+      - CONFIG_ROOT=/data
+      - WORKSPACE_ROOT=/tmp/workspace
+      - TRACKING_STRATEGY=logging
+      - WORKER_ENVIRONMENT=docker
+      - LOG_LEVEL=INFO
+      - JOB_MAIN_CONTAINER_CPU_REQUEST=
+      - JOB_MAIN_CONTAINER_CPU_LIMIT=
+      - JOB_MAIN_CONTAINER_MEMORY_REQUEST=
+      - JOB_MAIN_CONTAINER_MEMORY_LIMIT=
+      - TEMPORAL_HOST=airbyte-temporal:7233
+      - INTERNAL_API_HOST=airbyte-server:8001
+      - WEBAPP_URL=http://localhost:8000
+      - MINIO_ENDPOINT=http://minio:9000
+      - S3_LOG_BUCKET=airbyte-logs
+      - S3_LOG_BUCKET_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin123
+      - S3_MINIO_ENDPOINT=http://minio:9000
+      - S3_PATH_STYLE_ACCESS=true
+    volumes:
+      - airbyte-data:/data
+      - airbyte-workspace:/tmp/workspace
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - dremio-network
+    depends_on:
+      - airbyte-bootloader
+      - airbyte-temporal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # Airbyte Temporal - Workflow engine
+  airbyte-temporal:
+    image: airbyte/temporal:latest
+    container_name: airbyte-temporal
+    hostname: airbyte-temporal
+    ports:
+      - "7233:7233"      # Temporal gRPC
+    environment:
+      - DB=postgresql
+      - DB_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PWD=postgres123
+      - POSTGRES_SEEDS=dremio-postgres
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development.yaml
+      - LOG_LEVEL=info
+    volumes:
+      - ./airbyte/temporal/dynamicconfig:/etc/temporal/config/dynamicconfig
+    networks:
+      - dremio-network
+
+  # Airbyte Web UI
+  airbyte-webapp:
+    image: airbyte/webapp:latest
+    container_name: airbyte-webapp
+    ports:
+      - "8000:80"        # UI Web
+    environment:
+      - AIRBYTE_VERSION=latest
+      - API_URL=/api/v1/
+      - INTERNAL_API_HOST=airbyte-server:8001
+      - CONNECTOR_BUILDER_API_URL=/connector-builder-api
+      - TRACKING_STRATEGY=logging
+    networks:
+      - dremio-network
+    depends_on:
+      - airbyte-server
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Airbyte Worker - Execute sync jobs
+  airbyte-worker:
+    image: airbyte/worker:latest
+    container_name: airbyte-worker
+    environment:
+      - DATABASE_HOST=dremio-postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres123
+      - DATABASE_DB=airbyte
+      - WORKSPACE_ROOT=/tmp/workspace
+      - WORKSPACE_DOCKER_MOUNT=/tmp/workspace
+      - LOCAL_ROOT=/tmp/airbyte_local
+      - LOCAL_DOCKER_MOUNT=/tmp/airbyte_local
+      - CONFIG_ROOT=/data
+      - TRACKING_STRATEGY=logging
+      - WORKER_ENVIRONMENT=docker
+      - LOG_LEVEL=INFO
+      - TEMPORAL_HOST=airbyte-temporal:7233
+      - INTERNAL_API_HOST=airbyte-server:8001
+      - MINIO_ENDPOINT=http://minio:9000
+      - S3_LOG_BUCKET=airbyte-logs
+      - S3_LOG_BUCKET_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin123
+      - S3_MINIO_ENDPOINT=http://minio:9000
+      - S3_PATH_STYLE_ACCESS=true
+      - MAX_SYNC_JOB_ATTEMPTS=3
+    volumes:
+      - airbyte-workspace:/tmp/workspace
+      - airbyte-local:/tmp/airbyte_local
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - dremio-network
+    depends_on:
+      - airbyte-server
+      - airbyte-temporal
+
+  # Airbyte Connector Builder Server
+  airbyte-connector-builder-server:
+    image: airbyte/connector-builder-server:latest
+    container_name: airbyte-connector-builder-server
+    ports:
+      - "8003:8003"
+    environment:
+      - AIRBYTE_VERSION=latest
+      - CDK_VERSION=latest
+      - CONNECTOR_BUILDER_SERVER_API_HOST=0.0.0.0
+    networks:
+      - dremio-network
+
+  # Airbyte Cron - Scheduled operations
+  airbyte-cron:
+    image: airbyte/cron:latest
+    container_name: airbyte-cron
+    environment:
+      - DATABASE_HOST=dremio-postgres
+      - DATABASE_PORT=5432
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=postgres123
+      - DATABASE_DB=airbyte
+      - WORKSPACE_ROOT=/tmp/workspace
+      - LOG_LEVEL=INFO
+      - TEMPORAL_HOST=airbyte-temporal:7233
+      - INTERNAL_API_HOST=airbyte-server:8001
+      - CONFIGS_DATABASE_MINIMUM_FLYWAY_MIGRATION_VERSION=0.35.15.001
+      - JOBS_DATABASE_MINIMUM_FLYWAY_MIGRATION_VERSION=0.29.15.001
+      - DEPLOYMENT_MODE=oss
+    volumes:
+      - airbyte-workspace:/tmp/workspace
+    networks:
+      - dremio-network
+    depends_on:
+      - airbyte-server
+
+# ====================================
+# VOLUMES AIRBYTE
+# ====================================
+volumes:
+  airbyte-data:
+    driver: local
+  airbyte-workspace:
+    driver: local
+  airbyte-local:
+    driver: local
+
+# Extend existing network
+networks:
+  dremio-network:
+    external: true

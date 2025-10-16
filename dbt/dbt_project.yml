@@ -1,0 +1,39 @@
+name: 'dremio_analytics'
+version: '1.0.0'
+config-version: 2
+
+profile: 'dremio'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  dremio_analytics:
+    staging:
+      +materialized: view
+      +schema: staging
+      +dremio_space: staging
+    marts:
+      +materialized: table
+      +schema: marts
+      +dremio_space: marts
+    phase3_direct_comparison:
+      staging:
+        +materialized: view
+        +database: analytics
+        +schema: phase3
+      intermediate:
+        +materialized: table
+        +schema: no_schema
+      marts:
+        +materialized: table
+        +schema: no_schema

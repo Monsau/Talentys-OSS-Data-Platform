@@ -1,0 +1,159 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dremiodbt"
+version = "1.0.0"
+description = "Data Platform: Dremio + dbt + Apache Superset + OpenMetadata Integration"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Data Platform Team", email = "data@example.com"}
+]
+keywords = ["dremio", "dbt", "superset", "openmetadata", "data-platform", "data-quality"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Database",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+dependencies = [
+    "dbt-core>=1.10.0,<2.0.0",
+    "dbt-dremio>=1.9.0",
+    "psycopg2-binary>=2.9.11",
+    "PyYAML>=6.0",
+    "requests>=2.32.0",
+    "click>=8.1.0",
+    "pandas>=2.2.0",
+    "numpy>=1.26.0",
+    "pyarrow>=21.0.0",
+    "minio>=7.2.0",
+    "python-dotenv>=1.0.0",
+    "colorama>=0.4.6",
+    "schedule>=1.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-cov>=6.0.0",
+    "pytest-mock>=3.14.0",
+    "black>=24.0.0",
+    "flake8>=7.1.0",
+    "mypy>=1.13.0",
+    "isort>=5.13.0",
+]
+
+superset = [
+    "apache-superset>=3.0.0",
+    "sqlalchemy-dremio>=3.0.4",
+]
+
+openmetadata = [
+    "openmetadata-ingestion[postgres,dbt]==1.9.7",
+]
+
+elasticsearch = [
+    "elasticsearch>=8.15.0",
+]
+
+all = [
+    "dremiodbt[dev,superset,openmetadata,elasticsearch]",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/dremiodbt"
+Documentation = "https://github.com/yourusername/dremiodbt/docs"
+Repository = "https://github.com/yourusername/dremiodbt"
+Issues = "https://github.com/yourusername/dremiodbt/issues"
+
+[project.scripts]
+dremiodbt = "dremio_connector.cli:main"
+
+[tool.setuptools]
+packages = ["dremio_connector"]
+
+[tool.setuptools.package-data]
+dremio_connector = ["py.typed"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311", "py312", "py313"]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | venv
+  | venv_dremio_311
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+skip_gitignore = true
+skip = ["venv", "venv_dremio_311", ".venv"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+exclude = [
+    "venv",
+    "venv_dremio_311",
+    ".venv",
+    "build",
+    "dist",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --strict-markers --cov=dremio_connector --cov-report=term-missing"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "e2e: End-to-end tests",
+    "slow: Slow running tests",
+]
+
+[tool.coverage.run]
+source = ["dremio_connector"]
+omit = [
+    "*/tests/*",
+    "*/venv/*",
+    "*/__pycache__/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]

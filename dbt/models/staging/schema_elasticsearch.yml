@@ -1,0 +1,128 @@
+version: 2
+
+models:
+  - name: stg_es_logs
+    description: "Staging layer for Elasticsearch application logs"
+    columns:
+      - name: log_timestamp
+        description: "Timestamp when the log was generated"
+        tests:
+          - not_null
+      - name: log_level
+        description: "Log severity level (ERROR, WARNING, INFO)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['ERROR', 'WARNING', 'INFO', 'DEBUG']
+      - name: service
+        description: "Service that generated the log"
+        tests:
+          - not_null
+      - name: status_code
+        description: "HTTP status code"
+      - name: is_error
+        description: "Flag indicating if this is an error log (1=yes, 0=no)"
+        tests:
+          - accepted_values:
+              values: [0, 1]
+
+  - name: stg_es_events
+    description: "Staging layer for Elasticsearch user events"
+    columns:
+      - name: event_timestamp
+        description: "Timestamp when the event occurred"
+        tests:
+          - not_null
+      - name: event_type
+        description: "Type of user event"
+        tests:
+          - not_null
+      - name: user_id
+        description: "ID of the user who triggered the event"
+      - name: is_conversion
+        description: "Flag indicating if this is a conversion event"
+        tests:
+          - accepted_values:
+              values: [0, 1]
+      - name: is_purchase
+        description: "Flag indicating if this is a purchase event"
+        tests:
+          - accepted_values:
+              values: [0, 1]
+
+  - name: stg_es_metrics
+    description: "Staging layer for Elasticsearch performance metrics"
+    columns:
+      - name: metric_timestamp
+        description: "Timestamp when the metric was collected"
+        tests:
+          - not_null
+      - name: metric_name
+        description: "Name of the performance metric"
+        tests:
+          - not_null
+      - name: service
+        description: "Service being monitored"
+        tests:
+          - not_null
+      - name: metric_value
+        description: "Value of the metric"
+        tests:
+          - not_null
+      - name: is_critical
+        description: "Flag indicating if metric exceeds critical threshold"
+        tests:
+          - accepted_values:
+              values: [0, 1]
+
+  - name: fct_platform_health
+    description: "Fact table combining logs, events, and metrics for platform health monitoring"
+    columns:
+      - name: day
+        description: "Business date"
+        tests:
+          - not_null
+          - unique
+      - name: service
+        description: "Service name or 'ALL' for aggregated metrics"
+        tests:
+          - not_null
+      - name: error_count
+        description: "Number of errors logged"
+      - name: conversions
+        description: "Number of user conversions"
+      - name: conversion_rate_pct
+        description: "Conversion rate as percentage"
+      - name: avg_cpu_percent
+        description: "Average CPU usage percentage"
+      - name: critical_alerts
+        description: "Number of critical metric alerts"
+
+  - name: fct_business_overview
+    description: "Executive dashboard combining sales (PG+MinIO) and platform health (ES)"
+    columns:
+      - name: business_date
+        description: "Business date for the metrics"
+        tests:
+          - not_null
+          - unique
+      - name: combined_revenue
+        description: "Total revenue from all sources"
+      - name: combined_transactions
+        description: "Total transactions from all sources"
+      - name: platform_errors
+        description: "Total platform errors from logs"
+      - name: web_conversions
+        description: "Total web conversions from events"
+      - name: active_users
+        description: "Number of active users"
+      - name: error_severity
+        description: "Error severity classification"
+        tests:
+          - accepted_values:
+              values: ['LOW', 'MEDIUM', 'HIGH']
+      - name: system_health_status
+        description: "Overall system health status"
+        tests:
+          - accepted_values:
+              values: ['NORMAL', 'WARNING', 'CRITICAL']

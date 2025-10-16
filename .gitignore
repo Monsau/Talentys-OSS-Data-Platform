@@ -1,0 +1,125 @@
+# ========================================
+# DREMIO + DBT + OPENMETADATA - .gitignore
+# ========================================
+
+# ===== CREDENTIALS & SECRETS =====
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+config/secrets/
+credentials/
+
+# ===== DBT =====
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+dbt/profiles.yml
+
+# ===== PYTHON =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+venv_*/
+ENV/
+.venv/
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-log.txt
+pip-delete-this-directory.txt
+.python-version
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+
+# ===== IDEs =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-*
+.project
+.pydevproject
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+desktop.ini
+*.lnk
+
+# ===== DOCKER =====
+docker/data/
+docker/volumes/
+docker-compose.override.yml
+
+# ===== LOGS =====
+*.log
+logs/
+*.log.*
+log/
+
+# ===== BACKUPS & ARCHIVES =====
+backup*/
+archive/
+*.backup
+*.bak
+*.old
+*.tmp
+
+# ===== DATA =====
+data/*.csv
+data/*.json
+data/*.parquet
+opendata/*.csv
+opendata/*.json
+minio/data/
+postgres/data/
+dremio/data/
+
+# ===== REPORTS & TEMPORARY =====
+*_REPORT.json
+*_REPORT.md
+*_COMPLETE.md
+TODO*.md
+PHASE*.md
+reports/*.json
+reports/*.html
+
+# ===== NODE (if needed) =====
+node_modules/
+package-lock.json
+yarn.lock
+
+# ===== JUPYTER =====
+.ipynb_checkpoints/
+*.ipynb
+
+# ===== DATABASES =====
+*.db
+*.sqlite
+*.sqlite3
+
+# ===== CERTIFICATES =====
+ssl/
+certs/
+*.csr
+
+# ===== MISC =====
+.cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.ruff_cache/
