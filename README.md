@@ -62,8 +62,8 @@ graph LR
 
 ```bash
 # Clone repository
-git clone <repository-url>
-cd dremiodbt
+git clone https://github.com/Monsau/data-platform-iso-opensource.git
+cd data-platform-iso-opensource
 
 # Install dependencies
 pip install -r requirements.txt
@@ -211,9 +211,9 @@ make deploy-quick    # Quick deployment
 Services: 9/9 operational (includes Airbyte)
 dbt Tests: 21/21 passing
 Dashboards: 3 active
-Languages: 8 supported
-Documentation: Complete
-Status: Production Ready
+Languages: 18 supported (5.2B+ people coverage)
+Documentation: Complete in 18 languages
+Status: Production Ready - v1.0
 ```
 
 ---
@@ -221,17 +221,21 @@ Status: Production Ready
 ## Project Structure
 
 ```
-dremiodbt/
+data-platform-iso-opensource/
 ├── README.md                       # This file
+├── AUTHORS.md                      # Project creators and contributors
 ├── CHANGELOG.md                    # Version history
 ├── CONTRIBUTING.md                 # Contribution guidelines
+├── CODE_OF_CONDUCT.md              # Community guidelines
+├── SECURITY.md                     # Security policies
 ├── LICENSE                         # MIT License
 │
 ├── docs/                           # Documentation
-│   ├── i18n/                       # Multilingual docs (8 languages)
-│   │   ├── en/, fr/, es/, pt/
-│   │   └── ar/, cn/, jp/, ru/
-│   └── diagrams/                   # Mermaid diagrams
+│   ├── i18n/                       # Multilingual docs (18 languages)
+│   │   ├── fr/, es/, pt/, cn/, jp/, ru/, ar/
+│   │   ├── de/, ko/, hi/, id/, tr/, vi/
+│   │   └── it/, nl/, pl/, se/
+│   └── diagrams/                   # Mermaid diagrams (248+)
 │
 ├── config/                         # Configuration
 │   └── i18n/                       # Internationalization
@@ -297,16 +301,22 @@ Built with enterprise-grade open-source technologies:
 
 ---
 
+## 📧 Contact
+
+**Author:** Mustapha Fonsau
+- 💼 **LinkedIn:** [linkedin.com/in/mustapha-fonsau](https://www.linkedin.com/in/mustapha-fonsau/)
+- 🐙 **GitHub:** [github.com/Monsau](https://github.com/Monsau)
+- 📧 **Email:** mfonsau@talentys.eu
+
 ## Support
 
 For technical assistance:
-- Documentation: [docs/i18n/](docs/i18n/)
-- Issue Tracker: [GitHub Issues](https://github.com/yourorg/dremiodbt/issues)
-- Discussions: [GitHub Discussions](https://github.com/yourorg/dremiodbt/discussions)
-- Email: support@example.com
+- 📚 **Documentation:** [docs/i18n/](docs/i18n/)
+- 🐛 **Issue Tracker:** [GitHub Issues](https://github.com/Monsau/data-platform-iso-opensource/issues)
+- 💬 **Discussions:** [GitHub Discussions](https://github.com/Monsau/data-platform-iso-opensource/discussions)
 
 ---
 
-**Version 3.2.0** | **2025-10-16** | **Production Ready**
+**Version 1.0.0** | **2025-10-16** | **Production Ready**
 
-Made for enterprise data teams worldwide.
+Made with ❤️ by [Mustapha Fonsau](https://www.linkedin.com/in/mustapha-fonsau/) for enterprise data teams worldwide.
