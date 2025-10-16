@@ -1,13 +1,14 @@
 """
 ╔════════════════════════════════════════════════════════════╗
-║     ORCHESTRATION COMPLETE - DATA PLATFORM AUTO-BUILD      ║
+║     COMPLETE ORCHESTRATION - DATA PLATFORM AUTO-BUILD      ║
 ║                                                            ║
-║  Déploie l'infrastructure complète automatiquement:        ║
+║  Deploys the complete infrastructure automatically:        ║
 ║  - Dremio + PostgreSQL + MinIO + Elasticsearch             ║
+║  - Airbyte (Data Integration)                              ║
 ║  - dbt (models + tests)                                    ║
-║  - Apache Superset                                         ║
-║  - Synchronisation Dremio → PostgreSQL                     ║
-║  - Dashboards automatiques                                 ║
+║  - Apache Superset & Airflow                               ║
+║  - Dremio → PostgreSQL synchronization                     ║
+║  - Automatic dashboards                                    ║
 ╚════════════════════════════════════════════════════════════╝
 """
 
@@ -25,7 +26,7 @@ if sys.platform == 'win32':
     sys.stderr = codecs.getwriter('utf-8')(sys.stderr.buffer, 'strict')
 
 class DataPlatformOrchestrator:
-    """Orchestrateur complet de la plateforme de données"""
+    """Complete data platform orchestrator"""
     
     def __init__(self, workspace_path):
         self.workspace = Path(workspace_path)
@@ -35,13 +36,13 @@ class DataPlatformOrchestrator:
         self.steps_failed = []
         
     def log(self, message, level="INFO"):
-        """Log avec timestamp"""
+        """Log with timestamp"""
         timestamp = time.strftime("%H:%M:%S")
         icon = {"INFO": "ℹ️", "SUCCESS": "✅", "ERROR": "❌", "WARNING": "⚠️"}.get(level, "•")
         print(f"[{timestamp}] {icon} {message}")
     
     def run_command(self, command, description, cwd=None, check=True):
-        """Exécute une commande shell"""
+        """Execute a shell command"""
         self.log(f"{description}...", "INFO")
         try:
             if isinstance(command, str):
@@ -51,7 +52,9 @@ class DataPlatformOrchestrator:
                     cwd=cwd or self.workspace,
                     capture_output=True,
                     text=True,
-                    check=check
+                    check=check,
+                    encoding='utf-8',
+                    errors='ignore'
                 )
             else:
                 result = subprocess.run(
@@ -59,79 +62,89 @@ class DataPlatformOrchestrator:
                     cwd=cwd or self.workspace,
                     capture_output=True,
                     text=True,
-                    check=check
+                    check=check,
+                    encoding='utf-8',
+                    errors='ignore'
                 )
             
-            if result.returncode == 0:
-                self.log(f"{description} - OK", "SUCCESS")
-                return True, result.stdout
-            else:
-                self.log(f"{description} - FAILED: {result.stderr}", "ERROR")
-                return False, result.stderr
+            if check and result.returncode != 0:
+                self.log(f"{description} - FAILED", "ERROR")
+                if result.stderr:
+                    print(f"Error: {result.stderr[:500]}")
+                return False, result.stdout
+            
+            self.log(f"{description} - OK", "SUCCESS")
+            return True, result.stdout
+            
+        except subprocess.CalledProcessError as e:
+            self.log(f"{description} - FAILED", "ERROR")
+            if e.stderr:
+                print(f"Error: {e.stderr[:500]}")
+            return False, e.stdout if e.stdout else ""
         except Exception as e:
-            self.log(f"{description} - EXCEPTION: {str(e)}", "ERROR")
-            return False, str(e)
+            self.log(f"{description} - ERROR: {str(e)}", "ERROR")
+            return False, ""
     
     def check_prerequisites(self):
-        """Vérifie les prérequis"""
-        self.log("Vérification des prérequis", "INFO")
+        """Check prerequisites"""
+        self.log("Checking prerequisites", "INFO")
         
         # Docker
-        success, _ = self.run_command("docker --version", "Docker installé", check=False)
+        success, _ = self.run_command("docker --version", "Docker installed", check=False)
         if not success:
-            self.log("Docker n'est pas installé", "ERROR")
+            self.log("Docker is not installed", "ERROR")
             return False
         
         # Docker Compose
-        success, _ = self.run_command("docker-compose --version", "Docker Compose installé", check=False)
+        success, _ = self.run_command("docker-compose --version", "Docker Compose installed", check=False)
         if not success:
-            self.log("Docker Compose n'est pas installé", "ERROR")
+            self.log("Docker Compose is not installed", "ERROR")
             return False
         
         # Python
-        success, _ = self.run_command("python --version", "Python installé", check=False)
+        success, _ = self.run_command("python --version", "Python installed", check=False)
         if not success:
-            self.log("Python n'est pas installé", "ERROR")
+            self.log("Python is not installed", "ERROR")
             return False
         
-        self.log("Tous les prérequis sont satisfaits", "SUCCESS")
+        self.log("All prerequisites satisfied", "SUCCESS")
         self.steps_completed.append("Prerequisites")
         return True
     
     def deploy_infrastructure(self):
-        """Déploie l'infrastructure Docker"""
-        self.log("═" * 60, "INFO")
-        self.log("ÉTAPE 1: DÉPLOIEMENT INFRASTRUCTURE DOCKER", "INFO")
-        self.log("═" * 60, "INFO")
+        """Deploy Docker infrastructure"""
+        self.log("=" * 60, "INFO")
+        self.log("STEP 1: DOCKER INFRASTRUCTURE DEPLOYMENT", "INFO")
+        self.log("=" * 60, "INFO")
         
-        # Arrêter les conteneurs existants
-        self.run_command("docker-compose down", "Arrêt des conteneurs existants", check=False)
+        # Stop existing containers
+        self.run_command("docker-compose down", "Stopping existing containers", check=False)
         
-        # Démarrer l'infrastructure principale
+        # Start main infrastructure
         success, _ = self.run_command(
             "docker-compose up -d",
-            "Démarrage Dremio + PostgreSQL + MinIO + Elasticsearch + Superset + Airflow"
+            "Starting Dremio + PostgreSQL + MinIO + Elasticsearch + Superset + Airflow"
         )
         if not success:
             self.steps_failed.append("Infrastructure")
             return False
         
-        # Démarrer Airbyte
-        self.log("Démarrage Airbyte...", "INFO")
+        # Start Airbyte
+        self.log("Starting Airbyte...", "INFO")
         success, _ = self.run_command(
             "docker-compose -f docker-compose.yml -f docker-compose-airbyte-stable.yml up -d",
-            "Lancement Airbyte (Data Integration)",
+            "Launching Airbyte (Data Integration)",
             check=False
         )
         if not success:
-            self.log("Airbyte n'a pas démarré (optionnel, continuons)", "WARNING")
+            self.log("Airbyte did not start (optional, continuing)", "WARNING")
         
-        # Attendre que les services soient prêts
-        self.log("Attente du démarrage des services (60 secondes)...", "INFO")
+        # Wait for services to be ready
+        self.log("Waiting for services to start (60 seconds)...", "INFO")
         time.sleep(60)
         
-        # Vérifier que les conteneurs tournent
-        success, output = self.run_command("docker ps", "Vérification des conteneurs")
+        # Check that containers are running
+        success, output = self.run_command("docker ps", "Checking containers")
         if not success or "dremio" not in output:
             self.steps_failed.append("Infrastructure")
             return False
@@ -140,48 +153,48 @@ class DataPlatformOrchestrator:
         return True
     
     def deploy_superset(self):
-        """Déploie Apache Superset"""
-        self.log("═" * 60, "INFO")
-        self.log("ÉTAPE 2: DÉPLOIEMENT APACHE SUPERSET", "INFO")
-        self.log("═" * 60, "INFO")
+        """Deploy Apache Superset"""
+        self.log("=" * 60, "INFO")
+        self.log("STEP 2: APACHE SUPERSET DEPLOYMENT", "INFO")
+        self.log("=" * 60, "INFO")
         
         success, _ = self.run_command(
             "docker-compose -f docker-compose-superset.yml up -d",
-            "Démarrage Apache Superset"
+            "Starting Apache Superset"
         )
         if not success:
             self.steps_failed.append("Superset")
             return False
         
-        # Attendre que Superset soit prêt
-        self.log("Attente du démarrage de Superset (30 secondes)...", "INFO")
+        # Wait for Superset to be ready
+        self.log("Waiting for Superset to start (30 seconds)...", "INFO")
         time.sleep(30)
         
         self.steps_completed.append("Superset")
         return True
     
     def setup_dbt_environment(self):
-        """Configure l'environnement dbt"""
-        self.log("═" * 60, "INFO")
-        self.log("ÉTAPE 3: CONFIGURATION ENVIRONNEMENT DBT", "INFO")
-        self.log("═" * 60, "INFO")
+        """Configure dbt environment"""
+        self.log("=" * 60, "INFO")
+        self.log("STEP 3: DBT ENVIRONMENT CONFIGURATION", "INFO")
+        self.log("=" * 60, "INFO")
         
-        # Vérifier si le venv existe
+        # Check if venv exists
         if not self.venv_path.exists():
-            self.log("Environnement virtuel non trouvé, création...", "WARNING")
+            self.log("Virtual environment not found, creating...", "WARNING")
             success, _ = self.run_command(
                 "python -m venv venv_dremio_311",
-                "Création du venv"
+                "Creating venv"
             )
             if not success:
                 self.steps_failed.append("dbt Environment")
                 return False
         
-        # Installer les dépendances
+        # Install dependencies
         pip_exe = self.venv_path / "Scripts" / "pip.exe"
         success, _ = self.run_command(
             f'"{pip_exe}" install -r requirements.txt',
-            "Installation des dépendances Python"
+            "Installing Python dependencies"
         )
         if not success:
             self.steps_failed.append("dbt Environment")
@@ -191,10 +204,10 @@ class DataPlatformOrchestrator:
         return True
     
     def run_dbt_models(self):
-        """Exécute les modèles dbt"""
-        self.log("═" * 60, "INFO")
-        self.log("ÉTAPE 4: EXÉCUTION MODELES DBT", "INFO")
-        self.log("═" * 60, "INFO")
+        """Execute dbt models"""
+        self.log("=" * 60, "INFO")
+        self.log("STEP 4: DBT MODELS EXECUTION", "INFO")
+        self.log("=" * 60, "INFO")
         
         dbt_path = self.workspace / "dbt"
         dbt_exe = self.venv_path / "Scripts" / "dbt.exe"
@@ -202,7 +215,7 @@ class DataPlatformOrchestrator:
         # dbt debug
         self.run_command(
             f'"{dbt_exe}" debug',
-            "Vérification configuration dbt",
+            "Checking dbt configuration",
             cwd=dbt_path,
             check=False
         )
@@ -210,7 +223,7 @@ class DataPlatformOrchestrator:
         # dbt run
         success, _ = self.run_command(
             f'"{dbt_exe}" run --select phase3_all_in_one',
-            "Exécution du modèle phase3_all_in_one",
+            "Executing phase3_all_in_one model",
             cwd=dbt_path
         )
         if not success:
@@ -220,31 +233,31 @@ class DataPlatformOrchestrator:
         # dbt test
         success, _ = self.run_command(
             f'"{dbt_exe}" test',
-            "Exécution des tests dbt",
+            "Executing dbt tests",
             cwd=dbt_path
         )
         if not success:
-            self.log("Tests dbt ont échoué mais on continue", "WARNING")
+            self.log("dbt tests failed but continuing", "WARNING")
         
         self.steps_completed.append("dbt Models")
         return True
     
     def sync_dremio_to_postgres(self):
-        """Synchronise Dremio vers PostgreSQL"""
-        self.log("═" * 60, "INFO")
-        self.log("ÉTAPE 5: SYNCHRONISATION DREMIO → POSTGRESQL", "INFO")
-        self.log("═" * 60, "INFO")
+        """Synchronize Dremio to PostgreSQL"""
+        self.log("=" * 60, "INFO")
+        self.log("STEP 5: DREMIO → POSTGRESQL SYNCHRONIZATION", "INFO")
+        self.log("=" * 60, "INFO")
         
         script_path = self.workspace / "scripts" / "sync_dremio_realtime.py"
         
         if not script_path.exists():
-            self.log("Script de sync introuvable", "ERROR")
+            self.log("Sync script not found", "ERROR")
             self.steps_failed.append("Dremio Sync")
             return False
         
         success, _ = self.run_command(
             f'"{self.python_exe}" "{script_path}"',
-            "Synchronisation des données Dremio"
+            "Synchronizing Dremio data"
         )
         if not success:
             self.steps_failed.append("Dremio Sync")
@@ -254,168 +267,168 @@ class DataPlatformOrchestrator:
         return True
     
     def populate_superset(self):
-        """Peuple Superset avec les dashboards"""
-        self.log("═" * 60, "INFO")
-        self.log("ÉTAPE 6: CRÉATION DASHBOARDS SUPERSET", "INFO")
-        self.log("═" * 60, "INFO")
+        """Populate Superset with dashboards"""
+        self.log("=" * 60, "INFO")
+        self.log("STEP 6: SUPERSET DASHBOARDS CREATION", "INFO")
+        self.log("=" * 60, "INFO")
         
         # Dashboard 1: PostgreSQL
         script_path = self.workspace / "scripts" / "populate_superset.py"
         if script_path.exists():
             success, _ = self.run_command(
                 f'"{self.python_exe}" "{script_path}"',
-                "Création Dashboard 1 (PostgreSQL)"
+                "Creating Dashboard 1 (PostgreSQL)"
             )
             if not success:
-                self.log("Dashboard 1 échoué mais on continue", "WARNING")
+                self.log("Dashboard 1 failed but continuing", "WARNING")
         
         # Dashboard 2: Dremio
         script_path = self.workspace / "scripts" / "rebuild_dremio_dashboard.py"
         if script_path.exists():
             success, _ = self.run_command(
                 f'"{self.python_exe}" "{script_path}"',
-                "Création Dashboard 2 (Dremio)"
+                "Creating Dashboard 2 (Dremio)"
             )
             if not success:
-                self.log("Dashboard 2 échoué mais on continue", "WARNING")
+                self.log("Dashboard 2 failed but continuing", "WARNING")
         
         self.steps_completed.append("Superset Dashboards")
         return True
     
     def generate_opendata_dashboard(self):
-        """Génère le dashboard Open Data HTML"""
-        self.log("═" * 60, "INFO")
-        self.log("ÉTAPE 7: GÉNÉRATION DASHBOARD OPEN DATA", "INFO")
-        self.log("═" * 60, "INFO")
+        """Generate Open Data HTML dashboard"""
+        self.log("=" * 60, "INFO")
+        self.log("STEP 7: OPEN DATA DASHBOARD GENERATION", "INFO")
+        self.log("=" * 60, "INFO")
         
         script_path = self.workspace / "scripts" / "generate_opendata_dashboard.py"
         
         if not script_path.exists():
-            self.log("Script Open Data introuvable, skip", "WARNING")
+            self.log("Open Data script not found, skipping", "WARNING")
             return True
         
         success, _ = self.run_command(
             f'"{self.python_exe}" "{script_path}"',
-            "Génération du dashboard HTML Open Data"
+            "Generating HTML Open Data dashboard"
         )
         if not success:
-            self.log("Dashboard Open Data échoué mais on continue", "WARNING")
+            self.log("Open Data dashboard failed but continuing", "WARNING")
         else:
             self.steps_completed.append("Open Data Dashboard")
         
         return True
     
     def print_summary(self):
-        """Affiche le résumé final"""
-        self.log("═" * 60, "INFO")
-        self.log("RÉSUMÉ DU DÉPLOIEMENT", "INFO")
-        self.log("═" * 60, "INFO")
+        """Display final summary"""
+        self.log("=" * 60, "INFO")
+        self.log("DEPLOYMENT SUMMARY", "INFO")
+        self.log("=" * 60, "INFO")
         
-        print("\n✅ ÉTAPES COMPLÉTÉES:")
+        print("\n✅ COMPLETED STEPS:")
         for step in self.steps_completed:
             print(f"   ✅ {step}")
         
         if self.steps_failed:
-            print("\n❌ ÉTAPES ÉCHOUÉES:")
+            print("\n❌ FAILED STEPS:")
             for step in self.steps_failed:
                 print(f"   ❌ {step}")
         
-        print("\n📊 DASHBOARDS DISPONIBLES:")
+        print("\n📊 AVAILABLE DASHBOARDS:")
         print("   • Dremio UI: http://localhost:9047 (admin/admin123)")
         print("   • Superset Dashboard 1: http://localhost:8088/superset/dashboard/1/")
         print("   • Superset Dashboard 2 (Dremio): http://localhost:8088/superset/dashboard/2/")
         print("   • Open Data HTML: file:///c:/projets/dremiodbt/opendata/dashboard.html")
         
-        print("\n🔄 SYNCHRONISATION:")
-        print("   • Manuel: python scripts\\sync_dremio_realtime.py")
+        print("\n🔄 SYNCHRONIZATION:")
+        print("   • Manual: python scripts\\sync_dremio_realtime.py")
         print("   • Auto: python scripts\\sync_dremio_realtime.py --continuous 5")
         
         print("\n📄 DOCUMENTATION:")
-        print("   • SUPERSET_DREMIO_FINAL.md (guide complet)")
+        print("   • SUPERSET_DREMIO_FINAL.md (complete guide)")
         print("   • PHASE3_COMPLETE_SUMMARY.md")
         
-        print("\n" + "═" * 60)
+        print("\n" + "=" * 60)
         if not self.steps_failed:
-            print("🎉 DÉPLOIEMENT COMPLET RÉUSSI!")
+            print("🎉 COMPLETE DEPLOYMENT SUCCESSFUL!")
         else:
-            print("⚠️ DÉPLOIEMENT PARTIEL - Vérifiez les erreurs ci-dessus")
-        print("═" * 60 + "\n")
+            print("⚠️ PARTIAL DEPLOYMENT - Check errors above")
+        print("=" * 60 + "\n")
     
     def orchestrate(self):
-        """Orchestre le déploiement complet"""
+        """Orchestrate complete deployment"""
         print("""
 ╔════════════════════════════════════════════════════════════╗
 ║                                                            ║
 ║       DATA PLATFORM AUTO-BUILD ORCHESTRATION               ║
 ║                                                            ║
-║  Déploiement automatique complet de la plateforme          ║
+║  Automatic complete platform deployment                    ║
 ║                                                            ║
 ╚════════════════════════════════════════════════════════════╝
         """)
         
         start_time = time.time()
         
-        # 0. Prérequis
+        # 0. Prerequisites
         if not self.check_prerequisites():
-            self.log("Prérequis non satisfaits, arrêt", "ERROR")
+            self.log("Prerequisites not satisfied, stopping", "ERROR")
             return False
         
-        # 1. Infrastructure Docker
+        # 1. Docker Infrastructure
         if not self.deploy_infrastructure():
-            self.log("Déploiement infrastructure échoué", "ERROR")
+            self.log("Infrastructure deployment failed", "ERROR")
             self.print_summary()
             return False
         
         # 2. Apache Superset
         if not self.deploy_superset():
-            self.log("Déploiement Superset échoué", "ERROR")
-            # Continue quand même
+            self.log("Superset deployment failed", "ERROR")
+            # Continue anyway
         
-        # 3. Environnement dbt
+        # 3. dbt Environment
         if not self.setup_dbt_environment():
-            self.log("Configuration dbt échouée", "ERROR")
-            # Continue quand même
+            self.log("dbt configuration failed", "ERROR")
+            # Continue anyway
         
-        # 4. Modèles dbt
+        # 4. dbt Models
         if not self.run_dbt_models():
-            self.log("Exécution dbt échouée", "ERROR")
-            # Continue quand même
+            self.log("dbt execution failed", "ERROR")
+            # Continue anyway
         
-        # 5. Sync Dremio
+        # 5. Dremio Sync
         if not self.sync_dremio_to_postgres():
-            self.log("Synchronisation Dremio échouée", "ERROR")
-            # Continue quand même
+            self.log("Dremio synchronization failed", "ERROR")
+            # Continue anyway
         
-        # 6. Dashboards Superset
+        # 6. Superset Dashboards
         self.populate_superset()
         
-        # 7. Dashboard Open Data
+        # 7. Open Data Dashboard
         self.generate_opendata_dashboard()
         
-        # Résumé final
+        # Final summary
         elapsed = time.time() - start_time
-        self.log(f"Temps total: {elapsed:.1f} secondes", "INFO")
+        self.log(f"Total time: {elapsed:.1f} seconds", "INFO")
         self.print_summary()
         
         return len(self.steps_failed) == 0
 
 
 def main():
-    """Point d'entrée principal"""
+    """Main entry point"""
     import argparse
     
     parser = argparse.ArgumentParser(
-        description="Orchestration complète de la plateforme de données"
+        description="Complete data platform orchestration"
     )
     parser.add_argument(
         "--workspace",
         default=r"c:\projets\dremiodbt",
-        help="Chemin vers le workspace"
+        help="Workspace path"
     )
     parser.add_argument(
         "--skip-infrastructure",
         action="store_true",
-        help="Skip le déploiement de l'infrastructure Docker"
+        help="Skip Docker infrastructure deployment"
     )
     
     args = parser.parse_args()
@@ -426,10 +439,10 @@ def main():
         success = orchestrator.orchestrate()
         return 0 if success else 1
     except KeyboardInterrupt:
-        print("\n\n⚠️ Interruption utilisateur")
+        print("\n\n⚠️ User interruption")
         return 1
     except Exception as e:
-        print(f"\n❌ Erreur fatale: {e}")
+        print(f"\n❌ Fatal error: {e}")
         import traceback
         traceback.print_exc()
         return 1
