@@ -119,7 +119,7 @@ class DataPlatformOrchestrator:
         # Démarrer Airbyte
         self.log("Démarrage Airbyte...", "INFO")
         success, _ = self.run_command(
-            "docker-compose -f docker-compose.yml -f docker-compose-airbyte.yml up -d",
+            "docker-compose -f docker-compose.yml -f docker-compose-airbyte-stable.yml up -d",
             "Lancement Airbyte (Data Integration)",
             check=False
         )
