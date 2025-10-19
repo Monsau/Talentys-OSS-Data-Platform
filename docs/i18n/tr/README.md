@@ -1,119 +1,144 @@
-﻿# Dremio + dbt + OpenMetadata - Dokümantasyon (Türkçe)
+﻿# Veri platformu
 
-**Sürüm**: 3.2.5  
-**Son Güncelleme**: 16 Ekim 2025  
-**Dil**: Türkçe 🇹🇷
+<p align="center">
+  <a href="https://talentys.eu" target="_blank">
+    <img src="../../assets/images/talentys/original.png" alt="Talentys Data" width="200"/>
+  </a>
+  <br/>
+  <em>Supported by <a href="https://talentys.eu">Talentys</a> | <a href="https://www.linkedin.com/company/talentysdata">LinkedIn</a> - Data Engineering & Analytics Excellence</em>
+</p>
 
----
 
-## 📚 Genel Bakış
+**Kurumsal veri göl evi çözümü**
 
-Dremio + dbt + OpenMetadata veri platformu Türkçe dokümantasyonuna hoş geldiniz. Bu dokümantasyon, platformun kurulumu, yapılandırması ve kullanımı için kapsamlı kılavuzlar sağlar.
-
----
-
-## 🗺️ Dokümantasyon Yapısı
-
-### 📐 Mimari
-
-- **[Dremio Portları - Görsel Kılavuz](./architecture/dremio-ports-visual.md)** ⭐ YENİ!
-  - 3 Dremio portu (9047, 31010, 32010) için tam görsel kılavuz
-  - PostgreSQL Proxy detaylı mimarisi
-  - Performans karşılaştırmaları ve kıyaslamalar
-  - Kullanım senaryoları ve karar ağacı
-  - Bağlantı örnekleri: psql, DBeaver, Python, Java, ODBC
-  - Docker Compose yapılandırması
-  - 456 satır | 8+ Mermaid diyagramı | 5 kod örneği
+**Dil**: Fransızca (FR)  
+**Sürüm**: 3.3.1  
+**Son güncelleme**: 19 Ekim 2025
 
 ---
 
-## 🌍 Mevcut Diller
+## Genel Bakış
 
-Bu dokümantasyon birçok dilde mevcuttur:
+Kurumsal düzeyde veri dönüşümü, kalite güvencesi ve iş zekası için Dremio, dbt ve Apache Superset'i birleştiren profesyonel veri platformu.
 
-- 🇫🇷 **[Français](../fr/README.md)** - Tam dokümantasyon (22 dosya)
-- 🇬🇧 **[English](../../../README.md)** - Tam dokümantasyon (19 dosya)
-- 🇪🇸 **[Español](../es/README.md)** - Görsel kılavuzlar
-- 🇵🇹 **[Português](../pt/README.md)** - Görsel kılavuzlar
-- 🇨🇳 **[中文](../cn/README.md)** - Görsel kılavuzlar
-- 🇯🇵 **[日本語](../jp/README.md)** - Görsel kılavuzlar
-- 🇷🇺 **[Русский](../ru/README.md)** - Görsel kılavuzlar
-- 🇸🇦 **[العربية](../ar/README.md)** - Görsel kılavuzlar
-- 🇩🇪 **[Deutsch](../de/README.md)** - Görsel kılavuzlar
-- 🇰🇷 **[한국어](../ko/README.md)** - Görsel kılavuzlar
-- 🇮🇳 **[हिन्दी](../hi/README.md)** - Görsel kılavuzlar
-- 🇮🇩 **[Indonesia](../id/README.md)** - Görsel kılavuzlar
-- 🇹🇷 **[Türkçe](../tr/README.md)** - Görsel kılavuzlar ⭐ BURADASıNıZ
-- 🇻🇳 **[Tiếng Việt](../vi/README.md)** - Görsel kılavuzlar
-- 🇮🇹 **[Italiano](../it/README.md)** - Görsel kılavuzlar
-- 🇳🇱 **[Nederlands](../nl/README.md)** - Görsel kılavuzlar
-- 🇵🇱 **[Polski](../pl/README.md)** - Görsel kılavuzlar
-- 🇸🇪 **[Svenska](../se/README.md)** - Görsel kılavuzlar
+Bu platform, otomatik veri hatları, kalite testleri ve etkileşimli kontrol panelleri dahil olmak üzere modern veri mühendisliği için eksiksiz bir çözüm sunar.
+
+```mermaid
+graph LR
+    A[Sources de données] --> B[Dremio]
+    B --> C[dbt]
+    C --> D[Superset]
+    D --> E[Insights métier]
+    
+    style B fill:#f5f5f5,stroke:#333,stroke-width:2px
+    style C fill:#e8e8e8,stroke:#333,stroke-width:2px
+    style D fill:#d8d8d8,stroke:#333,stroke-width:2px
+```
 
 ---
 
-## 🚀 Hızlı Başlangıç
+## Temel Özellikler
+
+- Dremio ile veri göl evi mimarisi
+- dbt ile otomatik dönüşümler
+- Apache Superset ile iş zekası
+- Kapsamlı veri kalitesi testi
+- Arrow Flight ile gerçek zamanlı senkronizasyon
+
+---
+
+## Hızlı Başlangıç ​​Kılavuzu
 
 ### Önkoşullar
 
-- Docker & Docker Compose
-- Python 3.11+
-- Git
+- Docker 20.10 veya üzeri
+- Docker Compose 2.0 veya üzeri
+- Python 3.11 veya üzeri
+- Minimum 8 GB RAM
 
-### Kurulum
+### Tesis
 
 ```bash
-# Repository'yi klonlayın
-git clone <repository-url>
-cd dremiodbt
+# Installer les dépendances
+pip install -r requirements.txt
 
-# Docker servislerini başlatın
-docker-compose up -d
+# Démarrer les services
+make up
 
-# Web UI'yi açın
-# Dremio: http://localhost:9047
-# OpenMetadata: http://localhost:8585
+# Vérifier l'installation
+make status
+
+# Exécuter les tests de qualité
+make dbt-test
 ```
 
-Ayrıntılı kurulum talimatları için [İngilizce dokümantasyona](../en/getting-started/installation.md) bakın.
+---
+
+## Mimarlık
+
+### Sistem bileşenleri
+
+| Bileşen | Liman | Açıklama |
+|---------------|----------|------------|
+| Dremio | 9047, 31010, 32010 | Veri göl evi platformu |
+| dbt | - | Veri Dönüştürme Aracı |
+| Süperset | 8088 | İş Zekası Platformu |
+| PostgreSQL | 5432 | İşlemsel veritabanı |
+| MinIO | 9000, 9001 | Nesne depolama (S3 uyumlu) |
+| Elasticsearch | 9200 | Arama ve analiz motoru |
+
+Ayrıntılı sistem tasarımı için [mimari belgelerine](mimari/) bakın.
 
 ---
 
-## 📖 Ana Kaynaklar
+## Belgeler
 
-### Dremio Portları - Hızlı Referans
+### Başlatmak
+- [Kurulum Kılavuzu](başlarken/)
+- [Yapılandırma](başlarken/)
+- [Başlarken](başlarken/)
 
-| Port | Protokol | Kullanım | Performans |
-|------|-----------|------------|----------|
-| **9047** | REST API | Web UI, Yönetim | ⭐⭐ Standart |
-| **31010** | PostgreSQL Wire | BI Araçları, Göç | ⭐⭐⭐ İyi |
-| **32010** | Arrow Flight | dbt, Superset, Yüksek Performans | ⭐⭐⭐⭐⭐ Maksimum |
+### Kullanıcı kılavuzları
+- [Veri mühendisliği](rehberler/)
+- [Gösterge tablolarının oluşturulması](rehberler/)
+- [API entegrasyonu](rehberler/)
 
-**→ [Tam görsel kılavuz](./architecture/dremio-ports-visual.md)**
+### API Belgeleri
+- [REST API referansı](api/)
+- [Kimlik Doğrulama](api/)
+- [Kod örnekleri](api/)
 
----
-
-## 🔗 Harici Bağlantılar
-
-- **Dremio Dokümantasyonu**: https://docs.dremio.com/
-- **dbt Dokümantasyonu**: https://docs.getdbt.com/
-- **OpenMetadata Dokümantasyonu**: https://docs.open-metadata.org/
-- **Apache Arrow Flight**: https://arrow.apache.org/docs/format/Flight.html
-
----
-
-## 🤝 Katkıda Bulunma
-
-Katkılar memnuniyetle karşılanır! Lütfen [katkı kılavuzumuza](../en/CONTRIBUTING.md) bakın.
+### Mimari dokümantasyonu
+- [Sistem tasarımı](mimari/)
+- [Veri akışı](mimari/)
+- [Dağıtım kılavuzu](mimari/)
+- [🎯 Dremio Bağlantı Noktaları Görsel Kılavuzu](architecture/dremio-ports-visual.md) ⭐ YENİ
 
 ---
 
-## 📄 Lisans
+## Mevcut diller
 
-Bu proje [MIT Lisansı](../../../LICENSE) altında lisanslanmıştır.
+| Dil | Kod | Dokümantasyon |
+|----------|----------|---------------|
+| İngilizce | TR | [BENİOKU.md](../../../BENİOKU.md) |
+| Fransızca | TR | [docs/i18n/fr/](../fr/README.md) |
+| İspanyolca | ES | [docs/i18n/es/](../es/README.md) |
+| Portekizce | PT | [docs/i18n/pt/](../pt/README.md) |
+| العربية | AR | [docs/i18n/ar/](../ar/README.md) |
+| Bir | CN | [docs/i18n/cn/](../cn/README.md) |
+| Kitap | Japonya | [docs/i18n/jp/](../jp/README.md) |
+| Rusça | İngiltere | [docs/i18n/ru/](../ru/README.md) |
 
 ---
 
-**Sürüm**: 3.2.5  
-**Durum**: ✅ Üretime Hazır  
-**Son Güncelleme**: 16 Ekim 2025
+## Destek
+
+Teknik yardım için:
+- Belgeler: [BENİOKU ana](../../../BENİOKU.md)
+- Sorun Takipçisi: GitHub Sorunları
+- Topluluk forumu: GitHub Tartışmaları
+- E-posta: destek@example.com
+
+---
+
+**[Ana belgelere dön](../../../README.md)**

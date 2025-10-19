@@ -1,40 +1,40 @@
-# Dremio 포트 시각적 가이드
+# Dremio 포트 비주얼 가이드
 
-**버전**: 3.2.5  
+**버전**: 3.2.3  
 **최종 업데이트**: 2025년 10월 16일  
-**언어**: 한국어
+**언어**: 프랑스어
 
 ---
 
-## Dremio 3개 포트 개요
+## Dremio 포트 3개 개요
 
 ```mermaid
 graph TB
-    subgraph "포트 9047 - REST API"
+    subgraph "Port 9047 - REST API"
         direction TB
-        A1[🌐 웹 UI 인터페이스]
-        A2[🔧 관리]
-        A3[📊 모니터링]
-        A4[🔐 인증]
+        A1[🌐 Interface Web UI]
+        A2[🔧 Administration]
+        A3[📊 Monitoring]
+        A4[🔐 Authentification]
     end
     
-    subgraph "포트 31010 - PostgreSQL 프록시"
+    subgraph "Port 31010 - Proxy PostgreSQL"
         direction TB
-        B1[💼 레거시 BI 도구]
-        B2[🔌 표준 JDBC/ODBC]
-        B3[🐘 PostgreSQL 호환성]
-        B4[🔄 쉬운 마이그레이션]
+        B1[💼 Outils BI Legacy]
+        B2[🔌 JDBC/ODBC Standard]
+        B3[🐘 Compatibilité PostgreSQL]
+        B4[🔄 Migration Facile]
     end
     
-    subgraph "포트 32010 - Arrow Flight"
+    subgraph "Port 32010 - Arrow Flight"
         direction TB
-        C1[⚡ 최대 성능]
+        C1[⚡ Performance Max]
         C2[🎯 dbt Core]
         C3[📈 Apache Superset]
         C4[🐍 Python pyarrow]
     end
     
-    D[🗄️ Dremio 코디네이터<br/>Dremio 26.0 OSS]
+    D[🗄️ Dremio Coordinateur<br/>Dremio 26.0 OSS]
     
     A1 & A2 & A3 & A4 --> D
     B1 & B2 & B3 & B4 --> D
@@ -63,13 +63,13 @@ graph TB
 
 ---
 
-## PostgreSQL 프록시 상세 아키텍처
+## PostgreSQL 프록시의 세부 아키텍처
 
-### 클라이언트 → Dremio 연결 흐름
+### 고객 연결 흐름 → 드레미오
 
 ```mermaid
 graph LR
-    subgraph "클라이언트 애플리케이션"
+    subgraph "Applications Clientes"
         direction TB
         A1[psql CLI]
         A2[DBeaver]
@@ -79,22 +79,22 @@ graph LR
         A6[Tableau Desktop]
     end
     
-    subgraph "PostgreSQL Wire 프로토콜"
-        P[포트 31010<br/>PostgreSQL 프록시]
+    subgraph "Protocole PostgreSQL Wire"
+        P[Port 31010<br/>Proxy PostgreSQL]
     end
     
-    subgraph "Dremio 엔진"
+    subgraph "Moteur Dremio"
         direction TB
-        M1[SQL 파서]
-        M2[옵티마이저]
-        M3[실행기]
+        M1[Parser SQL]
+        M2[Optimiseur]
+        M3[Exécuteur]
     end
     
-    subgraph "데이터 소스"
+    subgraph "Sources de Données"
         direction TB
-        S1[📦 Parquet 파일<br/>MinIO S3]
-        S2[💾 PostgreSQL 테이블]
-        S3[🔍 Elasticsearch 인덱스]
+        S1[📦 Fichiers Parquet<br/>MinIO S3]
+        S2[💾 Tables PostgreSQL]
+        S3[🔍 Index Elasticsearch]
     end
     
     A1 & A2 & A3 --> P
@@ -116,32 +116,32 @@ graph LR
 
 ## 성능 비교
 
-### 벤치마크: 100 GB 데이터 스캔
+### 벤치마크: 100GB 데이터 스캔
 
 ```mermaid
 gantt
-    title 프로토콜별 실행 시간 (초)
+    title Temps d'Exécution par Protocole (secondes)
     dateFormat X
-    axisFormat %s 초
+    axisFormat %s sec
     
     section REST API :9047
-    100 GB 전송     :0, 180
+    Transfert 100 GB     :0, 180
     
     section PostgreSQL :31010
-    100 GB 전송     :0, 90
+    Transfert 100 GB     :0, 90
     
     section Arrow Flight :32010
-    100 GB 전송     :0, 5
+    Transfert 100 GB     :0, 5
 ```
 
-### 데이터 처리량
+### 데이터 속도
 
 ```mermaid
 graph LR
-    subgraph "프로토콜별 네트워크 성능"
-        A["포트 9047<br/>REST API<br/>📊 ~500 MB/s<br/>⏱️ 표준"]
-        B["포트 31010<br/>PostgreSQL Wire<br/>📊 ~1-2 GB/s<br/>⏱️ 양호"]
-        C["포트 32010<br/>Arrow Flight<br/>📊 ~20 GB/s<br/>⏱️ 우수"]
+    subgraph "Débit Réseau par Protocole"
+        A["Port 9047<br/>REST API<br/>📊 ~500 MB/s<br/>⏱️ Standard"]
+        B["Port 31010<br/>PostgreSQL Wire<br/>📊 ~1-2 GB/s<br/>⏱️ Bon"]
+        C["Port 32010<br/>Arrow Flight<br/>📊 ~20 GB/s<br/>⏱️ Excellent"]
     end
     
     style A fill:#FF9800,color:#fff
@@ -152,10 +152,10 @@ graph LR
 ### 단순 쿼리 지연 시간
 
 | 프로토콜 | 포트 | 평균 지연 시간 | 네트워크 오버헤드 |
-|----------|------|----------------|------------------|
-| **REST API** | 9047 | 50-100 ms | JSON (상세) |
-| **PostgreSQL 프록시** | 31010 | 20-50 ms | Wire Protocol (간결) |
-| **Arrow Flight** | 32010 | 5-10 ms | Apache Arrow (바이너리 컬럼형) |
+|---------------|------|----|----|
+| **REST API** | 9047 | 50-100ms | JSON(상세) |
+| **PostgreSQL 프록시** | 31010 | 20-50ms | 유선 프로토콜(컴팩트) |
+| **화살비행** | 32010 | 5~10ms | Apache Arrow(이진 원주형) |
 
 ---
 
@@ -165,21 +165,21 @@ graph LR
 
 ```mermaid
 graph TB
-    A[포트 9047<br/>REST API]
+    A[Port 9047<br/>REST API]
     
-    A --> B1[🌐 웹 브라우저 인터페이스]
-    A --> B2[🔧 서비스 구성]
-    A --> B3[👤 사용자 관리]
-    A --> B4[📊 모니터링 대시보드]
-    A --> B5[🔐 OAuth/SAML 로그인]
+    A --> B1[🌐 Interface Web Browser]
+    A --> B2[🔧 Configuration Services]
+    A --> B3[👤 Gestion Utilisateurs]
+    A --> B4[📊 Monitoring Dashboards]
+    A --> B5[🔐 OAuth/SAML Login]
     
-    B1 --> C1[스페이스/폴더 생성]
-    B1 --> C2[VDS 정의]
-    B1 --> C3[데이터셋 탐색]
+    B1 --> C1[Créer Spaces/Folders]
+    B1 --> C2[Définir VDS]
+    B1 --> C3[Explorer Datasets]
     
-    B2 --> C4[소스 추가]
-    B2 --> C5[Reflections 구성]
-    B2 --> C6[시스템 구성]
+    B2 --> C4[Ajouter Sources]
+    B2 --> C5[Configurer Reflections]
+    B2 --> C6[Paramètres Système]
     
     style A fill:#4CAF50,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#81C784,color:#fff
@@ -193,23 +193,23 @@ graph TB
 
 ```mermaid
 graph TB
-    A[포트 31010<br/>PostgreSQL 프록시]
+    A[Port 31010<br/>Proxy PostgreSQL]
     
-    A --> B1[💼 레거시 BI 도구]
-    A --> B2[🔄 PostgreSQL 마이그레이션]
-    A --> B3[🔌 표준 드라이버]
+    A --> B1[💼 Outils BI Legacy]
+    A --> B2[🔄 Migration PostgreSQL]
+    A --> B3[🔌 Drivers Standard]
     
-    B1 --> C1[Tableau Desktop<br/>Arrow Flight 미지원]
+    B1 --> C1[Tableau Desktop<br/>sans Arrow Flight]
     B1 --> C2[Power BI Desktop<br/>ODBC]
     B1 --> C3[QlikView<br/>JDBC PostgreSQL]
     
-    B2 --> D1[기존 JDBC 코드<br/>수정 불필요]
-    B2 --> D2[psql 스크립트<br/>100% 호환]
-    B2 --> D3[Python 앱<br/>psycopg2]
+    B2 --> D1[Code JDBC existant<br/>aucune modification]
+    B2 --> D2[Scripts psql<br/>compatibles 100%]
+    B2 --> D3[Applications Python<br/>psycopg2]
     
     B3 --> E1[PostgreSQL ODBC Driver]
     B3 --> E2[PostgreSQL JDBC Driver]
-    B3 --> E3[OS 네이티브 드라이버]
+    B3 --> E3[Pilotes natifs OS]
     
     style A fill:#336791,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#5C6BC0,color:#fff
@@ -217,27 +217,27 @@ graph TB
     style B3 fill:#5C6BC0,color:#fff
 ```
 
-### 포트 32010 - Arrow Flight
+### 포트 32010 - 애로우 플라이트
 
 ```mermaid
 graph TB
-    A[포트 32010<br/>Arrow Flight]
+    A[Port 32010<br/>Arrow Flight]
     
-    A --> B1[⚡ 최대 성능]
-    A --> B2[🎯 현대적 도구]
-    A --> B3[🐍 Python 생태계]
+    A --> B1[⚡ Performance Maximale]
+    A --> B2[🎯 Outils Modernes]
+    A --> B3[🐍 Python Ecosystem]
     
-    B1 --> C1[TB/PB 스캔]
-    B1 --> C2[대규모 집계]
-    B1 --> C3[제로 카피 전송]
+    B1 --> C1[Scans de TB/PB]
+    B1 --> C2[Agrégations Massives]
+    B1 --> C3[Transferts Zero-Copy]
     
     B2 --> D1[dbt Core<br/>profiles.yml]
     B2 --> D2[Apache Superset<br/>Database Config]
     B2 --> D3[Jupyter Notebooks<br/>pandas/polars]
     
-    B3 --> E1[pyarrow 라이브러리]
+    B3 --> E1[pyarrow Library]
     B3 --> E2[pandas via Arrow]
-    B3 --> E3[Polars 통합]
+    B3 --> E3[Polars Integration]
     
     style A fill:#FF5722,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#FF7043,color:#fff
@@ -247,31 +247,31 @@ graph TB
 
 ---
 
-## 의사 결정 트리: 어떤 포트를 사용할까?
+## 의사결정 트리: 어떤 포트를 사용할 것인가?
 
 ```mermaid
 graph TB
-    Start[Dremio에 연결해야 함]
+    Start[Besoin de se connecter à Dremio]
     
-    Start --> Q1{애플리케이션 유형?}
+    Start --> Q1{Type d'application ?}
     
-    Q1 -->|웹 인터페이스<br/>관리| Port9047[✅ 포트 9047<br/>REST API]
+    Q1 -->|Interface Web<br/>Administration| Port9047[✅ Port 9047<br/>REST API]
     
-    Q1 -->|BI 도구/SQL 클라이언트| Q2{Arrow Flight 지원?}
+    Q1 -->|Outil BI/Client SQL| Q2{Supporte Arrow Flight ?}
     
-    Q2 -->|아니요<br/>레거시 도구| Port31010[✅ 포트 31010<br/>PostgreSQL 프록시]
-    Q2 -->|예<br/>현대적 도구| Q3{성능이 중요?}
+    Q2 -->|Non<br/>Legacy Tool| Port31010[✅ Port 31010<br/>Proxy PostgreSQL]
+    Q2 -->|Oui<br/>Modern Tool| Q3{Performance critique ?}
     
-    Q3 -->|예<br/>프로덕션| Port32010[✅ 포트 32010<br/>Arrow Flight]
-    Q3 -->|아니요<br/>개발/테스트| Port31010b[⚠️ 포트 31010<br/>더 쉬움]
+    Q3 -->|Oui<br/>Production| Port32010[✅ Port 32010<br/>Arrow Flight]
+    Q3 -->|Non<br/>Dev/Test| Port31010b[⚠️ Port 31010<br/>Plus facile]
     
-    Q1 -->|사용자 정의 애플리케이션| Q4{프로그래밍 언어?}
+    Q1 -->|Application Custom| Q4{Langage ?}
     
-    Q4 -->|Python/Java| Q5{성능이 중요?}
-    Q5 -->|예| Port32010b[✅ 포트 32010<br/>Arrow Flight]
-    Q5 -->|아니요| Port31010c[✅ 포트 31010<br/>JDBC/psycopg2]
+    Q4 -->|Python/Java| Q5{Performance importante ?}
+    Q5 -->|Oui| Port32010b[✅ Port 32010<br/>Arrow Flight]
+    Q5 -->|Non| Port31010c[✅ Port 31010<br/>JDBC/psycopg2]
     
-    Q4 -->|기타<br/>Go/Rust/.NET| Port31010d[✅ 포트 31010<br/>PostgreSQL Wire]
+    Q4 -->|Autre<br/>Go/Rust/.NET| Port31010d[✅ Port 31010<br/>PostgreSQL Wire]
     
     style Start fill:#2196F3,color:#fff
     style Port9047 fill:#4CAF50,color:#fff,stroke:#000,stroke-width:2px
@@ -285,19 +285,19 @@ graph TB
 
 ---
 
-## PostgreSQL 프록시 연결 예제
+## PostgreSQL 프록시 연결 예
 
 ### 1. psql CLI
 
 ```bash
-# 간단한 연결
+# Connexion simple
 psql -h localhost -p 31010 -U admin -d datalake
 
-# 직접 쿼리
+# Avec requête directe
 psql -h localhost -p 31010 -U admin -d datalake \
   -c "SELECT COUNT(*) FROM MinIO.datalake.customers;"
 
-# 대화형 모드
+# Mode interactif
 $ psql -h localhost -p 31010 -U admin -d datalake
 Password for user admin: ****
 psql (16.0, server 26.0)
@@ -317,61 +317,61 @@ datalake=> SELECT customer_id, name, state FROM customers LIMIT 5;
 ### 2. DBeaver 구성
 
 ```yaml
-연결 유형: PostgreSQL
-연결 이름: Dremio via PostgreSQL Proxy
+Connection Type: PostgreSQL
+Connection Name: Dremio via PostgreSQL Proxy
 
-기본:
-  호스트: localhost
-  포트: 31010
-  데이터베이스: datalake
-  사용자: admin
-  비밀번호: [your-password]
+Main:
+  Host: localhost
+  Port: 31010
+  Database: datalake
+  Username: admin
+  Password: [votre-mot-de-passe]
   
-드라이버 속성:
+Driver Properties:
   ssl: false
   
-고급:
-  연결 시간 초과: 30000
-  쿼리 시간 초과: 0
+Advanced:
+  Connection timeout: 30000
+  Query timeout: 0
 ```
 
-### 3. Python psycopg2
+### 3. psycopg2를 사용한 Python
 
 ```python
 import psycopg2
 from psycopg2 import sql
 
-# 연결
+# Connexion
 conn = psycopg2.connect(
     host="localhost",
     port=31010,
     database="datalake",
     user="admin",
-    password="your-password"
+    password="votre-mot-de-passe"
 )
 
-# 커서
+# Cursor
 cursor = conn.cursor()
 
-# 간단한 쿼리
+# Requête simple
 cursor.execute("SELECT * FROM MinIO.datalake.customers LIMIT 10")
 rows = cursor.fetchall()
 
 for row in rows:
     print(row)
 
-# 매개변수화된 쿼리
+# Requête avec paramètres
 query = sql.SQL("SELECT * FROM {} WHERE state = %s").format(
     sql.Identifier("MinIO", "datalake", "customers")
 )
 cursor.execute(query, ("CA",))
 
-# 닫기
+# Fermeture
 cursor.close()
 conn.close()
 ```
 
-### 4. Java JDBC
+### 4. 자바 JDBC
 
 ```java
 import java.sql.*;
@@ -380,7 +380,7 @@ public class DremioPostgreSQLProxy {
     public static void main(String[] args) {
         String url = "jdbc:postgresql://localhost:31010/datalake";
         String user = "admin";
-        String password = "your-password";
+        String password = "votre-mot-de-passe";
         
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
             Statement stmt = conn.createStatement();
@@ -404,7 +404,7 @@ public class DremioPostgreSQLProxy {
 }
 ```
 
-### 5. ODBC 연결 문자열 (DSN)
+### 5. ODBC 문자열(DSN)
 
 ```ini
 [ODBC Data Sources]
@@ -417,7 +417,7 @@ Server=localhost
 Port=31010
 Database=datalake
 Username=admin
-Password=your-password
+Password=votre-mot-de-passe
 SSLMode=disable
 Protocol=7.4
 ```
@@ -434,13 +434,13 @@ services:
     image: dremio/dremio-oss:26.0
     container_name: dremio
     ports:
-      # 포트 9047 - REST API / Web UI
+      # Port 9047 - REST API / Web UI
       - "9047:9047"
       
-      # 포트 31010 - PostgreSQL 프록시 (ODBC/JDBC)
+      # Port 31010 - Proxy PostgreSQL (ODBC/JDBC)
       - "31010:31010"
       
-      # 포트 32010 - Arrow Flight (성능)
+      # Port 32010 - Arrow Flight (Performance)
       - "32010:32010"
     environment:
       - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Xms4g -Xmx8g
@@ -450,19 +450,19 @@ services:
       - data-platform
 ```
 
-### 포트 검증
+### 포트 확인
 
 ```bash
-# 3개 포트 모두 열려 있는지 확인
+# Vérifier que les 3 ports sont ouverts
 netstat -an | grep -E '9047|31010|32010'
 
-# REST API 테스트
+# Tester REST API
 curl -v http://localhost:9047
 
-# PostgreSQL 프록시 테스트
+# Tester Proxy PostgreSQL
 psql -h localhost -p 31010 -U admin -d datalake -c "SELECT 1;"
 
-# Arrow Flight 테스트 (Python 사용)
+# Tester Arrow Flight (avec Python)
 python3 -c "
 from pyarrow import flight
 client = flight.connect('grpc://localhost:32010')
@@ -474,31 +474,31 @@ print('Arrow Flight OK')
 
 ## 빠른 시각적 요약
 
-### 3개 포트 한눈에 보기
+### 3개 포트 개요
 
-| 포트 | 프로토콜 | 주요 사용 | 성능 | 호환성 |
-|------|-----------|-------------|------------|----------------|
-| **9047** | REST API | 🌐 Web UI, 관리 | ⭐⭐ 표준 | ⭐⭐⭐ 범용 |
-| **31010** | PostgreSQL Wire | 💼 BI 도구, 마이그레이션 | ⭐⭐⭐ 양호 | ⭐⭐⭐ 우수 |
-| **32010** | Arrow Flight | ⚡ 프로덕션, dbt, Superset | ⭐⭐⭐⭐⭐ 최고 | ⭐⭐ 제한적 |
+| 포트 | 프로토콜 | 주요 용도 | 성과 | 호환성 |
+|------|----------|------------|-------------|---------------|
+| **9047** | REST API | 🌐 웹 인터페이스, 관리자 | ⭐⭐표준 | ⭐⭐⭐ 유니버설 |
+| **31010** | PostgreSQL 와이어 | 💼 BI 도구, 마이그레이션 | ⭐⭐⭐ 좋음 | ⭐⭐⭐ 훌륭함 |
+| **32010** | 화살표 비행 | ⚡ 생산, dbt, Superset | ⭐⭐⭐⭐⭐ 최대 | ⭐⭐ 한정 |
 
 ### 선택 매트릭스
 
 ```mermaid
 graph TB
-    subgraph "선택 가이드"
-        A["🎯 사용 사례"]
+    subgraph "Guide de Sélection"
+        A["🎯 Cas d'Usage"]
         
-        A --> B1["웹 인터페이스<br/>구성"]
-        A --> B2["레거시 BI 도구<br/>Arrow Flight 없음"]
-        A --> B3["PostgreSQL 마이그레이션<br/>기존 JDBC 코드"]
-        A --> B4["dbt, Superset<br/>프로덕션"]
-        A --> B5["Python pyarrow<br/>분석"]
+        A --> B1["Interface Web<br/>Configuration"]
+        A --> B2["Outil BI Legacy<br/>Sans Arrow Flight"]
+        A --> B3["Migration PostgreSQL<br/>Code JDBC existant"]
+        A --> B4["dbt, Superset<br/>Production"]
+        A --> B5["Python pyarrow<br/>Analytique"]
         
-        B1 --> C1["포트 9047<br/>REST API"]
-        B2 --> C2["포트 31010<br/>PostgreSQL"]
+        B1 --> C1["Port 9047<br/>REST API"]
+        B2 --> C2["Port 31010<br/>PostgreSQL"]
         B3 --> C2
-        B4 --> C3["포트 32010<br/>Arrow Flight"]
+        B4 --> C3["Port 32010<br/>Arrow Flight"]
         B5 --> C3
     end
     
@@ -514,18 +514,18 @@ graph TB
 
 ### 관련 문서
 
-- [아키텍처 - 구성 요소](./components.md) - "Dremio용 PostgreSQL 프록시" 섹션
+- [아키텍처 - 구성 요소](./comComponents.md) - "Dremio용 PostgreSQL 프록시" 섹션
 - [가이드 - Dremio 설정](../guides/dremio-setup.md) - "PostgreSQL 프록시를 통한 연결" 섹션
-- [구성 - Dremio](../getting-started/configuration.md) - `dremio.conf` 구성
+- [구성 - Dremio](../getting-started/configuration.md) - 매개변수 `dremio.conf`
 
 ### 공식 링크
 
 - **Dremio 문서**: https://docs.dremio.com/
-- **PostgreSQL Wire 프로토콜**: https://www.postgresql.org/docs/current/protocol.html
+- **PostgreSQL 유선 프로토콜**: https://www.postgresql.org/docs/current/protocol.html
 - **Apache Arrow Flight**: https://arrow.apache.org/docs/format/Flight.html
 
 ---
 
-**버전**: 3.2.5  
+**버전**: 3.2.3  
 **최종 업데이트**: 2025년 10월 16일  
 **상태**: ✅ 완료

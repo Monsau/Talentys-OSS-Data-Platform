@@ -1,40 +1,40 @@
-# Dremio Port Görsel Kılavuzu
+# Dremio Bağlantı Noktaları Görsel Kılavuzu
 
-**Sürüm**: 3.2.5  
-**Son Güncelleme**: 16 Ekim 2025  
-**Dil**: Türkçe
+**Sürüm**: 3.2.3  
+**Son güncelleme**: 16 Ekim 2025  
+**Dil**: Fransızca
 
 ---
 
-## Dremio'nun 3 Portunun Genel Bakışı
+## 3 Dremio Bağlantı Noktasına Genel Bakış
 
 ```mermaid
 graph TB
     subgraph "Port 9047 - REST API"
         direction TB
-        A1[🌐 Web UI Arayüzü]
-        A2[🔧 Yönetim]
-        A3[📊 İzleme]
-        A4[🔐 Kimlik Doğrulama]
+        A1[🌐 Interface Web UI]
+        A2[🔧 Administration]
+        A3[📊 Monitoring]
+        A4[🔐 Authentification]
     end
     
-    subgraph "Port 31010 - PostgreSQL Proxy"
+    subgraph "Port 31010 - Proxy PostgreSQL"
         direction TB
-        B1[💼 Eski BI Araçları]
-        B2[🔌 Standart JDBC/ODBC]
-        B3[🐘 PostgreSQL Uyumluluğu]
-        B4[🔄 Kolay Göç]
+        B1[💼 Outils BI Legacy]
+        B2[🔌 JDBC/ODBC Standard]
+        B3[🐘 Compatibilité PostgreSQL]
+        B4[🔄 Migration Facile]
     end
     
     subgraph "Port 32010 - Arrow Flight"
         direction TB
-        C1[⚡ Maksimum Performans]
+        C1[⚡ Performance Max]
         C2[🎯 dbt Core]
         C3[📈 Apache Superset]
         C4[🐍 Python pyarrow]
     end
     
-    D[🗄️ Dremio Koordinatörü<br/>Dremio 26.0 OSS]
+    D[🗄️ Dremio Coordinateur<br/>Dremio 26.0 OSS]
     
     A1 & A2 & A3 & A4 --> D
     B1 & B2 & B3 & B4 --> D
@@ -63,13 +63,13 @@ graph TB
 
 ---
 
-## PostgreSQL Proxy Detaylı Mimarisi
+## PostgreSQL Proxy'nin Ayrıntılı Mimarisi
 
-### İstemci → Dremio Bağlantı Akışı
+### Müşteri Bağlantı Akışı → Dremio
 
 ```mermaid
 graph LR
-    subgraph "İstemci Uygulamaları"
+    subgraph "Applications Clientes"
         direction TB
         A1[psql CLI]
         A2[DBeaver]
@@ -79,22 +79,22 @@ graph LR
         A6[Tableau Desktop]
     end
     
-    subgraph "PostgreSQL Wire Protokolü"
-        P[Port 31010<br/>PostgreSQL Proxy]
+    subgraph "Protocole PostgreSQL Wire"
+        P[Port 31010<br/>Proxy PostgreSQL]
     end
     
-    subgraph "Dremio Motoru"
+    subgraph "Moteur Dremio"
         direction TB
-        M1[SQL Parser]
-        M2[Optimizer]
-        M3[Executor]
+        M1[Parser SQL]
+        M2[Optimiseur]
+        M3[Exécuteur]
     end
     
-    subgraph "Veri Kaynakları"
+    subgraph "Sources de Données"
         direction TB
-        S1[📦 Parquet Dosyalar<br/>MinIO S3]
-        S2[💾 PostgreSQL Tabloları]
-        S3[🔍 Elasticsearch İndeksleri]
+        S1[📦 Fichiers Parquet<br/>MinIO S3]
+        S2[💾 Tables PostgreSQL]
+        S3[🔍 Index Elasticsearch]
     end
     
     A1 & A2 & A3 --> P
@@ -116,32 +116,32 @@ graph LR
 
 ## Performans Karşılaştırması
 
-### Kıyaslama: 100 GB Veri Taraması
+### Karşılaştırma: 100 GB verinin taranması
 
 ```mermaid
 gantt
-    title Protokole Göre Yürütme Süresi (saniye)
+    title Temps d'Exécution par Protocole (secondes)
     dateFormat X
-    axisFormat %s saniye
+    axisFormat %s sec
     
     section REST API :9047
-    100 GB aktarım     :0, 180
+    Transfert 100 GB     :0, 180
     
     section PostgreSQL :31010
-    100 GB aktarım     :0, 90
+    Transfert 100 GB     :0, 90
     
     section Arrow Flight :32010
-    100 GB aktarım     :0, 5
+    Transfert 100 GB     :0, 5
 ```
 
-### Veri İşlem Hızı
+### Veri Hızı
 
 ```mermaid
 graph LR
-    subgraph "Protokole Göre Ağ Performansı"
-        A["Port 9047<br/>REST API<br/>📊 ~500 MB/s<br/>⏱️ Standart"]
-        B["Port 31010<br/>PostgreSQL Wire<br/>📊 ~1-2 GB/s<br/>⏱️ İyi"]
-        C["Port 32010<br/>Arrow Flight<br/>📊 ~20 GB/s<br/>⏱️ Mükemmel"]
+    subgraph "Débit Réseau par Protocole"
+        A["Port 9047<br/>REST API<br/>📊 ~500 MB/s<br/>⏱️ Standard"]
+        B["Port 31010<br/>PostgreSQL Wire<br/>📊 ~1-2 GB/s<br/>⏱️ Bon"]
+        C["Port 32010<br/>Arrow Flight<br/>📊 ~20 GB/s<br/>⏱️ Excellent"]
     end
     
     style A fill:#FF9800,color:#fff
@@ -151,35 +151,35 @@ graph LR
 
 ### Basit Sorgu Gecikmesi
 
-| Protokol | Port | Ortalama Gecikme | Ağ Yükü |
-|----------|------|----------------|------------------|
-| **REST API** | 9047 | 50-100 ms | JSON (ayrıntılı) |
-| **PostgreSQL Proxy** | 31010 | 20-50 ms | Wire Protocol (kompakt) |
-| **Arrow Flight** | 32010 | 5-10 ms | Apache Arrow (ikili sütunlu) |
+| Protokol | Liman | Ortalama Gecikme | Ağ Ek Yükü |
+|---------------|----------|----------|------|
+| **REST API** | 9047 | 50-100ms | JSON (ayrıntılı) |
+| **PostgreSQL Proxy'si** | 31010 | 20-50ms | Tel Protokolü (kompakt) |
+| **Ok Uçuşu** | 32010 | 5-10ms | Apache Oku (ikili sütunlu) |
 
 ---
 
-## Porta Göre Kullanım Senaryoları
+## Bağlantı Noktasına Göre Kullanım Örneği
 
-### Port 9047 - REST API
+### Bağlantı Noktası 9047 - REST API
 
 ```mermaid
 graph TB
     A[Port 9047<br/>REST API]
     
-    A --> B1[🌐 Web Tarayıcı Arayüzü]
-    A --> B2[🔧 Hizmet Yapılandırması]
-    A --> B3[👤 Kullanıcı Yönetimi]
-    A --> B4[📊 İzleme Panosu]
-    A --> B5[🔐 OAuth/SAML Girişi]
+    A --> B1[🌐 Interface Web Browser]
+    A --> B2[🔧 Configuration Services]
+    A --> B3[👤 Gestion Utilisateurs]
+    A --> B4[📊 Monitoring Dashboards]
+    A --> B5[🔐 OAuth/SAML Login]
     
-    B1 --> C1[Alan/Klasör Oluştur]
-    B1 --> C2[VDS Tanımla]
-    B1 --> C3[Veri Setlerini Keşfet]
+    B1 --> C1[Créer Spaces/Folders]
+    B1 --> C2[Définir VDS]
+    B1 --> C3[Explorer Datasets]
     
-    B2 --> C4[Kaynak Ekle]
-    B2 --> C5[Reflections Yapılandır]
-    B2 --> C6[Sistem Yapılandırması]
+    B2 --> C4[Ajouter Sources]
+    B2 --> C5[Configurer Reflections]
+    B2 --> C6[Paramètres Système]
     
     style A fill:#4CAF50,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#81C784,color:#fff
@@ -189,27 +189,27 @@ graph TB
     style B5 fill:#81C784,color:#fff
 ```
 
-### Port 31010 - PostgreSQL Proxy
+### Bağlantı Noktası 31010 - PostgreSQL Proxy'si
 
 ```mermaid
 graph TB
-    A[Port 31010<br/>PostgreSQL Proxy]
+    A[Port 31010<br/>Proxy PostgreSQL]
     
-    A --> B1[💼 Eski BI Araçları]
-    A --> B2[🔄 PostgreSQL Göçü]
-    A --> B3[🔌 Standart Sürücüler]
+    A --> B1[💼 Outils BI Legacy]
+    A --> B2[🔄 Migration PostgreSQL]
+    A --> B3[🔌 Drivers Standard]
     
-    B1 --> C1[Tableau Desktop<br/>Arrow Flight Yok]
+    B1 --> C1[Tableau Desktop<br/>sans Arrow Flight]
     B1 --> C2[Power BI Desktop<br/>ODBC]
     B1 --> C3[QlikView<br/>JDBC PostgreSQL]
     
-    B2 --> D1[Mevcut JDBC Kodu<br/>Değişiklik Gerektirmez]
-    B2 --> D2[psql Betikleri<br/>%100 Uyumlu]
-    B2 --> D3[Python Uygulamaları<br/>psycopg2]
+    B2 --> D1[Code JDBC existant<br/>aucune modification]
+    B2 --> D2[Scripts psql<br/>compatibles 100%]
+    B2 --> D3[Applications Python<br/>psycopg2]
     
-    B3 --> E1[PostgreSQL ODBC Sürücüsü]
-    B3 --> E2[PostgreSQL JDBC Sürücüsü]
-    B3 --> E3[İşletim Sistemi Yerel Sürücüler]
+    B3 --> E1[PostgreSQL ODBC Driver]
+    B3 --> E2[PostgreSQL JDBC Driver]
+    B3 --> E3[Pilotes natifs OS]
     
     style A fill:#336791,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#5C6BC0,color:#fff
@@ -217,27 +217,27 @@ graph TB
     style B3 fill:#5C6BC0,color:#fff
 ```
 
-### Port 32010 - Arrow Flight
+### Liman 32010 - Ok Uçuşu
 
 ```mermaid
 graph TB
     A[Port 32010<br/>Arrow Flight]
     
-    A --> B1[⚡ Maksimum Performans]
-    A --> B2[🎯 Modern Araçlar]
-    A --> B3[🐍 Python Ekosistemi]
+    A --> B1[⚡ Performance Maximale]
+    A --> B2[🎯 Outils Modernes]
+    A --> B3[🐍 Python Ecosystem]
     
-    B1 --> C1[TB/PB Taramalar]
-    B1 --> C2[Büyük Toplamalar]
-    B1 --> C3[Sıfır-Kopya Aktarım]
+    B1 --> C1[Scans de TB/PB]
+    B1 --> C2[Agrégations Massives]
+    B1 --> C3[Transferts Zero-Copy]
     
     B2 --> D1[dbt Core<br/>profiles.yml]
-    B2 --> D2[Apache Superset<br/>Veritabanı Yapılandırması]
+    B2 --> D2[Apache Superset<br/>Database Config]
     B2 --> D3[Jupyter Notebooks<br/>pandas/polars]
     
-    B3 --> E1[pyarrow Kütüphanesi]
+    B3 --> E1[pyarrow Library]
     B3 --> E2[pandas via Arrow]
-    B3 --> E3[Polars Entegrasyonu]
+    B3 --> E3[Polars Integration]
     
     style A fill:#FF5722,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#FF7043,color:#fff
@@ -247,31 +247,31 @@ graph TB
 
 ---
 
-## Karar Ağacı: Hangi Portu Kullanmalıyım?
+## Karar Ağacı: Hangi Bağlantı Noktasını Kullanmalı?
 
 ```mermaid
 graph TB
-    Start[Dremio'ya bağlanmam gerekiyor]
+    Start[Besoin de se connecter à Dremio]
     
-    Start --> Q1{Uygulama türü?}
+    Start --> Q1{Type d'application ?}
     
-    Q1 -->|Web arayüzü<br/>Yönetim| Port9047[✅ Port 9047<br/>REST API]
+    Q1 -->|Interface Web<br/>Administration| Port9047[✅ Port 9047<br/>REST API]
     
-    Q1 -->|BI aracı/SQL İstemcisi| Q2{Arrow Flight desteği?}
+    Q1 -->|Outil BI/Client SQL| Q2{Supporte Arrow Flight ?}
     
-    Q2 -->|Hayır<br/>Eski araç| Port31010[✅ Port 31010<br/>PostgreSQL Proxy]
-    Q2 -->|Evet<br/>Modern araç| Q3{Performans önemli mi?}
+    Q2 -->|Non<br/>Legacy Tool| Port31010[✅ Port 31010<br/>Proxy PostgreSQL]
+    Q2 -->|Oui<br/>Modern Tool| Q3{Performance critique ?}
     
-    Q3 -->|Evet<br/>Üretim| Port32010[✅ Port 32010<br/>Arrow Flight]
-    Q3 -->|Hayır<br/>Geliştirme/Test| Port31010b[⚠️ Port 31010<br/>Daha Kolay]
+    Q3 -->|Oui<br/>Production| Port32010[✅ Port 32010<br/>Arrow Flight]
+    Q3 -->|Non<br/>Dev/Test| Port31010b[⚠️ Port 31010<br/>Plus facile]
     
-    Q1 -->|Özel Uygulama| Q4{Programlama dili?}
+    Q1 -->|Application Custom| Q4{Langage ?}
     
-    Q4 -->|Python/Java| Q5{Performans önemli mi?}
-    Q5 -->|Evet| Port32010b[✅ Port 32010<br/>Arrow Flight]
-    Q5 -->|Hayır| Port31010c[✅ Port 31010<br/>JDBC/psycopg2]
+    Q4 -->|Python/Java| Q5{Performance importante ?}
+    Q5 -->|Oui| Port32010b[✅ Port 32010<br/>Arrow Flight]
+    Q5 -->|Non| Port31010c[✅ Port 31010<br/>JDBC/psycopg2]
     
-    Q4 -->|Diğer<br/>Go/Rust/.NET| Port31010d[✅ Port 31010<br/>PostgreSQL Wire]
+    Q4 -->|Autre<br/>Go/Rust/.NET| Port31010d[✅ Port 31010<br/>PostgreSQL Wire]
     
     style Start fill:#2196F3,color:#fff
     style Port9047 fill:#4CAF50,color:#fff,stroke:#000,stroke-width:2px
@@ -290,14 +290,14 @@ graph TB
 ### 1. psql CLI
 
 ```bash
-# Basit bağlantı
+# Connexion simple
 psql -h localhost -p 31010 -U admin -d datalake
 
-# Doğrudan sorgu
+# Avec requête directe
 psql -h localhost -p 31010 -U admin -d datalake \
   -c "SELECT COUNT(*) FROM MinIO.datalake.customers;"
 
-# Etkileşimli mod
+# Mode interactif
 $ psql -h localhost -p 31010 -U admin -d datalake
 Password for user admin: ****
 psql (16.0, server 26.0)
@@ -317,56 +317,56 @@ datalake=> SELECT customer_id, name, state FROM customers LIMIT 5;
 ### 2. DBeaver Yapılandırması
 
 ```yaml
-Bağlantı Türü: PostgreSQL
-Bağlantı Adı: Dremio via PostgreSQL Proxy
+Connection Type: PostgreSQL
+Connection Name: Dremio via PostgreSQL Proxy
 
-Ana:
+Main:
   Host: localhost
   Port: 31010
-  Veritabanı: datalake
-  Kullanıcı adı: admin
-  Şifre: [your-password]
+  Database: datalake
+  Username: admin
+  Password: [votre-mot-de-passe]
   
-Sürücü Özellikleri:
+Driver Properties:
   ssl: false
   
-Gelişmiş:
-  Bağlantı zaman aşımı: 30000
-  Sorgu zaman aşımı: 0
+Advanced:
+  Connection timeout: 30000
+  Query timeout: 0
 ```
 
-### 3. Python psycopg2 ile
+### 3. psycopg2 ile Python
 
 ```python
 import psycopg2
 from psycopg2 import sql
 
-# Bağlantı
+# Connexion
 conn = psycopg2.connect(
     host="localhost",
     port=31010,
     database="datalake",
     user="admin",
-    password="your-password"
+    password="votre-mot-de-passe"
 )
 
-# İmleç
+# Cursor
 cursor = conn.cursor()
 
-# Basit sorgu
+# Requête simple
 cursor.execute("SELECT * FROM MinIO.datalake.customers LIMIT 10")
 rows = cursor.fetchall()
 
 for row in rows:
     print(row)
 
-# Parametreli sorgu
+# Requête avec paramètres
 query = sql.SQL("SELECT * FROM {} WHERE state = %s").format(
     sql.Identifier("MinIO", "datalake", "customers")
 )
 cursor.execute(query, ("CA",))
 
-# Kapat
+# Fermeture
 cursor.close()
 conn.close()
 ```
@@ -380,7 +380,7 @@ public class DremioPostgreSQLProxy {
     public static void main(String[] args) {
         String url = "jdbc:postgresql://localhost:31010/datalake";
         String user = "admin";
-        String password = "your-password";
+        String password = "votre-mot-de-passe";
         
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
             Statement stmt = conn.createStatement();
@@ -404,7 +404,7 @@ public class DremioPostgreSQLProxy {
 }
 ```
 
-### 5. ODBC Bağlantı Dizesi (DSN)
+### 5. ODBC dizisi (DSN)
 
 ```ini
 [ODBC Data Sources]
@@ -417,16 +417,16 @@ Server=localhost
 Port=31010
 Database=datalake
 Username=admin
-Password=your-password
+Password=votre-mot-de-passe
 SSLMode=disable
 Protocol=7.4
 ```
 
 ---
 
-## Docker Compose Yapılandırması
+## Docker Compose yapılandırması
 
-### Dremio Port Eşlemesi
+### Dremio Bağlantı Noktası Eşlemesi
 
 ```yaml
 services:
@@ -437,10 +437,10 @@ services:
       # Port 9047 - REST API / Web UI
       - "9047:9047"
       
-      # Port 31010 - PostgreSQL Proxy (ODBC/JDBC)
+      # Port 31010 - Proxy PostgreSQL (ODBC/JDBC)
       - "31010:31010"
       
-      # Port 32010 - Arrow Flight (Performans)
+      # Port 32010 - Arrow Flight (Performance)
       - "32010:32010"
     environment:
       - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Xms4g -Xmx8g
@@ -450,19 +450,19 @@ services:
       - data-platform
 ```
 
-### Port Doğrulama
+### Bağlantı Noktası Kontrolü
 
 ```bash
-# Üç portun da açık olduğunu kontrol et
+# Vérifier que les 3 ports sont ouverts
 netstat -an | grep -E '9047|31010|32010'
 
-# REST API testi
+# Tester REST API
 curl -v http://localhost:9047
 
-# PostgreSQL Proxy testi
+# Tester Proxy PostgreSQL
 psql -h localhost -p 31010 -U admin -d datalake -c "SELECT 1;"
 
-# Arrow Flight testi (Python ile)
+# Tester Arrow Flight (avec Python)
 python3 -c "
 from pyarrow import flight
 client = flight.connect('grpc://localhost:32010')
@@ -474,26 +474,26 @@ print('Arrow Flight OK')
 
 ## Hızlı Görsel Özet
 
-### Bir Bakışta 3 Port
+### Bir Bakışta 3 Bağlantı Noktası
 
-| Port | Protokol | Ana Kullanım | Performans | Uyumluluk |
-|------|-----------|-------------|------------|----------------|
-| **9047** | REST API | 🌐 Web UI, Admin | ⭐⭐ Standart | ⭐⭐⭐ Evrensel |
-| **31010** | PostgreSQL Wire | 💼 BI Araçları, Göç | ⭐⭐⭐ İyi | ⭐⭐⭐ Mükemmel |
-| **32010** | Arrow Flight | ⚡ Üretim, dbt, Superset | ⭐⭐⭐⭐⭐ Maksimum | ⭐⭐ Sınırlı |
+| Liman | Protokol | Ana Kullanım | Performans | Uyumluluk |
+|----------|----------|--------------------------|---------------|---------------|
+| **9047** | REST API'si | 🌐 Web Arayüzü, Yönetici | ⭐⭐Standart | ⭐⭐⭐ Evrensel |
+| **31010** | PostgreSQL Teli | 💼 İş Zekası Araçları, Geçiş | ⭐⭐⭐ İyi | ⭐⭐⭐ Mükemmel |
+| **32010** | Ok Uçuşu | ⚡ Prodüksiyon, dbt, Süperset | ⭐⭐⭐⭐⭐ Maksimum | ⭐⭐ Sınırlı |
 
 ### Seçim Matrisi
 
 ```mermaid
 graph TB
-    subgraph "Seçim Kılavuzu"
-        A["🎯 Kullanım Senaryosu"]
+    subgraph "Guide de Sélection"
+        A["🎯 Cas d'Usage"]
         
-        A --> B1["Web Arayüzü<br/>Yapılandırma"]
-        A --> B2["Eski BI Aracı<br/>Arrow Flight Yok"]
-        A --> B3["PostgreSQL Göçü<br/>Mevcut JDBC Kodu"]
-        A --> B4["dbt, Superset<br/>Üretim"]
-        A --> B5["Python pyarrow<br/>Analitik"]
+        A --> B1["Interface Web<br/>Configuration"]
+        A --> B2["Outil BI Legacy<br/>Sans Arrow Flight"]
+        A --> B3["Migration PostgreSQL<br/>Code JDBC existant"]
+        A --> B4["dbt, Superset<br/>Production"]
+        A --> B5["Python pyarrow<br/>Analytique"]
         
         B1 --> C1["Port 9047<br/>REST API"]
         B2 --> C2["Port 31010<br/>PostgreSQL"]
@@ -514,18 +514,18 @@ graph TB
 
 ### İlgili Belgeler
 
-- [Mimari - Bileşenler](./components.md) - "Dremio için PostgreSQL Proxy" bölümü
-- [Kılavuz - Dremio Kurulumu](../guides/dremio-setup.md) - "PostgreSQL Proxy üzerinden bağlantı" bölümü
-- [Yapılandırma - Dremio](../getting-started/configuration.md) - `dremio.conf` yapılandırması
+- [Mimarlık - Bileşenler](./components.md) - "Dremio için PostgreSQL Proxy" bölümü
+- [Kılavuz - Dremio Kurulumu](../guides/dremio-setup.md) - "PostgreSQL Proxy aracılığıyla Bağlantı" bölümü
+- [Yapılandırma - Dremio](../getting-started/configuration.md) - Parametreler `dremio.conf`
 
 ### Resmi Bağlantılar
 
 - **Dremio Belgeleri**: https://docs.dremio.com/
-- **PostgreSQL Wire Protokolü**: https://www.postgresql.org/docs/current/protocol.html
-- **Apache Arrow Flight**: https://arrow.apache.org/docs/format/Flight.html
+- **PostgreSQL Tel Protokolü**: https://www.postgresql.org/docs/current/protocol.html
+- **Apache Arrow Uçuşu**: https://arrow.apache.org/docs/format/Flight.html
 
 ---
 
-**Sürüm**: 3.2.5  
-**Son Güncelleme**: 16 Ekim 2025  
+**Sürüm**: 3.2.3  
+**Son güncelleme**: 16 Ekim 2025  
 **Durum**: ✅ Tamamlandı

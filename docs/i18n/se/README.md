@@ -1,119 +1,144 @@
-﻿# Dremio + dbt + OpenMetadata - Dokumentation (Svenska)
+﻿# Dataplattform
 
-**Version**: 3.2.5  
-**Senast uppdaterad**: 16 oktober 2025  
-**Språk**: Svenska 🇸🇪
+<p align="center">
+  <a href="https://talentys.eu" target="_blank">
+    <img src="../../assets/images/talentys/original.png" alt="Talentys Data" width="200"/>
+  </a>
+  <br/>
+  <em>Supported by <a href="https://talentys.eu">Talentys</a> | <a href="https://www.linkedin.com/company/talentysdata">LinkedIn</a> - Data Engineering & Analytics Excellence</em>
+</p>
 
----
 
-## 📚 Översikt
+**Enterprise data lakehouse-lÃ¶sning**
 
-Välkommen till den svenska dokumentationen för Dremio + dbt + OpenMetadata dataplattformen. Denna dokumentation tillhandahåller omfattande guider för installation, konfiguration och användning av plattformen.
-
----
-
-## 🗺️ Dokumentationsstruktur
-
-### 📐 Arkitektur
-
-- **[Dremio Portar - Visuell Guide](./architecture/dremio-ports-visual.md)** ⭐ NYTT!
-  - Komplett visuell guide för de 3 Dremio-portarna (9047, 31010, 32010)
-  - Detaljerad PostgreSQL Proxy arkitektur
-  - Prestandajämförelser och riktmärken
-  - Användningsfall och beslutsträd
-  - Anslutningsexempel: psql, DBeaver, Python, Java, ODBC
-  - Docker Compose konfiguration
-  - 456 rader | 8+ Mermaid diagram | 5 kodexempel
+**SprÃ¥k**: Franska (FR)  
+**Version**: 3.3.1  
+**Senast uppdaterad**: 19 oktober 2025
 
 ---
 
-## 🌍 Tillgängliga Språk
+## Ã–versikt
 
-Denna dokumentation finns tillgänglig på flera språk:
+Professionell dataplattform som kombinerar Dremio, dbt och Apache Superset fÃ¶r datatransformation av fÃ¶retagsklass, kvalitetssÃ¤kring och business intelligence.
 
-- 🇫🇷 **[Français](../fr/README.md)** - Fullständig dokumentation (22 filer)
-- 🇬🇧 **[English](../../../README.md)** - Fullständig dokumentation (19 filer)
-- 🇪🇸 **[Español](../es/README.md)** - Visuella guider
-- 🇵🇹 **[Português](../pt/README.md)** - Visuella guider
-- 🇨🇳 **[中文](../cn/README.md)** - Visuella guider
-- 🇯🇵 **[日本語](../jp/README.md)** - Visuella guider
-- 🇷🇺 **[Русский](../ru/README.md)** - Visuella guider
-- 🇸🇦 **[العربية](../ar/README.md)** - Visuella guider
-- 🇩🇪 **[Deutsch](../de/README.md)** - Visuella guider
-- 🇰🇷 **[한국어](../ko/README.md)** - Visuella guider
-- 🇮🇳 **[हिन्दी](../hi/README.md)** - Visuella guider
-- 🇮🇩 **[Indonesia](../id/README.md)** - Visuella guider
-- 🇹🇷 **[Türkçe](../tr/README.md)** - Visuella guider
-- 🇻🇳 **[Tiếng Việt](../vi/README.md)** - Visuella guider
-- 🇮🇹 **[Italiano](../it/README.md)** - Visuella guider
-- 🇳🇱 **[Nederlands](../nl/README.md)** - Visuella guider
-- 🇵🇱 **[Polski](../pl/README.md)** - Visuella guider
-- 🇸🇪 **[Svenska](../se/README.md)** - Visuella guider ⭐ DU ÄR HÄR
+Denna plattform tillhandahÃ¥ller en komplett lÃ¶sning fÃ¶r modern datateknik, inklusive automatiserade datapipelines, kvalitetstester och interaktiva instrumentpaneler.
 
----
-
-## 🚀 Snabbstart
-
-### Förutsättningar
-
-- Docker & Docker Compose
-- Python 3.11+
-- Git
-
-### Installation
-
-```bash
-# Klona repository
-git clone <repository-url>
-cd dremiodbt
-
-# Starta Docker-tjänster
-docker-compose up -d
-
-# Öppna Webb-UI
-# Dremio: http://localhost:9047
-# OpenMetadata: http://localhost:8585
+```mermaid
+graph LR
+    A[Sources de donnÃ©es] --> B[Dremio]
+    B --> C[dbt]
+    C --> D[Superset]
+    D --> E[Insights mÃ©tier]
+    
+    style B fill:#f5f5f5,stroke:#333,stroke-width:2px
+    style C fill:#e8e8e8,stroke:#333,stroke-width:2px
+    style D fill:#d8d8d8,stroke:#333,stroke-width:2px
 ```
 
-För detaljerade installationsinstruktioner, se [engelsk dokumentation](../en/getting-started/installation.md).
+---
+
+## Nyckelfunktioner
+
+- Data lakehouse-arkitektur med Dremio
+- Automatiserade transformationer med dbt
+- Business Intelligence med Apache Superset
+- Omfattande datakvalitetstestning
+- Synkronisering i realtid via Arrow Flight
 
 ---
 
-## 📖 Viktiga Resurser
+## Snabbstartguide
 
-### Dremio Portar - Snabbreferens
+### FÃ¶rutsÃ¤ttningar
 
-| Port | Protokoll | Användning | Prestanda |
-|------|-----------|------------|----------|
-| **9047** | REST API | Webb-UI, Admin | ⭐⭐ Standard |
-| **31010** | PostgreSQL Wire | BI-verktyg, Migration | ⭐⭐⭐ Bra |
-| **32010** | Arrow Flight | dbt, Superset, Hög Prestanda | ⭐⭐⭐⭐⭐ Maximal |
+- Docker 20.10 eller senare
+- Docker Compose 2.0 eller hÃ¶gre
+- Python 3.11 eller hÃ¶gre
+- Minst 8 GB RAM
 
-**→ [Fullständig visuell guide](./architecture/dremio-ports-visual.md)**
+### AnlÃ¤ggning
 
----
+```bash
+# Installer les dÃ©pendances
+pip install -r requirements.txt
 
-## 🔗 Externa Länkar
+# DÃ©marrer les services
+make up
 
-- **Dremio Dokumentation**: https://docs.dremio.com/
-- **dbt Dokumentation**: https://docs.getdbt.com/
-- **OpenMetadata Dokumentation**: https://docs.open-metadata.org/
-- **Apache Arrow Flight**: https://arrow.apache.org/docs/format/Flight.html
+# VÃ©rifier l'installation
+make status
 
----
-
-## 🤝 Bidra
-
-Bidrag välkomnas! Se våra [bidragsriktlinjer](../en/CONTRIBUTING.md).
+# ExÃ©cuter les tests de qualitÃ©
+make dbt-test
+```
 
 ---
 
-## 📄 Licens
+## Arkitektur
 
-Detta projekt är licensierat under [MIT-licensen](../../../LICENSE).
+### Systemkomponenter
+
+| Komponent | Hamn | Beskrivning |
+|---------------|------|-------------|
+| Dremio | 9047, 31010, 32010 | Data Lakehouse-plattform |
+| dbt | - | Datatransformationsverktyg |
+| Superset | 8088 | Business Intelligence-plattform |
+| PostgreSQL | 5432 | Transaktionsdatabas |
+| MinIO | 9000, 9001 | Objektlagring (S3-kompatibel) |
+| Elasticsearch | 9200 | SÃ¶k- och analysmotor |
+
+Se [arkitekturdokumentationen](arkitektur/) fÃ¶r detaljerad systemdesign.
 
 ---
 
-**Version**: 3.2.5  
-**Status**: ✅ Produktionsklar  
-**Senast uppdaterad**: 16 oktober 2025
+## Dokumentation
+
+### Start
+- [Installationsguide](komma igÃ¥ng/)
+- [Konfiguration](komma igÃ¥ng/)
+- [Komma igÃ¥ng](komma igÃ¥ng/)
+
+### AnvÃ¤ndarguider
+- [Datateknik](guider/)
+- [Skapa instrumentpaneler](guider/)
+- [API-integration](guider/)
+
+### API-dokumentation
+- [REST API-referens](api/)
+- [Autentisering](api/)
+- [Kodexempel](api/)
+
+### Arkitekturdokumentation
+- [Systemdesign](arkitektur/)
+- [DataflÃ¶de](arkitektur/)
+- [Deployment guide](arkitektur/)
+- [ðŸŽ¯ Dremio Ports Visual Guide](architecture/dremio-ports-visual.md) â­ NYTT
+
+---
+
+## TillgÃ¤ngliga sprÃ¥k
+
+| SprÃ¥k | Kod | Dokumentation |
+|--------|------|---------------|
+| engelska | SV | [README.md](../../../README.md) |
+| franska | SV | [docs/i18n/fr/](../fr/README.md) |
+| Spanska | ES | [docs/i18n/es/](../es/README.md) |
+| portugisiska | PT | [docs/i18n/pt/](../pt/README.md) |
+| Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© | AR | [docs/i18n/ar/](../ar/README.md) |
+| ä¸­æ–‡ | CN | [docs/i18n/cn/](../cn/README.md) |
+| æ—¥æœ¬èªž | JP | [docs/i18n/jp/](../jp/README.md) |
+| Ð ÑƒÑÑÐºÐ¸Ð¹ | Storbritannien | [docs/i18n/ru/](../ru/README.md) |
+
+---
+
+## Support
+
+FÃ¶r teknisk hjÃ¤lp:
+- Dokumentation: [README main](../../../README.md)
+- Issue Tracker: GitHub-problem
+- Gemenskapsforum: GitHub-diskussioner
+- E-post: support@talentys.eu
+
+---
+
+**[Ã…tergÃ¥ till huvuddokumentationen](../../../README.md)**

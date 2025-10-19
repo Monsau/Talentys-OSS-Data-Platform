@@ -1,8 +1,16 @@
 # 🚀 Data Platform - ISO Opensource
 
-**Enterprise Data Lakehouse Solution**
+**Enterprise Data Lakehouse So**AI Capabilities (NEW):**
+- 🤖 Local LLM server with Ollama (Llama 3.1, Mistral, Phi)
+- 🧠 Vector database with Milvus for semantic search
+- 📚 RAG (Retrieval Augmented Generation) system
+- 💬 Interactive Chat UI for querying data with natural language
+- 📄 **Document upload support (PDF, Word, Excel, CSV, JSON, TXT, Markdown)**
+- 📦 **Automatic S3/MinIO storage for all uploaded documents**
+- 🔄 Automatic data ingestion from PostgreSQL/Dremio to vector DB
+- 🔒 100% on-premise - no cloud dependencies, complete data privacy
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-3.3.0-blue.svg)](CHANGELOG.md)
 [![Python](https://img.shields.io/badge/Python-3.11+-green.svg)](https://python.org)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/docs-18%20languages-success.svg)](docs/i18n/)
@@ -11,7 +19,7 @@
 
 <p align="center">
   <a href="https://talentys.eu" target="_blank">
-    <img src="https://talentys.eu/logo.png" alt="Supported by Talentys Data" width="200"/>
+    <img src="assets/images/talentys/original.png" alt="Supported by Talentys Data" width="200"/>
   </a>
   <br/>
   <em>Supported by <a href="https://talentys.eu">Talentys</a> | <a href="https://www.linkedin.com/company/talentysdata">LinkedIn</a> - Data Engineering & Analytics Excellence</em>
@@ -29,24 +37,36 @@
 
 ## Overview
 
-Professional data platform combining **Airbyte**, **Dremio**, **dbt**, and **Apache Superset** for enterprise-grade data integration, transformation, quality assurance, and business intelligence. Built with multilingual support for global teams.
+**AI-Ready** professional data platform combining **Airbyte**, **Dremio**, **dbt**, **Apache Superset**, and **Local LLM (Ollama)** for enterprise-grade data integration, transformation, quality assurance, business intelligence, and **AI-powered insights**. Built with multilingual support for global teams.
 
 ```mermaid
-graph LR
+graph TB
     A[Data Sources] --> B[Airbyte ETL]
     B --> C[Dremio Lakehouse]
     C --> D[dbt Transformations]
     D --> E[Apache Superset]
     E --> F[Business Insights]
     
+    C --> G[Vector DB<br/>Milvus]
+    D --> G
+    G --> H[RAG System]
+    I[Local LLM<br/>Ollama] --> H
+    H --> J[AI Chat UI]
+    J --> K[AI-Powered<br/>Insights]
+    
     style B fill:#615EFF,color:#fff,stroke:#333,stroke-width:2px
     style C fill:#f5f5f5,stroke:#333,stroke-width:2px
     style D fill:#e8e8e8,stroke:#333,stroke-width:2px
     style E fill:#d8d8d8,stroke:#333,stroke-width:2px
+    style G fill:#FF6B6B,color:#fff,stroke:#333,stroke-width:2px
+    style I fill:#4ECDC4,color:#fff,stroke:#333,stroke-width:2px
+    style H fill:#95E1D3,stroke:#333,stroke-width:2px
+    style J fill:#AA96DA,color:#fff,stroke:#333,stroke-width:2px
 ```
 
 ### Key Features
 
+**Data Platform:**
 - Data integration with Airbyte 1.8.0 (300+ connectors)
 - Data lakehouse architecture with Dremio 26.0
 - Automated transformations with dbt 1.10+
@@ -54,6 +74,15 @@ graph LR
 - Comprehensive data quality testing (21 automated tests)
 - Real-time synchronization via Arrow Flight
 - Multilingual documentation (18 languages)
+
+**AI Capabilities (NEW):**
+- 🤖 Local LLM server with Ollama (Llama 3.1, Mistral, Phi)
+- 🧠 Vector database with Milvus for semantic search
+- 📚 RAG (Retrieval Augmented Generation) system
+- 💬 Interactive Chat UI for querying data with natural language
+- � **Document upload support (PDF, Word, Excel, CSV, JSON, TXT, Markdown)**
+- �🔄 Automatic data ingestion from PostgreSQL/Dremio to vector DB
+- 🔒 100% on-premise - no cloud dependencies, complete data privacy
 
 ---
 
@@ -63,29 +92,37 @@ graph LR
 
 - Docker 20.10+ and Docker Compose 2.0+
 - Python 3.11 or higher
-- Minimum 8 GB RAM
-- 20 GB available disk space
+- Minimum 8 GB RAM (16 GB recommended for AI services)
+- 30 GB available disk space (includes LLM models)
+- Optional: NVIDIA GPU for faster LLM inference
 
 ### One-Command Deployment
 
 Use the **orchestrate_platform.py** script for automatic setup:
 
 ```bash
-# Automatic complete deployment
+# Full deployment (Data Platform + AI Services)
 python orchestrate_platform.py
 
 # Windows PowerShell
 $env:PYTHONIOENCODING="utf-8"
 python -u orchestrate_platform.py
+
+# Skip AI services if not needed
+python orchestrate_platform.py --skip-ai
+
+# Skip infrastructure (if already running)
+python orchestrate_platform.py --skip-infrastructure
 ```
 
 **What it does:**
 - ✅ Validates prerequisites
 - ✅ Starts all Docker services
+- ✅ Deploys AI services (Ollama LLM, Milvus Vector DB, RAG API)
 - ✅ Configures Airbyte, Dremio, dbt
 - ✅ Runs data transformations
 - ✅ Creates Superset dashboards
-- ✅ Provides deployment summary
+- ✅ Provides deployment summary with service URLs
 
 ### Manual Installation
 
@@ -97,7 +134,10 @@ cd data-platform-iso-opensource
 # Install dependencies
 pip install -r requirements.txt
 
-# Start infrastructure
+# Start infrastructure (Data Platform + AI Services)
+docker-compose -f docker-compose.yml -f docker-compose-airbyte-stable.yml -f docker-compose-ai.yml up -d
+
+# Or just data platform (no AI)
 docker-compose -f docker-compose.yml -f docker-compose-airbyte-stable.yml up -d
 
 # Or use make commands
@@ -112,19 +152,34 @@ make dbt-test
 
 ### Access Services
 
+**Data Platform:**
+
 | Service | URL | Credentials |
 |---------|-----|-------------|
-| Airbyte | http://localhost:8000 | - |
+| Airbyte | http://localhost:8000 | airbyte / password |
 | Dremio | http://localhost:9047 | admin / admin123 |
 | Superset | http://localhost:8088 | admin / admin |
 | MinIO Console | http://localhost:9001 | minioadmin / minioadmin123 |
 | PostgreSQL | localhost:5432 | postgres / postgres123 |
+
+**AI Services (NEW):**
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| **AI Chat UI** | http://localhost:8501 | Chat with your data using natural language |
+| RAG API | http://localhost:8002 | REST API for AI queries |
+| RAG API Docs | http://localhost:8002/docs | Interactive API documentation |
+| Ollama LLM | http://localhost:11434 | Local LLM server |
+| Milvus Vector DB | localhost:19530 | Vector database for embeddings |
+| Embedding Service | http://localhost:8001 | Text-to-vector conversion |
 
 ---
 
 ## Architecture
 
 ### System Components
+
+#### Data Platform
 
 | Component | Version | Port | Description |
 |-----------|---------|------|-------------|
@@ -136,6 +191,17 @@ make dbt-test
 | **MinIO** | Latest | 9000, 9001 | S3-compatible object storage |
 | **Elasticsearch** | 7.17.0 | 9200 | Search and analytics engine |
 | **MySQL** | 8.0 | 3307 | OpenMetadata database |
+
+#### AI Services (NEW)
+
+| Component | Version | Port | Description |
+|-----------|---------|------|-------------|
+| **Ollama** | Latest | 11434 | Local LLM server (Llama 3.1 - 8B parameters) |
+| **Milvus** | 2.3.3 | 19530 | Vector database for semantic search |
+| **RAG API** | 1.0 | 8002 | RAG orchestration & query API (FastAPI) |
+| **Embedding Service** | 1.0 | 8001 | Text-to-vector conversion (all-MiniLM-L6-v2) |
+| **AI Chat UI** | 1.0 | 8501 | Natural language query interface (Streamlit) |
+| **Data Ingestion** | 1.0 | - | Scheduled data loading service |
 
 ### Architecture Diagrams
 
@@ -186,6 +252,141 @@ python config/i18n/data_generator.py --language cn --records 2000 --format parqu
 ```
 
 Configuration: [config/i18n/config.json](config/i18n/config.json)
+
+---
+
+## 🤖 AI-Powered Data Insights
+
+The platform includes a complete **AI/LLM stack** for natural language data querying and insights.
+
+### Quick Start with AI
+
+1. **Deploy Platform** (includes AI services):
+   ```bash
+   python orchestrate_platform.py
+   ```
+
+2. **Access AI Chat Interface**:
+   - Open http://localhost:8501
+   - Use the sidebar to ingest data from your PostgreSQL or Dremio tables
+
+3. **Ingest Your Data** (via sidebar):
+   ```
+   Option 1: Upload Documents (NEW!)
+   - Click "Choose files to upload"
+   - Select PDF, Word, Excel, CSV, or other files
+   - Add optional tags/source
+   - Click "🚀 Upload & Ingest Documents"
+   
+   Option 2: From Database
+   Table: customers
+   Text column: description
+   Metadata: customer_id,name,segment
+   → Click "Ingest PostgreSQL"
+   ```
+
+4. **Ask Questions** (examples):
+   - "What are the key trends in our sales data?"
+   - "Show me customer segments with highest revenue"
+   - "Are there any data quality issues in the orders table?"
+   - "Generate a SQL query to find recent high-value customers"
+   - "Explain the ETL pipeline for product data"
+
+### AI Architecture
+
+```
+User Question → Chat UI → RAG API → Query Embedding
+                                  ↓
+                          Vector Search (Milvus)
+                                  ↓
+                          Retrieve Context Documents
+                                  ↓
+                          Build Prompt with Context
+                                  ↓
+                          Local LLM (Ollama/Llama 3.1)
+                                  ↓
+                          AI-Generated Answer + Sources
+```
+
+### AI Services Available
+
+| Service | URL | Purpose |
+|---------|-----|---------|
+| **AI Chat UI** | http://localhost:8501 | Interactive Q&A interface |
+| **RAG API** | http://localhost:8002 | REST API for AI queries |
+| **RAG API Docs** | http://localhost:8002/docs | Interactive API documentation |
+| **Ollama LLM** | http://localhost:11434 | Local LLM server (Llama 3.1) |
+| **Milvus Vector DB** | localhost:19530 | Semantic search database |
+| **Embedding Service** | http://localhost:8001 | Text-to-vector conversion |
+
+### Programmatic Access
+
+**Python Example:**
+
+```python
+import httpx
+
+# Ask a question
+response = httpx.post(
+    "http://localhost:8002/query",
+    json={
+        "question": "What are our top products?",
+        "top_k": 5,
+        "model": "llama3.1"
+    }
+)
+
+result = response.json()
+print(f"Answer: {result['answer']}")
+print(f"Sources: {len(result['sources'])} documents")
+```
+
+**cURL Example:**
+
+```bash
+curl -X POST http://localhost:8002/query \
+  -H "Content-Type: application/json" \
+  -d '{
+    "question": "What trends do you see in customer data?",
+    "top_k": 5,
+    "model": "llama3.1",
+    "temperature": 0.7
+  }'
+```
+
+### Download Additional LLM Models
+
+```bash
+# Mistral (faster, good for coding)
+docker exec ollama ollama pull mistral
+
+# Phi3 (lightweight, quick responses)
+docker exec ollama ollama pull phi3
+
+# CodeLlama (code generation)
+docker exec ollama ollama pull codellama
+
+# List available models
+docker exec ollama ollama list
+```
+
+### AI Features
+
+- ✅ **100% Local**: No cloud APIs, no data leaves your infrastructure
+- ✅ **Private**: All processing done on-premise
+- ✅ **No API Costs**: No OpenAI/Anthropic bills
+- ✅ **Semantic Search**: Vector database (Milvus) with 384-dim embeddings
+- ✅ **RAG System**: Retrieval Augmented Generation for context-aware answers
+- ✅ **Multiple Models**: Llama 3.1, Mistral, Phi3, CodeLlama
+- ✅ **Auto-Ingestion**: Scheduled data updates from PostgreSQL/Dremio
+- ✅ **Source Attribution**: See which documents the answer came from
+
+### Comprehensive Guide
+
+For detailed AI services documentation, see:
+- [AI Services Guide](AI_SERVICES_GUIDE.md) - Complete guide with architecture, configuration, troubleshooting
+- [Quick Start Guide](QUICK_START.md) - Fast AI setup with examples
+- [Platform Status](PLATFORM_STATUS.md) - All services including AI
 
 ---
 
@@ -306,6 +507,61 @@ data-platform-iso-opensource/
 
 ---
 
+## 🗺️ Roadmap
+
+Our vision for the future of Talentys Data Platform with **monthly releases**:
+
+### 📦 v1.2.0 - November 2025 (Next Release)
+**Focus: OpenMetadata Integration Phase 1**
+
+- 🔍 **OpenMetadata**: Complete metadata catalog, data lineage, data quality
+- 📝 **Auto-documentation**: LLM-generated dataset descriptions, PII detection
+
+### 📦 v1.2.1 - December 2025
+**Focus: OpenMetadata Phase 2 & Enhanced Chat UI**
+
+- 💬 **Enhanced Chat UI**: Persistent history, export capabilities, bookmarks, themes
+- � **OpenMetadata**: Smart tagging, column-level metadata
+
+### 📦 v1.3.x - January-March 2026
+**Focus: Security & Authentication**
+
+- 🔐 OAuth2/SSO, RBAC, API security (Jan)
+- 📊 Real-time analytics dashboard with alerting (Feb)
+- 🎨 UI/UX improvements, user management (Mar)
+
+### 📦 v1.4.x - April-June 2026
+**Focus: Advanced AI & ML**
+
+- 🤖 MLOps with MLflow, advanced RAG (Apr)
+- 🧠 Multi-model LLM support, prompt engineering (May)
+- 📊 Predictive analytics, automated insights (Jun)
+
+### 📦 v1.5.x - July-September 2026
+**Focus: Cloud Native & Kubernetes**
+
+- ☁️ Helm charts, Kubernetes operators (Jul)
+- 🌐 Multi-cloud support (AWS, Azure, GCP), hybrid cloud (Aug)
+- 🔄 GitOps with ArgoCD, OpenTelemetry observability (Sep)
+
+### 📦 v1.6.x - October-December 2026
+**Focus: Enterprise Features**
+
+- 🏢 Multi-tenancy, white-labeling (Oct)
+- 💼 Enterprise governance, audit logging, data masking (Nov)
+- 📱 Mobile app (iOS/Android), complete API (Dec)
+
+### 📦 v2.0.0 - 2027
+**Focus: Next-Generation Platform**
+
+- 🚀 AI-first platform with natural language to SQL
+- 🌊 Real-time streaming with Kafka/Flink
+- 🌍 Data Mesh architecture, global scale
+
+📄 **Full roadmap** (18 languages): [English](docs/i18n/en/ROADMAP.md) | [Français](docs/i18n/fr/ROADMAP.md) | [Español](docs/i18n/es/ROADMAP.md) | [All languages](docs/i18n/)
+
+---
+
 ## Contributing
 
 We welcome contributions from the community. Please see:
@@ -334,6 +590,8 @@ This project is licensed under the MIT License. See [LICENSE](LICENSE) file for 
 **Supported by [Talentys](https://talentys.eu) | [LinkedIn](https://www.linkedin.com/company/talentysdata)** - Data Engineering and Analytics Excellence
 
 Built with enterprise-grade open-source technologies:
+
+**Data Platform:**
 - [Airbyte](https://airbyte.com/) - Data integration platform (300+ connectors)
 - [Dremio](https://www.dremio.com/) - Data lakehouse platform
 - [dbt](https://www.getdbt.com/) - Data transformation tool
@@ -342,6 +600,14 @@ Built with enterprise-grade open-source technologies:
 - [PostgreSQL](https://www.postgresql.org/) - Relational database
 - [MinIO](https://min.io/) - Object storage
 - [Elasticsearch](https://www.elastic.co/) - Search and analytics
+
+**AI Services:**
+- [Ollama](https://ollama.ai/) - Local LLM server
+- [Llama 3.1](https://ai.meta.com/llama/) - Meta's open-source LLM (8B parameters)
+- [Milvus](https://milvus.io/) - Vector database for semantic search
+- [sentence-transformers](https://www.sbert.net/) - Text embedding models
+- [FastAPI](https://fastapi.tiangolo.com/) - Modern web framework for APIs
+- [Streamlit](https://streamlit.io/) - App framework for ML/AI projects
 
 ---
 

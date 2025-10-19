@@ -11,8 +11,7 @@
 *.crt
 *.p12
 *.pfx
-config/secrets/
-credentials/
+
 
 # ===== LINKEDIN & PERSONAL =====
 LINKEDIN*.md
@@ -68,6 +67,7 @@ desktop.ini
 # ===== DOCKER =====
 docker/data/
 docker/volumes/
+docker-volume/
 docker-compose.override.yml
 
 # ===== LOGS =====
@@ -84,24 +84,59 @@ archive/
 *.old
 *.tmp
 
-# ===== DATA =====
-data/*.csv
-data/*.json
-data/*.parquet
-opendata/*.csv
-opendata/*.json
-minio/data/
-postgres/data/
-dremio/data/
+# ===== AI SERVICES - LARGE FILES =====
+# Ollama models (too large for GitHub - will be downloaded on first run)
+ai-services/ollama/models/models/
 
-# ===== REPORTS & TEMPORARY =====
+# Milvus runtime data (vector database)
+ai-services/milvus/data/
+ai-services/milvus/etcd/
+ai-services/milvus/minio/
+
+# MinIO runtime data
+minio/data/
+
+# ===== OPENMETADATA =====
+openmetadata/
+!openmetadata/conf/
+!openmetadata/README.md
+
+# ===== REPORTS & TEMPORARY FILES =====
+# Exclude temporary reports and status files
 *_REPORT.json
 *_REPORT.md
 *_COMPLETE.md
+*_FIX.md
+*_STATUS.md
+*_DEPLOYMENT.md
+*_SYNC_REPORT.md
+*_TRANSLATION_REPORT.md
 TODO*.md
 PHASE*.md
+CURRENT_STATUS.md
+NEXT_STEPS.md
+SESSION_SUMMARY.md
+DOCUMENTATION_RESTORED.md
+MERMAID_FIX_REPORT.md
+PLATFORM_STATUS.md
+VERSION_DYNAMIQUE_FIX.md
+I18N_*.md
+OPENMETADATA_INTEGRATION_SUMMARY.md
+ROADMAP_I18N_DEPLOYMENT.md
+ORCHESTRATOR_TRANSLATION.md
 reports/*.json
 reports/*.html
+
+# Keep important release files (exceptions)
+!RELEASE_NOTES_*.md
+!RELEASE_GUIDE_*.md
+!RELEASE_CHECKLIST_*.md
+!RELEASE_READINESS_*.md
+!QUICK_SUMMARY_*.md
+!GIT_RELEASE_TEMPLATE_*.md
+!LINKEDIN_POST_*.md
+!GITHUB_RELEASE_FILES.md
+!SUMMARY_GITHUB_LINKEDIN.md
 
 # ===== NODE (if needed) =====
 node_modules/
@@ -113,9 +148,7 @@ yarn.lock
 *.ipynb
 
 # ===== DATABASES =====
-*.db
-*.sqlite
-*.sqlite3
+
 
 # ===== CERTIFICATES =====
 ssl/

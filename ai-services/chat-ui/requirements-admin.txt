@@ -1,0 +1,24 @@
+# Talentys AI Agent - Python Dependencies
+
+# Core Framework
+streamlit>=1.28.0
+streamlit-authenticator>=0.2.3
+
+# HTTP Client
+httpx>=0.25.0
+
+# Authentication & Security
+bcrypt>=4.0.1
+pyjwt>=2.8.0
+
+# Data Processing
+pandas>=2.1.0
+numpy>=1.24.0
+
+# Image Processing (for logo handling)
+Pillow>=10.0.0
+
+# Configuration
+python-dotenv>=1.0.0
+pydantic>=2.4.0
+pydantic-settings>=2.0.0

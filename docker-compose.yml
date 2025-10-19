@@ -167,7 +167,7 @@ services:
       retries: 5
 
   openmetadata-server:
-    image: docker.getcollate.io/openmetadata/server:1.9.7
+    image: docker.getcollate.io/openmetadata/server:1.4.6
     container_name: openmetadata-server
     environment:
       # Database Configuration
@@ -181,35 +181,75 @@ services:
       - OM_DATABASE=openmetadata_db
       
       # Elasticsearch Configuration
+      - SEARCH_TYPE=elasticsearch
       - ELASTICSEARCH_HOST=elasticsearch
       - ELASTICSEARCH_PORT=9200
       - ELASTICSEARCH_SCHEME=http
+      - ELASTICSEARCH_USER=
+      - ELASTICSEARCH_PASSWORD=
       
-      # Authentication
+      # Pipeline Service Client Configuration
+      - PIPELINE_SERVICE_CLIENT_ENABLED=true
+      - PIPELINE_SERVICE_CLIENT_HOST_IP=openmetadata-server
+      - PIPELINE_SERVICE_CLIENT_HEALTH_CHECK_INTERVAL=300
+      
+      # Authentication Configuration
       - AUTHORIZER_CLASS_NAME=org.openmetadata.service.security.DefaultAuthorizer
       - AUTHORIZER_REQUEST_FILTER=org.openmetadata.service.security.JwtFilter
       - AUTHORIZER_ADMIN_PRINCIPALS=[admin]
-      - AUTHORIZER_INGESTION_PRINCIPALS=[ingestion-bot]
-      - AUTHORIZER_PRINCIPAL_DOMAIN=open-metadata.org
+      - AUTHORIZER_ALLOWED_REGISTRATION_DOMAIN=["all"]
+      - AUTHENTICATION_PROVIDER=basic
+      - AUTHENTICATION_PUBLIC_KEYS=[http://localhost:8585/api/v1/system/config/jwks]
+      - AUTHENTICATION_AUTHORITY=https://accounts.google.com
+      - AUTHENTICATION_CLIENT_ID=
+      - AUTHENTICATION_CALLBACK_URL=
       
       # JWT Configuration
       - RSA_PUBLIC_KEY_FILE_PATH=./conf/public_key.der
       - RSA_PRIVATE_KEY_FILE_PATH=./conf/private_key.der
       - JWT_ISSUER=open-metadata.org
       - JWT_KEY_ID=Gb389a-9f76-gdjs-a92j-0242bk94356
+      
+      # Server Configuration
+      - SERVER_HOST_API_URL=http://openmetadata-server:8585/api
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8585
+      - SERVER_ADMIN_PORT=8586
+      
+      # Database Migration
+      - MIGRATION_LIMIT_PARAM=1300
+      
+      # Web Configuration
+      - WEB_CONF_URI_PATH=/api
+      - OPENMETADATA_CLUSTER_NAME=openmetadata
+      
+      # Talentys Customization
+      - OPENMETADATA_CUSTOM_LOGO_URL=/static/talentys-logo.png
+      - OPENMETADATA_CUSTOM_THEME_PRIMARY_COLOR=#0066CC
+      - OPENMETADATA_CUSTOM_THEME_SECONDARY_COLOR=#003D7A
+      - OPENMETADATA_APPLICATION_NAME=Talentys Data Platform
+      
     ports:
-      - "8585:8585"
+      - "8585:8585"      # API & UI
+      - "8586:8586"      # Admin port
+    volumes:
+      - ./openmetadata/conf/talentys-logo.png:/opt/openmetadata/static/talentys-logo.png:ro
+      - ./openmetadata/conf/talentys-theme.css:/opt/openmetadata/static/css/talentys-theme.css:ro
+      - ./openmetadata/conf/customization.json:/opt/openmetadata/customization.json:ro
     depends_on:
-      - mysql
-      - elasticsearch
+      mysql:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
     networks:
       - dremio-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8585/health"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8585/api/v1/health"]
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 120s
+      start_period: 180s
+    restart: unless-stopped
 
   # ====================================
   # AIRFLOW - Workflow Orchestration

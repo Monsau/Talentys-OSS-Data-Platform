@@ -1,0 +1,134 @@
+[
+  {
+    "customer_id": 1,
+    "name": "Jean Dupont",
+    "postgres_email": "jean.dupont@email.fr",
+    "minio_email": "jean.dupont@email.fr",
+    "postgres_country": "France",
+    "minio_country": "France",
+    "source_status": "both_sources",
+    "email_status": "match",
+    "country_status": "match"
+  },
+  {
+    "customer_id": 2,
+    "name": "Marie Martin",
+    "postgres_email": "marie.martin@email.fr",
+    "minio_email": "marie.martin@email.fr",
+    "postgres_country": "France",
+    "minio_country": "France",
+    "source_status": "both_sources",
+    "email_status": "match",
+    "country_status": "match"
+  },
+  {
+    "customer_id": 3,
+    "name": "Pierre Durand",
+    "postgres_email": "pierre.durand@email.fr",
+    "minio_email": "pierre.durand@email.fr",
+    "postgres_country": "France",
+    "minio_country": "France",
+    "source_status": "both_sources",
+    "email_status": "match",
+    "country_status": "match"
+  },
+  {
+    "customer_id": 4,
+    "name": "Sophie Bernard",
+    "postgres_email": "sophie.bernard@email.fr",
+    "minio_email": "sophie.bernard@email.fr",
+    "postgres_country": "France",
+    "minio_country": "France",
+    "source_status": "both_sources",
+    "email_status": "match",
+    "country_status": "match"
+  },
+  {
+    "customer_id": 5,
+    "name": "Luc Petit",
+    "postgres_email": "luc.petit@email.fr",
+    "minio_email": "luc.petit@email.fr",
+    "postgres_country": "France",
+    "minio_country": "France",
+    "source_status": "both_sources",
+    "email_status": "match",
+    "country_status": "match"
+  },
+  {
+    "customer_id": 6,
+    "name": "Julie Robert",
+    "postgres_email": "julie.robert@email.fr",
+    "minio_email": "julie.robert@email.fr",
+    "postgres_country": "France",
+    "minio_country": "France",
+    "source_status": "both_sources",
+    "email_status": "match",
+    "country_status": "match"
+  },
+  {
+    "customer_id": 7,
+    "name": "Thomas Richard",
+    "postgres_email": "thomas.richard@email.fr",
+    "minio_email": "thomas.richard@gmail.com",
+    "postgres_country": "France",
+    "minio_country": "France",
+    "source_status": "both_sources",
+    "email_status": "mismatch",
+    "country_status": "match"
+  },
+  {
+    "customer_id": 8,
+    "name": "Emma Moreau",
+    "postgres_email": "emma.moreau@email.fr",
+    "minio_email": "emma.moreau@email.fr",
+    "postgres_country": "France",
+    "minio_country": "Belgium",
+    "source_status": "both_sources",
+    "email_status": "match",
+    "country_status": "mismatch"
+  },
+  {
+    "customer_id": 9,
+    "name": "Lucas Simon",
+    "postgres_email": "lucas.simon@email.fr",
+    "minio_email": null,
+    "postgres_country": "France",
+    "minio_country": null,
+    "source_status": "postgres_only",
+    "email_status": "missing",
+    "country_status": "missing"
+  },
+  {
+    "customer_id": 10,
+    "name": "Camille Laurent",
+    "postgres_email": "camille.laurent@email.fr",
+    "minio_email": null,
+    "postgres_country": "France",
+    "minio_country": null,
+    "source_status": "postgres_only",
+    "email_status": "missing",
+    "country_status": "missing"
+  },
+  {
+    "customer_id": 11,
+    "name": "Antoine Dubois",
+    "postgres_email": null,
+    "minio_email": "antoine.dubois@email.fr",
+    "postgres_country": null,
+    "minio_country": "France",
+    "source_status": "minio_only",
+    "email_status": "missing",
+    "country_status": "missing"
+  },
+  {
+    "customer_id": 12,
+    "name": "Claire Leroy",
+    "postgres_email": null,
+    "minio_email": "claire.leroy@email.fr",
+    "postgres_country": null,
+    "minio_country": "France",
+    "source_status": "minio_only",
+    "email_status": "missing",
+    "country_status": "missing"
+  }
+]

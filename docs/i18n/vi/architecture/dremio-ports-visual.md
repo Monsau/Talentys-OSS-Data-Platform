@@ -1,40 +1,40 @@
-# Hướng dẫn Trực quan về Cổng Dremio
+# Hướng dẫn trực quan về cổng Dremio
 
-**Phiên bản**: 3.2.5  
-**Cập nhật lần cuối**: 16 Tháng 10, 2025  
-**Ngôn ngữ**: Tiếng Việt
+**Phiên bản**: 3.2.3  
+**Cập nhật lần cuối**: Ngày 16 tháng 10 năm 2025  
+**Ngôn ngữ**: Tiếng Pháp
 
 ---
 
-## Tổng quan 3 Cổng Dremio
+## Tổng quan về 3 cổng Dremio
 
 ```mermaid
 graph TB
-    subgraph "Cổng 9047 - REST API"
+    subgraph "Port 9047 - REST API"
         direction TB
-        A1[🌐 Giao diện Web UI]
-        A2[🔧 Quản trị]
-        A3[📊 Giám sát]
-        A4[🔐 Xác thực]
+        A1[🌐 Interface Web UI]
+        A2[🔧 Administration]
+        A3[📊 Monitoring]
+        A4[🔐 Authentification]
     end
     
-    subgraph "Cổng 31010 - PostgreSQL Proxy"
+    subgraph "Port 31010 - Proxy PostgreSQL"
         direction TB
-        B1[💼 Công cụ BI cũ]
-        B2[🔌 JDBC/ODBC chuẩn]
-        B3[🐘 Tương thích PostgreSQL]
-        B4[🔄 Di chuyển dễ dàng]
+        B1[💼 Outils BI Legacy]
+        B2[🔌 JDBC/ODBC Standard]
+        B3[🐘 Compatibilité PostgreSQL]
+        B4[🔄 Migration Facile]
     end
     
-    subgraph "Cổng 32010 - Arrow Flight"
+    subgraph "Port 32010 - Arrow Flight"
         direction TB
-        C1[⚡ Hiệu suất tối đa]
+        C1[⚡ Performance Max]
         C2[🎯 dbt Core]
         C3[📈 Apache Superset]
         C4[🐍 Python pyarrow]
     end
     
-    D[🗄️ Dremio Coordinator<br/>Dremio 26.0 OSS]
+    D[🗄️ Dremio Coordinateur<br/>Dremio 26.0 OSS]
     
     A1 & A2 & A3 & A4 --> D
     B1 & B2 & B3 & B4 --> D
@@ -63,13 +63,13 @@ graph TB
 
 ---
 
-## Kiến trúc Chi tiết PostgreSQL Proxy
+## Kiến trúc chi tiết của Proxy PostgreSQL
 
-### Luồng Kết nối Máy khách → Dremio
+### Luồng kết nối khách hàng → Dremio
 
 ```mermaid
 graph LR
-    subgraph "Ứng dụng Máy khách"
+    subgraph "Applications Clientes"
         direction TB
         A1[psql CLI]
         A2[DBeaver]
@@ -79,21 +79,21 @@ graph LR
         A6[Tableau Desktop]
     end
     
-    subgraph "Giao thức PostgreSQL Wire"
-        P[Cổng 31010<br/>PostgreSQL Proxy]
+    subgraph "Protocole PostgreSQL Wire"
+        P[Port 31010<br/>Proxy PostgreSQL]
     end
     
-    subgraph "Công cụ Dremio"
+    subgraph "Moteur Dremio"
         direction TB
-        M1[SQL Parser]
-        M2[Optimizer]
-        M3[Executor]
+        M1[Parser SQL]
+        M2[Optimiseur]
+        M3[Exécuteur]
     end
     
-    subgraph "Nguồn Dữ liệu"
+    subgraph "Sources de Données"
         direction TB
-        S1[📦 Tệp Parquet<br/>MinIO S3]
-        S2[💾 Bảng PostgreSQL]
+        S1[📦 Fichiers Parquet<br/>MinIO S3]
+        S2[💾 Tables PostgreSQL]
         S3[🔍 Index Elasticsearch]
     end
     
@@ -114,34 +114,34 @@ graph LR
 
 ---
 
-## So sánh Hiệu suất
+## So sánh hiệu suất
 
-### Đánh giá: Quét Dữ liệu 100 GB
+### Benchmark: Quét 100 GB dữ liệu
 
 ```mermaid
 gantt
-    title Thời gian Thực thi theo Giao thức (giây)
+    title Temps d'Exécution par Protocole (secondes)
     dateFormat X
-    axisFormat %s giây
+    axisFormat %s sec
     
     section REST API :9047
-    Truyền 100 GB     :0, 180
+    Transfert 100 GB     :0, 180
     
     section PostgreSQL :31010
-    Truyền 100 GB     :0, 90
+    Transfert 100 GB     :0, 90
     
     section Arrow Flight :32010
-    Truyền 100 GB     :0, 5
+    Transfert 100 GB     :0, 5
 ```
 
-### Thông lượng Dữ liệu
+### Tốc độ dữ liệu
 
 ```mermaid
 graph LR
-    subgraph "Hiệu suất Mạng theo Giao thức"
-        A["Cổng 9047<br/>REST API<br/>📊 ~500 MB/s<br/>⏱️ Tiêu chuẩn"]
-        B["Cổng 31010<br/>PostgreSQL Wire<br/>📊 ~1-2 GB/s<br/>⏱️ Tốt"]
-        C["Cổng 32010<br/>Arrow Flight<br/>📊 ~20 GB/s<br/>⏱️ Xuất sắc"]
+    subgraph "Débit Réseau par Protocole"
+        A["Port 9047<br/>REST API<br/>📊 ~500 MB/s<br/>⏱️ Standard"]
+        B["Port 31010<br/>PostgreSQL Wire<br/>📊 ~1-2 GB/s<br/>⏱️ Bon"]
+        C["Port 32010<br/>Arrow Flight<br/>📊 ~20 GB/s<br/>⏱️ Excellent"]
     end
     
     style A fill:#FF9800,color:#fff
@@ -149,37 +149,37 @@ graph LR
     style C fill:#2196F3,color:#fff
 ```
 
-### Độ trễ Truy vấn Đơn giản
+### Độ trễ truy vấn đơn giản
 
-| Giao thức | Cổng | Độ trễ Trung bình | Chi phí Mạng |
-|----------|------|----------------|------------------|
-| **REST API** | 9047 | 50-100 ms | JSON (chi tiết) |
-| **PostgreSQL Proxy** | 31010 | 20-50 ms | Wire Protocol (gọn) |
-| **Arrow Flight** | 32010 | 5-10 ms | Apache Arrow (nhị phân cột) |
+| Giao thức | Cảng | Độ trễ trung bình | Chi phí mạng |
+|--------------|------|-----------------|-----------------|
+| **API REST** | 9047 | 50-100ms | JSON (dài dòng) |
+| **Proxy PostgreSQL** | 31010 | 20-50ms | Giao thức dây (nhỏ gọn) |
+| **Chuyến bay mũi tên** | 32010 | 5-10ms | Mũi tên Apache (cột nhị phân) |
 
 ---
 
-## Trường hợp Sử dụng theo Cổng
+## Trường hợp sử dụng theo cổng
 
-### Cổng 9047 - REST API
+### Cổng 9047 - API REST
 
 ```mermaid
 graph TB
-    A[Cổng 9047<br/>REST API]
+    A[Port 9047<br/>REST API]
     
-    A --> B1[🌐 Giao diện Trình duyệt Web]
-    A --> B2[🔧 Cấu hình Dịch vụ]
-    A --> B3[👤 Quản lý Người dùng]
-    A --> B4[📊 Bảng điều khiển Giám sát]
-    A --> B5[🔐 Đăng nhập OAuth/SAML]
+    A --> B1[🌐 Interface Web Browser]
+    A --> B2[🔧 Configuration Services]
+    A --> B3[👤 Gestion Utilisateurs]
+    A --> B4[📊 Monitoring Dashboards]
+    A --> B5[🔐 OAuth/SAML Login]
     
-    B1 --> C1[Tạo Space/Thư mục]
-    B1 --> C2[Định nghĩa VDS]
-    B1 --> C3[Khám phá Dataset]
+    B1 --> C1[Créer Spaces/Folders]
+    B1 --> C2[Définir VDS]
+    B1 --> C3[Explorer Datasets]
     
-    B2 --> C4[Thêm Nguồn]
-    B2 --> C5[Cấu hình Reflections]
-    B2 --> C6[Cấu hình Hệ thống]
+    B2 --> C4[Ajouter Sources]
+    B2 --> C5[Configurer Reflections]
+    B2 --> C6[Paramètres Système]
     
     style A fill:#4CAF50,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#81C784,color:#fff
@@ -189,27 +189,27 @@ graph TB
     style B5 fill:#81C784,color:#fff
 ```
 
-### Cổng 31010 - PostgreSQL Proxy
+### Cổng 31010 - Proxy PostgreSQL
 
 ```mermaid
 graph TB
-    A[Cổng 31010<br/>PostgreSQL Proxy]
+    A[Port 31010<br/>Proxy PostgreSQL]
     
-    A --> B1[💼 Công cụ BI cũ]
-    A --> B2[🔄 Di chuyển PostgreSQL]
-    A --> B3[🔌 Driver chuẩn]
+    A --> B1[💼 Outils BI Legacy]
+    A --> B2[🔄 Migration PostgreSQL]
+    A --> B3[🔌 Drivers Standard]
     
-    B1 --> C1[Tableau Desktop<br/>Không có Arrow Flight]
+    B1 --> C1[Tableau Desktop<br/>sans Arrow Flight]
     B1 --> C2[Power BI Desktop<br/>ODBC]
     B1 --> C3[QlikView<br/>JDBC PostgreSQL]
     
-    B2 --> D1[Mã JDBC hiện có<br/>Không cần sửa đổi]
-    B2 --> D2[Script psql<br/>Tương thích 100%]
-    B2 --> D3[Ứng dụng Python<br/>psycopg2]
+    B2 --> D1[Code JDBC existant<br/>aucune modification]
+    B2 --> D2[Scripts psql<br/>compatibles 100%]
+    B2 --> D3[Applications Python<br/>psycopg2]
     
     B3 --> E1[PostgreSQL ODBC Driver]
     B3 --> E2[PostgreSQL JDBC Driver]
-    B3 --> E3[Driver gốc HĐH]
+    B3 --> E3[Pilotes natifs OS]
     
     style A fill:#336791,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#5C6BC0,color:#fff
@@ -217,27 +217,27 @@ graph TB
     style B3 fill:#5C6BC0,color:#fff
 ```
 
-### Cổng 32010 - Arrow Flight
+### Cảng 32010 - Mũi Tên Bay
 
 ```mermaid
 graph TB
-    A[Cổng 32010<br/>Arrow Flight]
+    A[Port 32010<br/>Arrow Flight]
     
-    A --> B1[⚡ Hiệu suất Tối đa]
-    A --> B2[🎯 Công cụ Hiện đại]
-    A --> B3[🐍 Hệ sinh thái Python]
+    A --> B1[⚡ Performance Maximale]
+    A --> B2[🎯 Outils Modernes]
+    A --> B3[🐍 Python Ecosystem]
     
-    B1 --> C1[Quét TB/PB]
-    B1 --> C2[Tổng hợp Lớn]
-    B1 --> C3[Truyền Zero-Copy]
+    B1 --> C1[Scans de TB/PB]
+    B1 --> C2[Agrégations Massives]
+    B1 --> C3[Transferts Zero-Copy]
     
     B2 --> D1[dbt Core<br/>profiles.yml]
-    B2 --> D2[Apache Superset<br/>Cấu hình Database]
+    B2 --> D2[Apache Superset<br/>Database Config]
     B2 --> D3[Jupyter Notebooks<br/>pandas/polars]
     
-    B3 --> E1[Thư viện pyarrow]
-    B3 --> E2[pandas qua Arrow]
-    B3 --> E3[Tích hợp Polars]
+    B3 --> E1[pyarrow Library]
+    B3 --> E2[pandas via Arrow]
+    B3 --> E3[Polars Integration]
     
     style A fill:#FF5722,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#FF7043,color:#fff
@@ -247,31 +247,31 @@ graph TB
 
 ---
 
-## Sơ đồ Quyết định: Cổng Nào Sử dụng?
+## Cây quyết định: Sử dụng cổng nào?
 
 ```mermaid
 graph TB
-    Start[Tôi cần kết nối đến Dremio]
+    Start[Besoin de se connecter à Dremio]
     
-    Start --> Q1{Loại ứng dụng?}
+    Start --> Q1{Type d'application ?}
     
-    Q1 -->|Giao diện web<br/>Quản trị| Port9047[✅ Cổng 9047<br/>REST API]
+    Q1 -->|Interface Web<br/>Administration| Port9047[✅ Port 9047<br/>REST API]
     
-    Q1 -->|Công cụ BI/SQL Client| Q2{Hỗ trợ Arrow Flight?}
+    Q1 -->|Outil BI/Client SQL| Q2{Supporte Arrow Flight ?}
     
-    Q2 -->|Không<br/>Công cụ cũ| Port31010[✅ Cổng 31010<br/>PostgreSQL Proxy]
-    Q2 -->|Có<br/>Công cụ hiện đại| Q3{Hiệu suất quan trọng?}
+    Q2 -->|Non<br/>Legacy Tool| Port31010[✅ Port 31010<br/>Proxy PostgreSQL]
+    Q2 -->|Oui<br/>Modern Tool| Q3{Performance critique ?}
     
-    Q3 -->|Có<br/>Production| Port32010[✅ Cổng 32010<br/>Arrow Flight]
-    Q3 -->|Không<br/>Dev/Test| Port31010b[⚠️ Cổng 31010<br/>Dễ hơn]
+    Q3 -->|Oui<br/>Production| Port32010[✅ Port 32010<br/>Arrow Flight]
+    Q3 -->|Non<br/>Dev/Test| Port31010b[⚠️ Port 31010<br/>Plus facile]
     
-    Q1 -->|Ứng dụng Tùy chỉnh| Q4{Ngôn ngữ lập trình?}
+    Q1 -->|Application Custom| Q4{Langage ?}
     
-    Q4 -->|Python/Java| Q5{Hiệu suất quan trọng?}
-    Q5 -->|Có| Port32010b[✅ Cổng 32010<br/>Arrow Flight]
-    Q5 -->|Không| Port31010c[✅ Cổng 31010<br/>JDBC/psycopg2]
+    Q4 -->|Python/Java| Q5{Performance importante ?}
+    Q5 -->|Oui| Port32010b[✅ Port 32010<br/>Arrow Flight]
+    Q5 -->|Non| Port31010c[✅ Port 31010<br/>JDBC/psycopg2]
     
-    Q4 -->|Khác<br/>Go/Rust/.NET| Port31010d[✅ Cổng 31010<br/>PostgreSQL Wire]
+    Q4 -->|Autre<br/>Go/Rust/.NET| Port31010d[✅ Port 31010<br/>PostgreSQL Wire]
     
     style Start fill:#2196F3,color:#fff
     style Port9047 fill:#4CAF50,color:#fff,stroke:#000,stroke-width:2px
@@ -285,19 +285,19 @@ graph TB
 
 ---
 
-## Ví dụ Kết nối PostgreSQL Proxy
+## Ví dụ về kết nối proxy PostgreSQL
 
 ### 1. psql CLI
 
 ```bash
-# Kết nối đơn giản
+# Connexion simple
 psql -h localhost -p 31010 -U admin -d datalake
 
-# Truy vấn trực tiếp
+# Avec requête directe
 psql -h localhost -p 31010 -U admin -d datalake \
   -c "SELECT COUNT(*) FROM MinIO.datalake.customers;"
 
-# Chế độ tương tác
+# Mode interactif
 $ psql -h localhost -p 31010 -U admin -d datalake
 Password for user admin: ****
 psql (16.0, server 26.0)
@@ -317,22 +317,22 @@ datalake=> SELECT customer_id, name, state FROM customers LIMIT 5;
 ### 2. Cấu hình DBeaver
 
 ```yaml
-Loại Kết nối: PostgreSQL
-Tên Kết nối: Dremio via PostgreSQL Proxy
+Connection Type: PostgreSQL
+Connection Name: Dremio via PostgreSQL Proxy
 
-Chính:
+Main:
   Host: localhost
-  Cổng: 31010
-  Cơ sở dữ liệu: datalake
-  Tên người dùng: admin
-  Mật khẩu: [your-password]
+  Port: 31010
+  Database: datalake
+  Username: admin
+  Password: [votre-mot-de-passe]
   
-Thuộc tính Driver:
+Driver Properties:
   ssl: false
   
-Nâng cao:
-  Thời gian chờ kết nối: 30000
-  Thời gian chờ truy vấn: 0
+Advanced:
+  Connection timeout: 30000
+  Query timeout: 0
 ```
 
 ### 3. Python với psycopg2
@@ -341,32 +341,32 @@ Nâng cao:
 import psycopg2
 from psycopg2 import sql
 
-# Kết nối
+# Connexion
 conn = psycopg2.connect(
     host="localhost",
     port=31010,
     database="datalake",
     user="admin",
-    password="your-password"
+    password="votre-mot-de-passe"
 )
 
-# Con trỏ
+# Cursor
 cursor = conn.cursor()
 
-# Truy vấn đơn giản
+# Requête simple
 cursor.execute("SELECT * FROM MinIO.datalake.customers LIMIT 10")
 rows = cursor.fetchall()
 
 for row in rows:
     print(row)
 
-# Truy vấn có tham số
+# Requête avec paramètres
 query = sql.SQL("SELECT * FROM {} WHERE state = %s").format(
     sql.Identifier("MinIO", "datalake", "customers")
 )
 cursor.execute(query, ("CA",))
 
-# Đóng
+# Fermeture
 cursor.close()
 conn.close()
 ```
@@ -380,7 +380,7 @@ public class DremioPostgreSQLProxy {
     public static void main(String[] args) {
         String url = "jdbc:postgresql://localhost:31010/datalake";
         String user = "admin";
-        String password = "your-password";
+        String password = "votre-mot-de-passe";
         
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
             Statement stmt = conn.createStatement();
@@ -404,7 +404,7 @@ public class DremioPostgreSQLProxy {
 }
 ```
 
-### 5. Chuỗi Kết nối ODBC (DSN)
+### 5. Chuỗi ODBC (DSN)
 
 ```ini
 [ODBC Data Sources]
@@ -417,7 +417,7 @@ Server=localhost
 Port=31010
 Database=datalake
 Username=admin
-Password=your-password
+Password=votre-mot-de-passe
 SSLMode=disable
 Protocol=7.4
 ```
@@ -426,7 +426,7 @@ Protocol=7.4
 
 ## Cấu hình Docker Compose
 
-### Ánh xạ Cổng Dremio
+### Bản đồ cổng Dremio
 
 ```yaml
 services:
@@ -434,13 +434,13 @@ services:
     image: dremio/dremio-oss:26.0
     container_name: dremio
     ports:
-      # Cổng 9047 - REST API / Web UI
+      # Port 9047 - REST API / Web UI
       - "9047:9047"
       
-      # Cổng 31010 - PostgreSQL Proxy (ODBC/JDBC)
+      # Port 31010 - Proxy PostgreSQL (ODBC/JDBC)
       - "31010:31010"
       
-      # Cổng 32010 - Arrow Flight (Hiệu suất)
+      # Port 32010 - Arrow Flight (Performance)
       - "32010:32010"
     environment:
       - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Xms4g -Xmx8g
@@ -450,19 +450,19 @@ services:
       - data-platform
 ```
 
-### Xác thực Cổng
+### Kiểm tra cổng
 
 ```bash
-# Kiểm tra cả ba cổng đều mở
+# Vérifier que les 3 ports sont ouverts
 netstat -an | grep -E '9047|31010|32010'
 
-# Kiểm tra REST API
+# Tester REST API
 curl -v http://localhost:9047
 
-# Kiểm tra PostgreSQL Proxy
+# Tester Proxy PostgreSQL
 psql -h localhost -p 31010 -U admin -d datalake -c "SELECT 1;"
 
-# Kiểm tra Arrow Flight (với Python)
+# Tester Arrow Flight (avec Python)
 python3 -c "
 from pyarrow import flight
 client = flight.connect('grpc://localhost:32010')
@@ -472,33 +472,33 @@ print('Arrow Flight OK')
 
 ---
 
-## Tóm tắt Trực quan Nhanh
+## Tóm tắt trực quan nhanh
 
-### 3 Cổng trong Một Cái nhìn
+### Sơ lược về 3 cổng
 
-| Cổng | Giao thức | Sử dụng Chính | Hiệu suất | Tương thích |
-|------|-----------|-------------|------------|----------------|
-| **9047** | REST API | 🌐 Web UI, Admin | ⭐⭐ Tiêu chuẩn | ⭐⭐⭐ Phổ quát |
-| **31010** | PostgreSQL Wire | 💼 Công cụ BI, Di chuyển | ⭐⭐⭐ Tốt | ⭐⭐⭐ Xuất sắc |
-| **32010** | Arrow Flight | ⚡ Production, dbt, Superset | ⭐⭐⭐⭐⭐ Tối đa | ⭐⭐ Hạn chế |
+| Cảng | Giao thức | Công dụng chính | Hiệu suất | Khả năng tương thích |
+|------|----------|---------------|-------------|--------------|
+| **9047** | API REST | 🌐 Giao diện Web, Quản trị viên | ⭐⭐Tiêu chuẩn | ⭐⭐⭐ Phổ quát |
+| **31010** | Dây PostgreSQL | 💼 Công cụ BI, Di chuyển | ⭐⭐⭐ Tốt | ⭐⭐⭐ Xuất sắc |
+| **32010** | Chuyến bay mũi tên | ⚡ Sản xuất, dbt, Superset | ⭐⭐⭐⭐⭐ Tối đa | ⭐⭐ Có hạn |
 
-### Ma trận Lựa chọn
+### Ma trận lựa chọn
 
 ```mermaid
 graph TB
-    subgraph "Hướng dẫn Lựa chọn"
-        A["🎯 Trường hợp Sử dụng"]
+    subgraph "Guide de Sélection"
+        A["🎯 Cas d'Usage"]
         
-        A --> B1["Giao diện Web<br/>Cấu hình"]
-        A --> B2["Công cụ BI cũ<br/>Không Arrow Flight"]
-        A --> B3["Di chuyển PostgreSQL<br/>Mã JDBC hiện có"]
+        A --> B1["Interface Web<br/>Configuration"]
+        A --> B2["Outil BI Legacy<br/>Sans Arrow Flight"]
+        A --> B3["Migration PostgreSQL<br/>Code JDBC existant"]
         A --> B4["dbt, Superset<br/>Production"]
-        A --> B5["Python pyarrow<br/>Phân tích"]
+        A --> B5["Python pyarrow<br/>Analytique"]
         
-        B1 --> C1["Cổng 9047<br/>REST API"]
-        B2 --> C2["Cổng 31010<br/>PostgreSQL"]
+        B1 --> C1["Port 9047<br/>REST API"]
+        B2 --> C2["Port 31010<br/>PostgreSQL"]
         B3 --> C2
-        B4 --> C3["Cổng 32010<br/>Arrow Flight"]
+        B4 --> C3["Port 32010<br/>Arrow Flight"]
         B5 --> C3
     end
     
@@ -510,22 +510,22 @@ graph TB
 
 ---
 
-## Tài nguyên Bổ sung
+## Tài nguyên bổ sung
 
-### Tài liệu Liên quan
+### Tài liệu liên quan
 
-- [Kiến trúc - Thành phần](./components.md) - Phần "PostgreSQL Proxy cho Dremio"
-- [Hướng dẫn - Cài đặt Dremio](../guides/dremio-setup.md) - Phần "Kết nối qua PostgreSQL Proxy"
-- [Cấu hình - Dremio](../getting-started/configuration.md) - Cấu hình `dremio.conf`
+- [Kiến trúc - Thành phần](./comComponents.md) - Phần "Proxy PostgreSQL cho Dremio"
+- [Hướng dẫn - Thiết lập Dremio](../guides/dremio-setup.md) - Phần "Kết nối qua Proxy PostgreSQL"
+- [Cấu hình - Dremio](../getting-started/configuration.md) - Tham số `dremio.conf`
 
-### Liên kết Chính thức
+### Liên kết chính thức
 
-- **Tài liệu Dremio**: https://docs.dremio.com/
-- **Giao thức PostgreSQL Wire**: https://www.postgresql.org/docs/current/protocol.html
-- **Apache Arrow Flight**: https://arrow.apache.org/docs/format/Flight.html
+- **Tài liệu về Dremio**: https://docs.dremio.com/
+- **Giao thức dây PostgreSQL**: https://www.postgresql.org/docs/current/protocol.html
+- **Chuyến bay mũi tên Apache**: https://arrow.apache.org/docs/format/Flight.html
 
 ---
 
-**Phiên bản**: 3.2.5  
-**Cập nhật lần cuối**: 16 Tháng 10, 2025  
+**Phiên bản**: 3.2.3  
+**Cập nhật lần cuối**: Ngày 16 tháng 10 năm 2025  
 **Trạng thái**: ✅ Hoàn thành

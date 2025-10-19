@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://talentys.eu" target="_blank">
-    <img src="https://talentys.eu/logo.png" alt="Talentys Data" width="250"/>
+    <img src="assets/images/talentys/original.png" alt="Talentys Data" width="250"/>
   </a>
   <br/>
   <a href="https://www.linkedin.com/company/talentysdata" target="_blank">

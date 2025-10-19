@@ -1,119 +1,122 @@
-﻿# Dremio + dbt + OpenMetadata - Dokumentasi (Indonesia)
+﻿# Platform data
 
-**Versi**: 3.2.5  
-**Pembaruan Terakhir**: 16 Oktober 2025  
-**Bahasa**: Indonesia 🇮🇩
+<p align="center">
+  <a href="https://talentys.eu" target="_blank">
+    <img src="../../assets/images/talentys/original.png" alt="Talentys Data" width="200"/>
+  </a>
+  <br/>
+  <em>Supported by <a href="https://talentys.eu">Talentys</a> | <a href="https://www.linkedin.com/company/talentysdata">LinkedIn</a> - Data Engineering & Analytics Excellence</em>
+</p>
 
----
 
-## 📚 Ikhtisar
+**Solusi data lakehouse perusahaan**
 
-Selamat datang di dokumentasi Indonesia untuk platform data Dremio + dbt + OpenMetadata. Dokumentasi ini menyediakan panduan komprehensif untuk pengaturan, konfigurasi, dan penggunaan platform.
-
----
-
-## 🗺️ Struktur Dokumentasi
-
-### 📐 Arsitektur
-
-- **[Dremio Ports - Panduan Visual](./architecture/dremio-ports-visual.md)** ⭐ BARU!
-  - Panduan visual lengkap untuk 3 port Dremio (9047, 31010, 32010)
-  - Arsitektur detail PostgreSQL Proxy
-  - Perbandingan performa dan benchmark
-  - Kasus penggunaan dan pohon keputusan
-  - Contoh koneksi: psql, DBeaver, Python, Java, ODBC
-  - Konfigurasi Docker Compose
-  - 456 baris | 8+ diagram Mermaid | 5 contoh kode
+**Bahasa**: Prancis (FR)  
+**Versi**: 3.3.1  
+**Terakhir diperbarui**: 19 Oktober 2025
 
 ---
 
-## 🌍 Bahasa yang Tersedia
+## Ringkasan
 
-Dokumentasi ini tersedia dalam beberapa bahasa:
+Platform data profesional yang menggabungkan Dremio, dbt, dan Apache Superset untuk transformasi data tingkat perusahaan, jaminan kualitas, dan intelijen bisnis.
 
-- 🇫🇷 **[Français](../fr/README.md)** - Dokumentasi lengkap (22 file)
-- 🇬🇧 **[English](../../../README.md)** - Dokumentasi lengkap (19 file)
-- 🇪🇸 **[Español](../es/README.md)** - Panduan visual
-- 🇵🇹 **[Português](../pt/README.md)** - Panduan visual
-- 🇨🇳 **[中文](../cn/README.md)** - Panduan visual
-- 🇯🇵 **[日本語](../jp/README.md)** - Panduan visual
-- 🇷🇺 **[Русский](../ru/README.md)** - Panduan visual
-- 🇸🇦 **[العربية](../ar/README.md)** - Panduan visual
-- 🇩🇪 **[Deutsch](../de/README.md)** - Panduan visual
-- 🇰🇷 **[한국어](../ko/README.md)** - Panduan visual
-- 🇮🇳 **[हिन्दी](../hi/README.md)** - Panduan visual
-- 🇮🇩 **[Indonesia](../id/README.md)** - Panduan visual ⭐ ANDA DI SINI
-- 🇹🇷 **[Türkçe](../tr/README.md)** - Panduan visual
-- 🇻🇳 **[Tiếng Việt](../vi/README.md)** - Panduan visual
-- 🇮🇹 **[Italiano](../it/README.md)** - Panduan visual
-- 🇳🇱 **[Nederlands](../nl/README.md)** - Panduan visual
-- 🇵🇱 **[Polski](../pl/README.md)** - Panduan visual
-- 🇸🇪 **[Svenska](../se/README.md)** - Panduan visual
+Platform ini memberikan solusi lengkap untuk rekayasa data modern, termasuk jalur data otomatis, pengujian kualitas, dan dasbor interaktif.
+
+Â§Â§Â§KODE_0Â§Â§Â§
 
 ---
 
-## 🚀 Memulai Cepat
+## Fitur Utama
+
+- Arsitektur rumah danau data dengan Dremio
+- Transformasi otomatis dengan dbt
+- Intelijen bisnis dengan Apache Superset
+- Pengujian kualitas data yang komprehensif
+- Sinkronisasi real-time melalui Arrow Flight
+
+---
+
+## Panduan Memulai Cepat
 
 ### Prasyarat
 
-- Docker & Docker Compose
-- Python 3.11+
-- Git
+- Docker 20.10 atau lebih tinggi
+- Docker Tulis 2.0 atau lebih tinggi
+- Python 3.11 atau lebih tinggi
+- RAM minimal 8 GB
 
-### Instalasi
+### Fasilitas
 
-```bash
-# Clone repository
-git clone <repository-url>
-cd dremiodbt
-
-# Mulai layanan Docker
-docker-compose up -d
-
-# Buka Web UI
-# Dremio: http://localhost:9047
-# OpenMetadata: http://localhost:8585
-```
-
-Untuk instruksi instalasi detail, lihat [dokumentasi bahasa Inggris](../en/getting-started/installation.md).
+Â§Â§Â§KODE_1Â§Â§Â§
 
 ---
 
-## 📖 Sumber Daya Utama
+## Arsitektur
 
-### Dremio Ports - Referensi Cepat
+### Komponen sistem
 
-| Port | Protokol | Penggunaan | Performa |
-|------|-----------|------------|----------|
-| **9047** | REST API | Web UI, Admin | ⭐⭐ Standar |
-| **31010** | PostgreSQL Wire | Tools BI, Migrasi | ⭐⭐⭐ Baik |
-| **32010** | Arrow Flight | dbt, Superset, Performa Tinggi | ⭐⭐⭐⭐⭐ Maksimal |
+| Komponen | Pelabuhan | Deskripsi |
+|---------------|------|-------------|
+| Dremio | 9047, 31010, 32010 | Platform rumah danau data |
+| dbt | - | Alat Transformasi Data |
+| Superset | 8088 | Platform Intelijen Bisnis |
+| PostgreSQL | 5432 | Basis data transaksional |
+| MiniO | 9000, 9001 | Penyimpanan objek (kompatibel dengan S3) |
+| Pencarian elastis | 9200 | Mesin pencari dan analisis |
 
-**→ [Panduan visual lengkap](./architecture/dremio-ports-visual.md)**
-
----
-
-## 🔗 Tautan Eksternal
-
-- **Dokumentasi Dremio**: https://docs.dremio.com/
-- **Dokumentasi dbt**: https://docs.getdbt.com/
-- **Dokumentasi OpenMetadata**: https://docs.open-metadata.org/
-- **Apache Arrow Flight**: https://arrow.apache.org/docs/format/Flight.html
+Lihat [dokumentasi arsitektur](arsitektur/) untuk desain sistem terperinci.
 
 ---
 
-## 🤝 Berkontribusi
+## Dokumentasi
 
-Kontribusi sangat diterima! Silakan lihat [panduan kontribusi](../en/CONTRIBUTING.md) kami.
+### Rintisan
+- [Panduan Instalasi](memulai/)
+- [Konfigurasi](memulai/)
+- [Memulai](memulai/)
+
+### Panduan pengguna
+- [Rekayasa data](panduan/)
+- [Pembuatan dasbor](panduan/)
+- [integrasi API](panduan/)
+
+### Dokumentasi API
+- [Referensi REST API](api/)
+- [Otentikasi](api/)
+- [Contoh kode](api/)
+
+### Dokumentasi arsitektur
+- [Desain sistem](arsitektur/)
+- [Aliran data](arsitektur/)
+- [Panduan penerapan](arsitektur/)
+- [ðŸŽ¯ Panduan Visual Dremio Ports](arsitektur/dremio-ports-visual.md) â­ BARU
 
 ---
 
-## 📄 Lisensi
+## Bahasa yang tersedia
 
-Proyek ini dilisensikan di bawah [Lisensi MIT](../../../LICENSE).
+| Bahasa | Kode | Dokumentasi |
+|--------|------|---------------|
+| Bahasa Inggris | EN | [README.md](../../../README.md) |
+| Perancis | EN | [docs/i18n/fr/](../fr/README.md) |
+| Spanyol | ES | [docs/i18n/es/](../es/README.md) |
+| Portugis | PT | [docs/i18n/pt/](../pt/README.md) |
+| Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© | AR | [docs/i18n/ar/](../ar/README.md) |
+| ä¸­æ–‡ | CN | [docs/i18n/cn/](../cn/README.md) |
+| æ—¥æœ¬èªž | JP | [docs/i18n/jp/](../jp/README.md) |
+| Ð ÑƒÑÑÐºÐ¸Ð¹ | Inggris | [docs/i18n/ru/](../ru/README.md) |
 
 ---
 
-**Versi**: 3.2.5  
-**Status**: ✅ Siap Produksi  
-**Pembaruan Terakhir**: 16 Oktober 2025
+## Mendukung
+
+Untuk bantuan teknis:
+- Dokumentasi: [README utama](../../../README.md)
+- Pelacak Masalah: Masalah GitHub
+- Forum komunitas: Diskusi GitHub
+- Email: support@example.com
+
+---
+
+**[Kembali ke dokumentasi utama](../../../README.md)**

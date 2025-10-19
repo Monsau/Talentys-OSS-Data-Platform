@@ -1,119 +1,144 @@
-﻿# Dremio + dbt + OpenMetadata - 문서 (한국어)
+﻿# ë°ì´í„° í”Œëž«í¼
 
-**버전**: 3.2.5  
-**최종 업데이트**: 2025년 10월 16일  
-**언어**: 한국어 🇰🇷
+<p align="center">
+  <a href="https://talentys.eu" target="_blank">
+    <img src="../../assets/images/talentys/original.png" alt="Talentys Data" width="200"/>
+  </a>
+  <br/>
+  <em>Supported by <a href="https://talentys.eu">Talentys</a> | <a href="https://www.linkedin.com/company/talentysdata">LinkedIn</a> - Data Engineering & Analytics Excellence</em>
+</p>
 
----
 
-## 📚 개요
+**ì—”í„°í”„ë¼ì´ì¦ˆ ë°ì´í„° ë ˆì´í¬í•˜ìš°ìŠ¤ ì†”ë£¨ì…˜**
 
-Dremio + dbt + OpenMetadata 데이터 플랫폼 한국어 문서에 오신 것을 환영합니다. 이 문서는 플랫폼의 설정, 구성 및 사용에 대한 포괄적인 가이드를 제공합니다.
-
----
-
-## 🗺️ 문서 구조
-
-### 📐 아키텍처
-
-- **[Dremio 포트 - 시각적 가이드](./architecture/dremio-ports-visual.md)** ⭐ 새로운!
-  - 3개의 Dremio 포트(9047, 31010, 32010)에 대한 완전한 시각적 가이드
-  - PostgreSQL 프록시 상세 아키텍처
-  - 성능 비교 및 벤치마크
-  - 사용 사례 및 의사 결정 트리
-  - 연결 예제: psql, DBeaver, Python, Java, ODBC
-  - Docker Compose 구성
-  - 456 줄 | 8+ Mermaid 다이어그램 | 5개 코드 예제
+**ì–¸ì–´**: í”„ëž‘ìŠ¤ì–´(í”„ëž‘ìŠ¤ì–´)  
+**ë²„ì „**: 3.3.1  
+**ìµœì¢… ì—…ë°ì´íŠ¸**: 2025ë…„ 10ì›” 19ì¼
 
 ---
 
-## 🌍 사용 가능한 언어
+## ê°œìš”
 
-이 문서는 여러 언어로 제공됩니다:
+ì—”í„°í”„ë¼ì´ì¦ˆê¸‰ ë°ì´í„° ë³€í™˜, í’ˆì§ˆ ë³´ì¦ ë° ë¹„ì¦ˆë‹ˆìŠ¤ ì¸í…”ë¦¬ì „ìŠ¤ë¥¼ ìœ„í•´ Dremio, dbt ë° Apache Supersetì„ ê²°í•©í•œ ì „ë¬¸ ë°ì´í„° í”Œëž«í¼ìž…ë‹ˆë‹¤.
 
-- 🇫🇷 **[Français](../fr/README.md)** - 전체 문서 (22개 파일)
-- 🇬🇧 **[English](../../../README.md)** - 전체 문서 (19개 파일)
-- 🇪🇸 **[Español](../es/README.md)** - 시각적 가이드
-- 🇵🇹 **[Português](../pt/README.md)** - 시각적 가이드
-- 🇨🇳 **[中文](../cn/README.md)** - 시각적 가이드
-- 🇯🇵 **[日本語](../jp/README.md)** - 시각적 가이드
-- 🇷🇺 **[Русский](../ru/README.md)** - 시각적 가이드
-- 🇸🇦 **[العربية](../ar/README.md)** - 시각적 가이드
-- 🇩🇪 **[Deutsch](../de/README.md)** - 시각적 가이드
-- 🇰🇷 **[한국어](../ko/README.md)** - 시각적 가이드 ⭐ 현재 위치
-- 🇮🇳 **[हिन्दी](../hi/README.md)** - 시각적 가이드
-- 🇮🇩 **[Indonesia](../id/README.md)** - 시각적 가이드
-- 🇹🇷 **[Türkçe](../tr/README.md)** - 시각적 가이드
-- 🇻🇳 **[Tiếng Việt](../vi/README.md)** - 시각적 가이드
-- 🇮🇹 **[Italiano](../it/README.md)** - 시각적 가이드
-- 🇳🇱 **[Nederlands](../nl/README.md)** - 시각적 가이드
-- 🇵🇱 **[Polski](../pl/README.md)** - 시각적 가이드
-- 🇸🇪 **[Svenska](../se/README.md)** - 시각적 가이드
+ì´ í”Œëž«í¼ì€ ìžë™í™”ëœ ë°ì´í„° íŒŒì´í”„ë¼ì¸, í’ˆì§ˆ í…ŒìŠ¤íŠ¸ ë° ëŒ€í™”í˜• ëŒ€ì‹œë³´ë“œë¥¼ í¬í•¨í•˜ì—¬ ìµœì‹  ë°ì´í„° ì—”ì§€ë‹ˆì–´ë§ì„ ìœ„í•œ ì™„ë²½í•œ ì†”ë£¨ì…˜ì„ ì œê³µí•©ë‹ˆë‹¤.
 
----
-
-## 🚀 빠른 시작
-
-### 사전 요구사항
-
-- Docker & Docker Compose
-- Python 3.11+
-- Git
-
-### 설치
-
-```bash
-# 저장소 복제
-git clone <repository-url>
-cd dremiodbt
-
-# Docker 서비스 시작
-docker-compose up -d
-
-# 웹 UI 열기
-# Dremio: http://localhost:9047
-# OpenMetadata: http://localhost:8585
+```mermaid
+graph LR
+    A[Sources de donnÃ©es] --> B[Dremio]
+    B --> C[dbt]
+    C --> D[Superset]
+    D --> E[Insights mÃ©tier]
+    
+    style B fill:#f5f5f5,stroke:#333,stroke-width:2px
+    style C fill:#e8e8e8,stroke:#333,stroke-width:2px
+    style D fill:#d8d8d8,stroke:#333,stroke-width:2px
 ```
 
-자세한 설치 지침은 [영문 문서](../en/getting-started/installation.md)를 참조하세요.
+---
+
+## ì£¼ìš” ê¸°ëŠ¥
+
+- Dremioë¥¼ ì‚¬ìš©í•œ ë°ì´í„° ë ˆì´í¬í•˜ìš°ìŠ¤ ì•„í‚¤í…ì²˜
+- dbtë¥¼ ì´ìš©í•œ ìžë™ ë³€í™˜
+- Apache Supersetì„ í†µí•œ ë¹„ì¦ˆë‹ˆìŠ¤ ì¸í…”ë¦¬ì „ìŠ¤
+- ì¢…í•©ì ì¸ ë°ì´í„° í’ˆì§ˆ í…ŒìŠ¤íŠ¸
+- Arrow Flightë¥¼ í†µí•œ ì‹¤ì‹œê°„ ë™ê¸°í™”
 
 ---
 
-## 📖 주요 리소스
+## ë¹ ë¥¸ ì‹œìž‘ ê°€ì´ë“œ
 
-### Dremio 포트 - 빠른 참조
+### ì „ì œì¡°ê±´
 
-| 포트 | 프로토콜 | 사용 | 성능 |
-|------|-----------|------------|----------|
-| **9047** | REST API | 웹 UI, 관리 | ⭐⭐ 표준 |
-| **31010** | PostgreSQL Wire | BI 도구, 마이그레이션 | ⭐⭐⭐ 양호 |
-| **32010** | Arrow Flight | dbt, Superset, 고성능 | ⭐⭐⭐⭐⭐ 최대 |
+- ë„ì»¤ 20.10 ì´ìƒ
+- Docker Compose 2.0 ì´ìƒ
+- íŒŒì´ì¬ 3.11 ì´ìƒ
+- ìµœì†Œ 8GB RAM
 
-**→ [전체 시각적 가이드](./architecture/dremio-ports-visual.md)**
+### ì‹œì„¤
 
----
+```bash
+# Installer les dÃ©pendances
+pip install -r requirements.txt
 
-## 🔗 외부 링크
+# DÃ©marrer les services
+make up
 
-- **Dremio 문서**: https://docs.dremio.com/
-- **dbt 문서**: https://docs.getdbt.com/
-- **OpenMetadata 문서**: https://docs.open-metadata.org/
-- **Apache Arrow Flight**: https://arrow.apache.org/docs/format/Flight.html
+# VÃ©rifier l'installation
+make status
 
----
-
-## 🤝 기여
-
-기여를 환영합니다! [기여 가이드라인](../en/CONTRIBUTING.md)을 참조하세요.
+# ExÃ©cuter les tests de qualitÃ©
+make dbt-test
+```
 
 ---
 
-## 📄 라이선스
+## ê±´ì¶•í•™
 
-이 프로젝트는 [MIT 라이선스](../../../LICENSE)에 따라 라이선스가 부여됩니다.
+### ì‹œìŠ¤í…œ êµ¬ì„±ìš”ì†Œ
+
+| êµ¬ì„±ìš”ì†Œ | í¬íŠ¸ | ì„¤ëª… |
+|---------------|------|---------------|
+| ë“œë ˆë¯¸ì˜¤ | 9047, 31010, 32010 | ë°ì´í„° ë ˆì´í¬í•˜ìš°ìŠ¤ í”Œëž«í¼ |
+| DBT | - | ë°ì´í„° ë³€í™˜ ë„êµ¬ |
+| ìŠˆí¼ì„¸íŠ¸ | 8088 | ë¹„ì¦ˆë‹ˆìŠ¤ ì¸í…”ë¦¬ì „ìŠ¤ í”Œëž«í¼ |
+| í¬ìŠ¤íŠ¸ê·¸ë ˆSQL | 5432 | íŠ¸ëžœìž­ì…˜ ë°ì´í„°ë² ì´ìŠ¤ |
+| ë¯¸ë‹ˆIO | 9000, 9001 | ê°ì²´ ìŠ¤í† ë¦¬ì§€(S3 í˜¸í™˜) |
+| ì—˜ë¼ìŠ¤í‹±ì„œì¹˜ | 9200 | ê²€ìƒ‰ ë° ë¶„ì„ ì—”ì§„ |
+
+ìžì„¸í•œ ì‹œìŠ¤í…œ ì„¤ê³„ëŠ” [ì•„í‚¤í…ì²˜ ë¬¸ì„œ](architecture/)ë¥¼ ì°¸ì¡°í•˜ì„¸ìš”.
 
 ---
 
-**버전**: 3.2.5  
-**상태**: ✅ 프로덕션 준비 완료  
-**최종 업데이트**: 2025년 10월 16일
+## ë¬¸ì„œ
+
+### ìŠ¤íƒ€íŠ¸ì—…
+- [ì„¤ì¹˜ ê°€ì´ë“œ](ì‹œìž‘í•˜ê¸°/)
+- [êµ¬ì„±](ì‹œìž‘í•˜ê¸°/)
+- [ì‹œìž‘í•˜ê¸°](ì‹œìž‘í•˜ê¸°/)
+
+### ì‚¬ìš©ìž ê°€ì´ë“œ
+- [ë°ì´í„° ì—”ì§€ë‹ˆì–´ë§](ì•ˆë‚´/)
+- [ëŒ€ì‹œë³´ë“œ ìƒì„±](guides/)
+- [API í†µí•©](ì•ˆë‚´/)
+
+### API ë¬¸ì„œ
+- [REST API ì°¸ì¡°](api/)
+- [ì¸ì¦](api/)
+- [ì½”ë“œ ì˜ˆì‹œ](api/)
+
+### ì•„í‚¤í…ì²˜ ë¬¸ì„œ
+- [ì‹œìŠ¤í…œ ì„¤ê³„](ì•„í‚¤í…ì²˜/)
+- [ë°ì´í„° íë¦„](ì•„í‚¤í…ì²˜/)
+- [ë°°í¬ ê°€ì´ë“œ](ì•„í‚¤í…ì²˜/)
+- [ðŸŽ¯ Dremio í¬íŠ¸ ë¹„ì£¼ì–¼ ê°€ì´ë“œ](architecture/dremio-ports-visual.md) â­ NEW
+
+---
+
+## ì‚¬ìš© ê°€ëŠ¥í•œ ì–¸ì–´
+
+| ì–¸ì–´ | ì½”ë“œ | ë¬¸ì„œ |
+|---------|------|---------------|
+| ì˜ì–´ | KO | [README.md](../../../README.md) |
+| í”„ëž‘ìŠ¤ì–´ | KO | [docs/i18n/fr/](../fr/README.md) |
+| ìŠ¤íŽ˜ì¸ì–´ | ES | [ë¬¸ì„œ/i18n/es/](../es/README.md) |
+| í¬ë¥´íˆ¬ê°ˆì–´ | íƒœí‰ì–‘ í‘œì¤€ì‹œ | [docs/i18n/pt/](../pt/README.md) |
+| ì•„ëžì–´ | ì•„ì¹¸ì†Œ | [ë¬¸ì„œ/i18n/ar/](../ar/README.md) |
+| ì¤‘êµ­ì–´ | ì¤‘êµ­ | [ë¬¸ì„œ/i18n/cn/](../cn/README.md) |
+| ì¼ë³¸ì–´ | ì¼ë³¸ | [docs/i18n/jp/](../jp/README.md) |
+| ëŸ¬ì‹œì•„ì–´ | ì˜êµ­ | [docs/i18n/ru/](../ru/README.md) |
+
+---
+
+## ì§€ì›í•˜ë‹¤
+
+ê¸°ìˆ  ì§€ì›ì„ ë°›ìœ¼ë ¤ë©´:
+- ë¬¸ì„œ: [README ë©”ì¸](../../../README.md)
+- ì´ìŠˆ íŠ¸ëž˜ì»¤: GitHub ì´ìŠˆ
+- ì»¤ë®¤ë‹ˆí‹° í¬ëŸ¼: GitHub í† ë¡ 
+- ì´ë©”ì¼: support@example.com
+
+---
+
+**[ê¸°ë³¸ ë¬¸ì„œë¡œ ëŒì•„ê°€ê¸°](../../../README.md)**

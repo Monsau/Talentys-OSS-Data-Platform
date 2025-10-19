@@ -1,40 +1,40 @@
-# Dremio 端口可视化指南
+# Dremio Ports 视觉指南
 
-**版本**: 3.2.5  
-**最后更新**: 2025年10月16日  
-**语言**: 中文
+**版本**：3.2.3  
+**最后更新**：2025 年 10 月 16 日  
+**语言**：法语
 
 ---
 
-## Dremio 三个端口概览
+## 3 个 Dremio 端口概述
 
 ```mermaid
 graph TB
-    subgraph "端口 9047 - REST API"
+    subgraph "Port 9047 - REST API"
         direction TB
-        A1[🌐 Web UI 界面]
-        A2[🔧 管理配置]
-        A3[📊 监控]
-        A4[🔐 身份验证]
+        A1[🌐 Interface Web UI]
+        A2[🔧 Administration]
+        A3[📊 Monitoring]
+        A4[🔐 Authentification]
     end
     
-    subgraph "端口 31010 - PostgreSQL 代理"
+    subgraph "Port 31010 - Proxy PostgreSQL"
         direction TB
-        B1[💼 传统 BI 工具]
-        B2[🔌 标准 JDBC/ODBC]
-        B3[🐘 PostgreSQL 兼容]
-        B4[🔄 轻松迁移]
+        B1[💼 Outils BI Legacy]
+        B2[🔌 JDBC/ODBC Standard]
+        B3[🐘 Compatibilité PostgreSQL]
+        B4[🔄 Migration Facile]
     end
     
-    subgraph "端口 32010 - Arrow Flight"
+    subgraph "Port 32010 - Arrow Flight"
         direction TB
-        C1[⚡ 最大性能]
+        C1[⚡ Performance Max]
         C2[🎯 dbt Core]
         C3[📈 Apache Superset]
         C4[🐍 Python pyarrow]
     end
     
-    D[🗄️ Dremio 协调器<br/>Dremio 26.0 OSS]
+    D[🗄️ Dremio Coordinateur<br/>Dremio 26.0 OSS]
     
     A1 & A2 & A3 & A4 --> D
     B1 & B2 & B3 & B4 --> D
@@ -63,13 +63,13 @@ graph TB
 
 ---
 
-## PostgreSQL 代理详细架构
+## PostgreSQL 代理的详细架构
 
-### 客户端 → Dremio 连接流程
+### 客户连接流程 → Dremio
 
 ```mermaid
 graph LR
-    subgraph "客户端应用"
+    subgraph "Applications Clientes"
         direction TB
         A1[psql CLI]
         A2[DBeaver]
@@ -79,22 +79,22 @@ graph LR
         A6[Tableau Desktop]
     end
     
-    subgraph "PostgreSQL Wire 协议"
-        P[端口 31010<br/>PostgreSQL 代理]
+    subgraph "Protocole PostgreSQL Wire"
+        P[Port 31010<br/>Proxy PostgreSQL]
     end
     
-    subgraph "Dremio 引擎"
+    subgraph "Moteur Dremio"
         direction TB
-        M1[SQL 解析器]
-        M2[优化器]
-        M3[执行器]
+        M1[Parser SQL]
+        M2[Optimiseur]
+        M3[Exécuteur]
     end
     
-    subgraph "数据源"
+    subgraph "Sources de Données"
         direction TB
-        S1[📦 Parquet 文件<br/>MinIO S3]
-        S2[💾 PostgreSQL 表]
-        S3[🔍 Elasticsearch 索引]
+        S1[📦 Fichiers Parquet<br/>MinIO S3]
+        S2[💾 Tables PostgreSQL]
+        S3[🔍 Index Elasticsearch]
     end
     
     A1 & A2 & A3 --> P
@@ -114,34 +114,34 @@ graph LR
 
 ---
 
-## 性能对比
+## 性能比较
 
-### 基准测试：扫描 100 GB 数据
+### 基准：扫描 100 GB 数据
 
 ```mermaid
 gantt
-    title 各协议执行时间（秒）
+    title Temps d'Exécution par Protocole (secondes)
     dateFormat X
-    axisFormat %s 秒
+    axisFormat %s sec
     
     section REST API :9047
-    传输 100 GB     :0, 180
+    Transfert 100 GB     :0, 180
     
     section PostgreSQL :31010
-    传输 100 GB     :0, 90
+    Transfert 100 GB     :0, 90
     
     section Arrow Flight :32010
-    传输 100 GB     :0, 5
+    Transfert 100 GB     :0, 5
 ```
 
-### 数据吞吐量
+### 数据速率
 
 ```mermaid
 graph LR
-    subgraph "各协议网络性能"
-        A["端口 9047<br/>REST API<br/>📊 ~500 MB/s<br/>⏱️ 标准"]
-        B["端口 31010<br/>PostgreSQL Wire<br/>📊 ~1-2 GB/s<br/>⏱️ 良好"]
-        C["端口 32010<br/>Arrow Flight<br/>📊 ~20 GB/s<br/>⏱️ 优秀"]
+    subgraph "Débit Réseau par Protocole"
+        A["Port 9047<br/>REST API<br/>📊 ~500 MB/s<br/>⏱️ Standard"]
+        B["Port 31010<br/>PostgreSQL Wire<br/>📊 ~1-2 GB/s<br/>⏱️ Bon"]
+        C["Port 32010<br/>Arrow Flight<br/>📊 ~20 GB/s<br/>⏱️ Excellent"]
     end
     
     style A fill:#FF9800,color:#fff
@@ -151,35 +151,35 @@ graph LR
 
 ### 简单查询延迟
 
-| 协议 | 端口 | 平均延迟 | 网络开销 |
-|----------|------|----------------|------------------|
-| **REST API** | 9047 | 50-100 毫秒 | JSON（冗长） |
-| **PostgreSQL 代理** | 31010 | 20-50 毫秒 | Wire Protocol（紧凑） |
-| **Arrow Flight** | 32010 | 5-10 毫秒 | Apache Arrow（二进制列式） |
+|协议|港口|平均延迟 |网络开销|
+|----------------|------|-----------------|-----------------|
+| **REST API** | 9047 | 9047 50-100 毫秒 | JSON（详细）|
+| **PostgreSQL 代理** | 31010| 20-50 毫秒 |有线协议（紧凑）|
+| **箭飞行** | 32010| 5-10 毫秒 |阿帕奇箭（二元柱状）|
 
 ---
 
-## 各端口使用场景
+## 按端口划分的用例
 
 ### 端口 9047 - REST API
 
 ```mermaid
 graph TB
-    A[端口 9047<br/>REST API]
+    A[Port 9047<br/>REST API]
     
-    A --> B1[🌐 Web 浏览器界面]
-    A --> B2[🔧 服务配置]
-    A --> B3[👤 用户管理]
-    A --> B4[📊 监控面板]
-    A --> B5[🔐 OAuth/SAML 登录]
+    A --> B1[🌐 Interface Web Browser]
+    A --> B2[🔧 Configuration Services]
+    A --> B3[👤 Gestion Utilisateurs]
+    A --> B4[📊 Monitoring Dashboards]
+    A --> B5[🔐 OAuth/SAML Login]
     
-    B1 --> C1[创建空间/文件夹]
-    B1 --> C2[定义 VDS]
-    B1 --> C3[探索数据集]
+    B1 --> C1[Créer Spaces/Folders]
+    B1 --> C2[Définir VDS]
+    B1 --> C3[Explorer Datasets]
     
-    B2 --> C4[添加数据源]
-    B2 --> C5[配置 Reflections]
-    B2 --> C6[系统配置]
+    B2 --> C4[Ajouter Sources]
+    B2 --> C5[Configurer Reflections]
+    B2 --> C6[Paramètres Système]
     
     style A fill:#4CAF50,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#81C784,color:#fff
@@ -193,23 +193,23 @@ graph TB
 
 ```mermaid
 graph TB
-    A[端口 31010<br/>PostgreSQL 代理]
+    A[Port 31010<br/>Proxy PostgreSQL]
     
-    A --> B1[💼 传统 BI 工具]
-    A --> B2[🔄 PostgreSQL 迁移]
-    A --> B3[🔌 标准驱动程序]
+    A --> B1[💼 Outils BI Legacy]
+    A --> B2[🔄 Migration PostgreSQL]
+    A --> B3[🔌 Drivers Standard]
     
-    B1 --> C1[Tableau Desktop<br/>无 Arrow Flight]
+    B1 --> C1[Tableau Desktop<br/>sans Arrow Flight]
     B1 --> C2[Power BI Desktop<br/>ODBC]
     B1 --> C3[QlikView<br/>JDBC PostgreSQL]
     
-    B2 --> D1[现有 JDBC 代码<br/>无需修改]
-    B2 --> D2[psql 脚本<br/>100% 兼容]
-    B2 --> D3[Python 应用<br/>psycopg2]
+    B2 --> D1[Code JDBC existant<br/>aucune modification]
+    B2 --> D2[Scripts psql<br/>compatibles 100%]
+    B2 --> D3[Applications Python<br/>psycopg2]
     
     B3 --> E1[PostgreSQL ODBC Driver]
     B3 --> E2[PostgreSQL JDBC Driver]
-    B3 --> E3[操作系统原生驱动]
+    B3 --> E3[Pilotes natifs OS]
     
     style A fill:#336791,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#5C6BC0,color:#fff
@@ -217,27 +217,27 @@ graph TB
     style B3 fill:#5C6BC0,color:#fff
 ```
 
-### 端口 32010 - Arrow Flight
+### 端口 32010 - 箭飞行
 
 ```mermaid
 graph TB
-    A[端口 32010<br/>Arrow Flight]
+    A[Port 32010<br/>Arrow Flight]
     
-    A --> B1[⚡ 最大性能]
-    A --> B2[🎯 现代工具]
-    A --> B3[🐍 Python 生态]
+    A --> B1[⚡ Performance Maximale]
+    A --> B2[🎯 Outils Modernes]
+    A --> B3[🐍 Python Ecosystem]
     
-    B1 --> C1[TB/PB 扫描]
-    B1 --> C2[大规模聚合]
-    B1 --> C3[零拷贝传输]
+    B1 --> C1[Scans de TB/PB]
+    B1 --> C2[Agrégations Massives]
+    B1 --> C3[Transferts Zero-Copy]
     
     B2 --> D1[dbt Core<br/>profiles.yml]
     B2 --> D2[Apache Superset<br/>Database Config]
     B2 --> D3[Jupyter Notebooks<br/>pandas/polars]
     
-    B3 --> E1[pyarrow 库]
+    B3 --> E1[pyarrow Library]
     B3 --> E2[pandas via Arrow]
-    B3 --> E3[Polars 集成]
+    B3 --> E3[Polars Integration]
     
     style A fill:#FF5722,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#FF7043,color:#fff
@@ -251,27 +251,27 @@ graph TB
 
 ```mermaid
 graph TB
-    Start[我需要连接到 Dremio]
+    Start[Besoin de se connecter à Dremio]
     
-    Start --> Q1{应用类型？}
+    Start --> Q1{Type d'application ?}
     
-    Q1 -->|Web 界面<br/>管理| Port9047[✅ 端口 9047<br/>REST API]
+    Q1 -->|Interface Web<br/>Administration| Port9047[✅ Port 9047<br/>REST API]
     
-    Q1 -->|BI 工具/SQL 客户端| Q2{支持 Arrow Flight？}
+    Q1 -->|Outil BI/Client SQL| Q2{Supporte Arrow Flight ?}
     
-    Q2 -->|否<br/>传统工具| Port31010[✅ 端口 31010<br/>PostgreSQL 代理]
-    Q2 -->|是<br/>现代工具| Q3{性能关键？}
+    Q2 -->|Non<br/>Legacy Tool| Port31010[✅ Port 31010<br/>Proxy PostgreSQL]
+    Q2 -->|Oui<br/>Modern Tool| Q3{Performance critique ?}
     
-    Q3 -->|是<br/>生产环境| Port32010[✅ 端口 32010<br/>Arrow Flight]
-    Q3 -->|否<br/>开发/测试| Port31010b[⚠️ 端口 31010<br/>更简单]
+    Q3 -->|Oui<br/>Production| Port32010[✅ Port 32010<br/>Arrow Flight]
+    Q3 -->|Non<br/>Dev/Test| Port31010b[⚠️ Port 31010<br/>Plus facile]
     
-    Q1 -->|自定义应用| Q4{编程语言？}
+    Q1 -->|Application Custom| Q4{Langage ?}
     
-    Q4 -->|Python/Java| Q5{性能重要？}
-    Q5 -->|是| Port32010b[✅ 端口 32010<br/>Arrow Flight]
-    Q5 -->|否| Port31010c[✅ 端口 31010<br/>JDBC/psycopg2]
+    Q4 -->|Python/Java| Q5{Performance importante ?}
+    Q5 -->|Oui| Port32010b[✅ Port 32010<br/>Arrow Flight]
+    Q5 -->|Non| Port31010c[✅ Port 31010<br/>JDBC/psycopg2]
     
-    Q4 -->|其他<br/>Go/Rust/.NET| Port31010d[✅ 端口 31010<br/>PostgreSQL Wire]
+    Q4 -->|Autre<br/>Go/Rust/.NET| Port31010d[✅ Port 31010<br/>PostgreSQL Wire]
     
     style Start fill:#2196F3,color:#fff
     style Port9047 fill:#4CAF50,color:#fff,stroke:#000,stroke-width:2px
@@ -287,17 +287,17 @@ graph TB
 
 ## PostgreSQL 代理连接示例
 
-### 1. psql CLI
+### 1.psql CLI
 
 ```bash
-# 简单连接
+# Connexion simple
 psql -h localhost -p 31010 -U admin -d datalake
 
-# 直接查询
+# Avec requête directe
 psql -h localhost -p 31010 -U admin -d datalake \
   -c "SELECT COUNT(*) FROM MinIO.datalake.customers;"
 
-# 交互模式
+# Mode interactif
 $ psql -h localhost -p 31010 -U admin -d datalake
 Password for user admin: ****
 psql (16.0, server 26.0)
@@ -314,64 +314,64 @@ datalake=> \dt
 datalake=> SELECT customer_id, name, state FROM customers LIMIT 5;
 ```
 
-### 2. DBeaver 配置
+### 2.DBeaver配置
 
 ```yaml
-连接类型: PostgreSQL
-连接名称: Dremio via PostgreSQL Proxy
+Connection Type: PostgreSQL
+Connection Name: Dremio via PostgreSQL Proxy
 
-主要:
-  主机: localhost
-  端口: 31010
-  数据库: datalake
-  用户名: admin
-  密码: [你的密码]
+Main:
+  Host: localhost
+  Port: 31010
+  Database: datalake
+  Username: admin
+  Password: [votre-mot-de-passe]
   
-驱动属性:
+Driver Properties:
   ssl: false
   
-高级:
-  连接超时: 30000
-  查询超时: 0
+Advanced:
+  Connection timeout: 30000
+  Query timeout: 0
 ```
 
-### 3. Python psycopg2
+### 3.Python 与 psycopg2
 
 ```python
 import psycopg2
 from psycopg2 import sql
 
-# 连接
+# Connexion
 conn = psycopg2.connect(
     host="localhost",
     port=31010,
     database="datalake",
     user="admin",
-    password="你的密码"
+    password="votre-mot-de-passe"
 )
 
-# 游标
+# Cursor
 cursor = conn.cursor()
 
-# 简单查询
+# Requête simple
 cursor.execute("SELECT * FROM MinIO.datalake.customers LIMIT 10")
 rows = cursor.fetchall()
 
 for row in rows:
     print(row)
 
-# 参数化查询
+# Requête avec paramètres
 query = sql.SQL("SELECT * FROM {} WHERE state = %s").format(
     sql.Identifier("MinIO", "datalake", "customers")
 )
 cursor.execute(query, ("CA",))
 
-# 关闭
+# Fermeture
 cursor.close()
 conn.close()
 ```
 
-### 4. Java JDBC
+### 4.Java JDBC
 
 ```java
 import java.sql.*;
@@ -380,7 +380,7 @@ public class DremioPostgreSQLProxy {
     public static void main(String[] args) {
         String url = "jdbc:postgresql://localhost:31010/datalake";
         String user = "admin";
-        String password = "你的密码";
+        String password = "votre-mot-de-passe";
         
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
             Statement stmt = conn.createStatement();
@@ -404,7 +404,7 @@ public class DremioPostgreSQLProxy {
 }
 ```
 
-### 5. ODBC 连接字符串 (DSN)
+### 5.ODBC 字符串 (DSN)
 
 ```ini
 [ODBC Data Sources]
@@ -417,7 +417,7 @@ Server=localhost
 Port=31010
 Database=datalake
 Username=admin
-Password=你的密码
+Password=votre-mot-de-passe
 SSLMode=disable
 Protocol=7.4
 ```
@@ -434,13 +434,13 @@ services:
     image: dremio/dremio-oss:26.0
     container_name: dremio
     ports:
-      # 端口 9047 - REST API / Web UI
+      # Port 9047 - REST API / Web UI
       - "9047:9047"
       
-      # 端口 31010 - PostgreSQL 代理 (ODBC/JDBC)
+      # Port 31010 - Proxy PostgreSQL (ODBC/JDBC)
       - "31010:31010"
       
-      # 端口 32010 - Arrow Flight (高性能)
+      # Port 32010 - Arrow Flight (Performance)
       - "32010:32010"
     environment:
       - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Xms4g -Xmx8g
@@ -450,19 +450,19 @@ services:
       - data-platform
 ```
 
-### 端口验证
+### 端口检查
 
 ```bash
-# 检查三个端口是否开放
+# Vérifier que les 3 ports sont ouverts
 netstat -an | grep -E '9047|31010|32010'
 
-# 测试 REST API
+# Tester REST API
 curl -v http://localhost:9047
 
-# 测试 PostgreSQL 代理
+# Tester Proxy PostgreSQL
 psql -h localhost -p 31010 -U admin -d datalake -c "SELECT 1;"
 
-# 测试 Arrow Flight (使用 Python)
+# Tester Arrow Flight (avec Python)
 python3 -c "
 from pyarrow import flight
 client = flight.connect('grpc://localhost:32010')
@@ -472,33 +472,33 @@ print('Arrow Flight OK')
 
 ---
 
-## 快速视觉摘要
+## 快速视觉总结
 
-### 三个端口一览
+### 3 个端口一览
 
-| 端口 | 协议 | 主要用途 | 性能 | 兼容性 |
-|------|-----------|-------------|------------|----------------|
-| **9047** | REST API | 🌐 Web UI, 管理 | ⭐⭐ 标准 | ⭐⭐⭐ 通用 |
-| **31010** | PostgreSQL Wire | 💼 BI 工具, 迁移 | ⭐⭐⭐ 良好 | ⭐⭐⭐ 优秀 |
-| **32010** | Arrow Flight | ⚡ 生产, dbt, Superset | ⭐⭐⭐⭐⭐ 最高 | ⭐⭐ 受限 |
+|港口|协议|主要用途|性能|兼容性 |
+|------|----------|------------------------|--------------|---------------|
+| **9047** |休息 API | 🌐 Web 界面，管理 | ⭐⭐标准| ⭐⭐⭐ 通用 |
+| **31010** | PostgreSQL 连线 | 💼 BI 工具、迁移 | ⭐⭐⭐ 好 | ⭐⭐⭐ 优秀|
+| **32010** |箭飞行 | ⚡ 制作、dbt、超级组 | ⭐⭐⭐⭐⭐ 最大| ⭐⭐ 有限公司 |
 
 ### 选择矩阵
 
 ```mermaid
 graph TB
-    subgraph "选择指南"
-        A["🎯 使用场景"]
+    subgraph "Guide de Sélection"
+        A["🎯 Cas d'Usage"]
         
-        A --> B1["Web 界面<br/>配置"]
-        A --> B2["传统 BI 工具<br/>无 Arrow Flight"]
-        A --> B3["PostgreSQL 迁移<br/>现有 JDBC 代码"]
-        A --> B4["dbt, Superset<br/>生产环境"]
-        A --> B5["Python pyarrow<br/>分析"]
+        A --> B1["Interface Web<br/>Configuration"]
+        A --> B2["Outil BI Legacy<br/>Sans Arrow Flight"]
+        A --> B3["Migration PostgreSQL<br/>Code JDBC existant"]
+        A --> B4["dbt, Superset<br/>Production"]
+        A --> B5["Python pyarrow<br/>Analytique"]
         
-        B1 --> C1["端口 9047<br/>REST API"]
-        B2 --> C2["端口 31010<br/>PostgreSQL"]
+        B1 --> C1["Port 9047<br/>REST API"]
+        B2 --> C2["Port 31010<br/>PostgreSQL"]
         B3 --> C2
-        B4 --> C3["端口 32010<br/>Arrow Flight"]
+        B4 --> C3["Port 32010<br/>Arrow Flight"]
         B5 --> C3
     end
     
@@ -510,22 +510,22 @@ graph TB
 
 ---
 
-## 附加资源
+## 其他资源
 
 ### 相关文档
 
-- [架构 - 组件](./components.md) - "Dremio PostgreSQL 代理"部分
-- [指南 - Dremio 设置](../guides/dremio-setup.md) - "通过 PostgreSQL 代理连接"部分
-- [配置 - Dremio](../getting-started/configuration.md) - `dremio.conf` 配置
+- [架构 - 组件](./components.md) - “Dremio 的 PostgreSQL 代理”部分
+- [指南 - 设置 Dremio](../guides/dremio-setup.md) - “通过 PostgreSQL 代理连接”部分
+- [配置 - Dremio](../getting-started/configuration.md) - 参数 `dremio.conf`
 
 ### 官方链接
 
-- **Dremio 文档**: https://docs.dremio.com/
-- **PostgreSQL Wire 协议**: https://www.postgresql.org/docs/current/protocol.html
-- **Apache Arrow Flight**: https://arrow.apache.org/docs/format/Flight.html
+- **Dremio 文档**：https://docs.dremio.com/
+- **PostgreSQL 有线协议**：https://www.postgresql.org/docs/current/protocol.html
+- **阿帕奇箭飞行**：https://arrow.apache.org/docs/format/Flight.html
 
 ---
 
-**版本**: 3.2.5  
-**最后更新**: 2025年10月16日  
-**状态**: ✅ 完成
+**版本**：3.2.3  
+**最后更新**：2025 年 10 月 16 日  
+**状态**： ✅ 完成

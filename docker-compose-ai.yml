@@ -1,0 +1,187 @@
+version: '3.8'
+
+services:
+  # MinIO - S3-compatible object storage for document archival (AI Services)
+  minio-ai-service:
+    image: minio/minio:latest
+    container_name: minio-ai
+    command: server /data --console-address ":9001"
+    ports:
+      - "9002:9000"   # API endpoint (external:internal)
+      - "9003:9001"   # Web console (external:internal)
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - ./minio/data:/data
+    networks:
+      - ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    restart: unless-stopped
+
+  # Ollama - Local LLM server
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ./ai-services/ollama/models:/root/.ollama
+    networks:
+      - ai-network
+    restart: unless-stopped
+
+  # Milvus Standalone - Vector database
+  milvus-etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    container_name: milvus-etcd
+    environment:
+      - ETCD_AUTO_COMPACTION_MODE=revision
+      - ETCD_AUTO_COMPACTION_RETENTION=1000
+      - ETCD_QUOTA_BACKEND_BYTES=4294967296
+      - ETCD_SNAPSHOT_COUNT=50000
+    volumes:
+      - ./ai-services/milvus/etcd:/etcd
+    command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
+    networks:
+      - ai-network
+    restart: unless-stopped
+
+  milvus-minio:
+    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
+    container_name: milvus-minio
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+    volumes:
+      - ./ai-services/milvus/minio:/minio_data
+    command: minio server /minio_data
+    networks:
+      - ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    restart: unless-stopped
+
+  milvus:
+    image: milvusdb/milvus:v2.3.3
+    container_name: milvus
+    command: ["milvus", "run", "standalone"]
+    environment:
+      ETCD_ENDPOINTS: milvus-etcd:2379
+      MINIO_ADDRESS: milvus-minio:9000
+    volumes:
+      - ./ai-services/milvus/data:/var/lib/milvus
+    ports:
+      - "19530:19530"  # gRPC
+      - "9091:9091"    # Metrics
+    depends_on:
+      - milvus-etcd
+      - milvus-minio
+    networks:
+      - ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/healthz"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    restart: unless-stopped
+
+  # Embedding Service - Text embeddings for RAG
+  embedding-service:
+    build:
+      context: ./ai-services/embedding
+      dockerfile: Dockerfile
+    container_name: embedding-service
+    ports:
+      - "8001:8001"
+    environment:
+      - MODEL_NAME=all-MiniLM-L6-v2
+      - EMBEDDING_DIM=384
+      - MAX_SEQ_LENGTH=512
+    volumes:
+      - ./ai-services/embedding/models:/models
+    networks:
+      - ai-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # RAG API - Retrieval-Augmented Generation service
+  rag-api:
+    build:
+      context: ./ai-services/rag-api
+      dockerfile: Dockerfile
+    container_name: rag-api
+    ports:
+      - "8002:8002"
+    environment:
+      # LLM Configuration
+      - OLLAMA_URL=http://ollama:11434
+      - LLM_MODEL=llama3.1
+      - LLM_TEMPERATURE=0.7
+      - LLM_MAX_TOKENS=2048
+      
+      # Vector Database Configuration
+      - MILVUS_HOST=milvus
+      - MILVUS_PORT=19530
+      - COLLECTION_NAME=knowledge_base
+      - EMBEDDING_DIM=384
+      - TOP_K=5
+      
+      # Embedding Service Configuration
+      - EMBEDDING_SERVICE_URL=http://embedding-service:8001
+      
+      # MinIO/S3 Configuration for Document Storage
+      - MINIO_ENDPOINT=minio-ai-service:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET=ai-documents
+      - MINIO_SECURE=false
+    depends_on:
+      - ollama
+      - milvus
+      - embedding-service
+      - minio-ai-service
+    networks:
+      - ai-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8002/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  # Chat UI - Web interface for AI interactions
+  chat-ui:
+    build:
+      context: ./ai-services/chat-ui
+      dockerfile: Dockerfile
+    container_name: chat-ui
+    ports:
+      - "8501:8501"
+    environment:
+      - RAG_API_URL=http://rag-api:8002
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - PLATFORM_VERSION=v1.1.0
+    depends_on:
+      - rag-api
+    networks:
+      - ai-network
+    restart: unless-stopped
+
+networks:
+  ai-network:
+    driver: bridge

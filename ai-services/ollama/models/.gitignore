@@ -1,0 +1,10 @@
+# Ignore all Ollama model blobs and manifests (too large for GitHub)
+# These will be downloaded automatically when running Ollama
+models/
+
+# Keep SSH keys if needed
+!id_ed25519
+!id_ed25519.pub
+
+# Keep this .gitignore
+!.gitignore

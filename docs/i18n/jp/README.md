@@ -1,25 +1,34 @@
-﻿# データプラットフォーム
+﻿# ãƒ‡ãƒ¼ã‚¿ãƒ—ãƒ©ãƒƒãƒˆãƒ•ã‚©ãƒ¼ãƒ 
 
-**エンタープライズデータレイクハウスソリューション**
+<p align="center">
+  <a href="https://talentys.eu" target="_blank">
+    <img src="../../assets/images/talentys/original.png" alt="Talentys Data" width="200"/>
+  </a>
+  <br/>
+  <em>Supported by <a href="https://talentys.eu">Talentys</a> | <a href="https://www.linkedin.com/company/talentysdata">LinkedIn</a> - Data Engineering & Analytics Excellence</em>
+</p>
 
-**Language**: 日本語 (JP)  
-**Version**: 3.2.5  
-**Last Updated**: 2025-10-15
+
+**ã‚¨ãƒ³ã‚¿ãƒ¼ãƒ—ãƒ©ã‚¤ã‚º ãƒ‡ãƒ¼ã‚¿ ãƒ¬ã‚¤ã‚¯ãƒã‚¦ã‚¹ ã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³**
+
+**è¨€èªž**: ãƒ•ãƒ©ãƒ³ã‚¹èªž (ãƒ•ãƒ©ãƒ³ã‚¹)  
+**ãƒãƒ¼ã‚¸ãƒ§ãƒ³**: 3.3.1  
+**æœ€çµ‚æ›´æ–°æ—¥**: 2025 å¹´ 10 æœˆ 19 æ—¥
 
 ---
 
-## 概要
+ï¼ƒï¼ƒ æ¦‚è¦
 
-Dremio、dbt、Apache Supersetを組み合わせた、エンタープライズグレードのデータ変換、品質保証、ビジネスインテリジェンスのためのプロフェッショナルデータプラットフォーム。
+Dremioã€dbtã€Apache Superset ã‚’çµ„ã¿åˆã‚ã›ãŸãƒ—ãƒ­ãƒ•ã‚§ãƒƒã‚·ãƒ§ãƒŠãƒ« ãƒ‡ãƒ¼ã‚¿ ãƒ—ãƒ©ãƒƒãƒˆãƒ•ã‚©ãƒ¼ãƒ ã§ã€ã‚¨ãƒ³ã‚¿ãƒ¼ãƒ—ãƒ©ã‚¤ã‚º ã‚°ãƒ¬ãƒ¼ãƒ‰ã®ãƒ‡ãƒ¼ã‚¿å¤‰æ›ã€å“è³ªä¿è¨¼ã€ãƒ“ã‚¸ãƒã‚¹ ã‚¤ãƒ³ãƒ†ãƒªã‚¸ã‚§ãƒ³ã‚¹ã‚’å®Ÿç¾ã—ã¾ã™ã€‚
 
-このプラットフォームは、自動化されたデータパイプライン、品質テスト、インタラクティブなダッシュボードを備えた、最新のデータエンジニアリングのための包括的なソリューションを提供します。
+ã“ã®ãƒ—ãƒ©ãƒƒãƒˆãƒ•ã‚©ãƒ¼ãƒ ã¯ã€è‡ªå‹•åŒ–ã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã€å“è³ªãƒ†ã‚¹ãƒˆã€å¯¾è©±åž‹ãƒ€ãƒƒã‚·ãƒ¥ãƒœãƒ¼ãƒ‰ãªã©ã€æœ€æ–°ã®ãƒ‡ãƒ¼ã‚¿ ã‚¨ãƒ³ã‚¸ãƒ‹ã‚¢ãƒªãƒ³ã‚°ã®ãŸã‚ã®å®Œå…¨ãªã‚½ãƒªãƒ¥ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æä¾›ã—ã¾ã™ã€‚
 
 ```mermaid
 graph LR
-    A[Data Sources] --> B[Dremio]
+    A[Sources de donnÃ©es] --> B[Dremio]
     B --> C[dbt]
     C --> D[Superset]
-    D --> E[Business Insights]
+    D --> E[Insights mÃ©tier]
     
     style B fill:#f5f5f5,stroke:#333,stroke-width:2px
     style C fill:#e8e8e8,stroke:#333,stroke-width:2px
@@ -28,110 +37,108 @@ graph LR
 
 ---
 
-## 主な機能
+## ä¸»ãªæ©Ÿèƒ½
 
-- Dremioによるデータレイクハウスアーキテクチャ
-- dbtによる自動変換
-- Apache Supersetによるビジネスインテリジェンス
-- 包括的なデータ品質テスト
-- Arrow Flightによるリアルタイム同期
+- Dremio ã‚’ä½¿ç”¨ã—ãŸãƒ‡ãƒ¼ã‚¿ ãƒ¬ã‚¤ã‚¯ãƒã‚¦ã‚¹ ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£
+- dbt ã«ã‚ˆã‚‹è‡ªå‹•å¤‰æ›
+- Apache ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚»ãƒƒãƒˆã«ã‚ˆã‚‹ãƒ“ã‚¸ãƒã‚¹ ã‚¤ãƒ³ãƒ†ãƒªã‚¸ã‚§ãƒ³ã‚¹
+- åŒ…æ‹¬çš„ãªãƒ‡ãƒ¼ã‚¿å“è³ªãƒ†ã‚¹ãƒˆ
+- Arrow Flight ã«ã‚ˆã‚‹ãƒªã‚¢ãƒ«ã‚¿ã‚¤ãƒ åŒæœŸ
 
 ---
 
-## クイックスタートガイド
+## ã‚¯ã‚¤ãƒƒã‚¯ ã‚¹ã‚¿ãƒ¼ãƒˆ ã‚¬ã‚¤ãƒ‰
 
-### 前提条件
+### å‰ææ¡ä»¶
 
-- Docker 20.10以上
-- Docker Compose 2.0以上
-- Python 3.11以上
-- 最低8 GBのRAM
+- Docker 20.10ä»¥é™
+- Docker Compose 2.0ä»¥é™
+- Python 3.11ä»¥é™
+- æœ€å° 8 GB ã® RAM
 
-### インストール
+ï¼ƒï¼ƒï¼ƒ æ–½è¨­
 
 ```bash
-# Install dependencies
+# Installer les dÃ©pendances
 pip install -r requirements.txt
 
-# Start services
+# DÃ©marrer les services
 make up
 
-# Verify installation
+# VÃ©rifier l'installation
 make status
 
-# Run quality tests
+# ExÃ©cuter les tests de qualitÃ©
 make dbt-test
 ```
 
 ---
 
-## アーキテクチャ
+ï¼ƒï¼ƒ å»ºç¯‰
 
-### システムコンポーネント
+### ã‚·ã‚¹ãƒ†ãƒ ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
 
-| コンポーネント | ポート | 説明 |
-|-----------|------|-------------|
-| Dremio | 9047, 31010, 32010 | データレイクハウスプラットフォーム |
-| dbt | - | データ変換ツール |
-| Superset | 8088 | Business intelligence platform |
-| PostgreSQL | 5432 | Transactional database |
-| MinIO | 9000, 9001 | Object storage (S3-compatible) |
-| Elasticsearch | 9200 | Search and analytics engine |
+|ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ |ãƒãƒ¼ãƒˆ |èª¬æ˜Ž |
+|---------------|------|---------------|
+|ãƒ‰ãƒ¬ãƒŸã‚ª | 9047ã€31010ã€32010 |ãƒ‡ãƒ¼ã‚¿ ãƒ¬ã‚¤ã‚¯ãƒã‚¦ã‚¹ ãƒ—ãƒ©ãƒƒãƒˆãƒ•ã‚©ãƒ¼ãƒ  |
+| dbt | - |ãƒ‡ãƒ¼ã‚¿å¤‰æ›ãƒ„ãƒ¼ãƒ« |
+|ã‚¹ãƒ¼ãƒ‘ãƒ¼ã‚»ãƒƒãƒˆ | 8088 |ãƒ“ã‚¸ãƒã‚¹ ã‚¤ãƒ³ãƒ†ãƒªã‚¸ã‚§ãƒ³ã‚¹ ãƒ—ãƒ©ãƒƒãƒˆãƒ•ã‚©ãƒ¼ãƒ  |
+|ãƒã‚¹ãƒˆã‚°ãƒ¬SQL | 5432 |ãƒˆãƒ©ãƒ³ã‚¶ã‚¯ã‚·ãƒ§ãƒ³ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ |
+|ã¿ã«ãŠ | 9000ã€9001 |ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸ (S3 äº’æ›) |
+|ã‚¨ãƒ©ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã‚µãƒ¼ãƒ | 9200 |æ¤œç´¢ãŠã‚ˆã³åˆ†æžã‚¨ãƒ³ã‚¸ãƒ³ |
 
-### 📚 アーキテクチャドキュメント
-
-- 📘 [アーキテクチャドキュメント](architecture/) - 詳細なシステム設計
-- 🎯 [Dremio ポート ビジュアルガイド](architecture/dremio-ports-visual.md) ⭐ **新規** - Dremio の 3 つのポートの完全なビジュアルガイド
+è©³ç´°ãªã‚·ã‚¹ãƒ†ãƒ è¨­è¨ˆã«ã¤ã„ã¦ã¯ã€[ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ](architecture/) ã‚’å‚ç…§ã—ã¦ãã ã•ã„ã€‚
 
 ---
 
-## ドキュメント
+## ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ
 
-### 入門
-- [Installation Guide](getting-started/)
-- [Configuration](getting-started/)
-- [First Steps](getting-started/)
+ï¼ƒï¼ƒï¼ƒ èµ·å‹•ã™ã‚‹
+- [ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã‚¬ã‚¤ãƒ‰](ã¯ã˜ã‚ã«/)
+- [è¨­å®š](ã¯ã˜ã‚ã«/)
+- [ã¯ã˜ã‚ã«](getting-started/)
 
-### ユーザーガイド
-- [Data Engineering](guides/)
-- [Dashboard Creation](guides/)
-- [API Integration](guides/)
+### ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‚¬ã‚¤ãƒ‰
+- [ãƒ‡ãƒ¼ã‚¿ã‚¨ãƒ³ã‚¸ãƒ‹ã‚¢ãƒªãƒ³ã‚°](ã‚¬ã‚¤ãƒ‰/)
+- [ãƒ€ãƒƒã‚·ãƒ¥ãƒœãƒ¼ãƒ‰ã®ä½œæˆ](ã‚¬ã‚¤ãƒ‰/)
+- [APIçµ±åˆ](guides/)
 
-### APIドキュメント
-- [REST API Reference](api/)
-- [Authentication](api/)
-- [Code Examples](api/)
+### API ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ
+- [REST APIãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹](api/)
+- [èªè¨¼](api/)
+- [ã‚³ãƒ¼ãƒ‰ä¾‹](api/)
 
-### アーキテクチャドキュメント
-- [System Design](architecture/)
-- [Data Flow](architecture/)
-- [Deployment Guide](architecture/)
-
----
-
-## 利用可能な言語
-
-| Language | Code | Documentation |
-|----------|------|---------------|
-| English | EN | [README.md](../../../README.md) |
-| Français | FR | [docs/i18n/fr/](../fr/README.md) |
-| Español | ES | [docs/i18n/es/](../es/README.md) |
-| Português | PT | [docs/i18n/pt/](../pt/README.md) |
-| العربية | AR | [docs/i18n/ar/](../ar/README.md) |
-| 中文 | CN | [docs/i18n/cn/](../cn/README.md) |
-| 日本語 | JP | [docs/i18n/jp/](../jp/README.md) |
-| Русский | RU | [docs/i18n/ru/](../ru/README.md) |
+### ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã®ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ
+- [ã‚·ã‚¹ãƒ†ãƒ è¨­è¨ˆ](ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£/)
+- [ãƒ‡ãƒ¼ã‚¿ãƒ•ãƒ­ãƒ¼](ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£/)
+- [å°Žå…¥ã‚¬ã‚¤ãƒ‰](ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£/)
+- [ðŸŽ¯ Dremio Ports ãƒ“ã‚¸ãƒ¥ã‚¢ãƒ«ã‚¬ã‚¤ãƒ‰](architecture/dremio-ports-visual.md) â­ NEW
 
 ---
 
-## サポート
+## åˆ©ç”¨å¯èƒ½ãªè¨€èªž
 
-For technical assistance:
-- Documentation: [Main README](../../../README.md)
-- Issue Tracking: GitHub Issues
-- Community Forum: GitHub Discussions
-- Email: support@example.com
+|è¨€èªž |ã‚³ãƒ¼ãƒ‰ |ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ |
+|-------|------|------|
+|è‹±èªž | JP | [README.md](../../../README.md) |
+|ãƒ•ãƒ©ãƒ³ã‚¹èªž | JP | [docs/i18n/fr/](../fr/README.md) |
+|ã‚¹ãƒšã‚¤ãƒ³èªž |ã‚¨ã‚¹ | [docs/i18n/es/](../es/README.md) |
+|ãƒãƒ«ãƒˆã‚¬ãƒ«èªž | PT | [docs/i18n/pt/](../pt/README.md) |
+| à¤”à¤° à¤¦à¥‡à¤–à¥‡à¤‚ AR | [docs/i18n/ar/](../ar/README.md) |
+| ä¸­å›½èªž | CN | [docs/i18n/cn/](../cn/README.md) |
+| æ—¥æœ¬èªž |æ—¥æœ¬ | [docs/i18n/jp/](../jp/README.md) |
+| Ð ÑƒÑÑÐºÐ¸Ð¹ |è‹±å›½ | [docs/i18n/ru/](../ru/README.md) |
 
 ---
 
-**[メインドキュメントに戻る](../../../README.md)**
+ï¼ƒï¼ƒ ã‚µãƒãƒ¼ãƒˆ
+
+æŠ€è¡“çš„ãªã‚µãƒãƒ¼ãƒˆã«ã¤ã„ã¦ã¯:
+- ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ: [README ãƒ¡ã‚¤ãƒ³](../../../README.md)
+- å•é¡Œãƒˆãƒ©ãƒƒã‚«ãƒ¼: GitHub ã®å•é¡Œ
+- ã‚³ãƒŸãƒ¥ãƒ‹ãƒ†ã‚£ ãƒ•ã‚©ãƒ¼ãƒ©ãƒ : GitHub ãƒ‡ã‚£ã‚¹ã‚«ãƒƒã‚·ãƒ§ãƒ³
+- é›»å­ãƒ¡ãƒ¼ãƒ«: support@example.com
+
+---
+
+**[ãƒ¡ã‚¤ãƒ³ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã«æˆ»ã‚‹](../../../README.md)**

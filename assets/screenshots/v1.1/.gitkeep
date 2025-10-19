@@ -1,0 +1,31 @@
+# Talentys Data Platform v1.1 - Screenshots Directory
+
+This directory contains the official screenshots for v1.1 release.
+
+## 📸 Expected Screenshots (9 total)
+
+1. `01-ai-chat-ui-main.png` - AI Chat main interface
+2. `02-ai-chat-ui-upload.png` - Document upload section
+3. `03-ai-chat-ui-database-ingest.png` - Database ingestion
+4. `04-dremio-home-dashboard.png` - Dremio home
+5. `05-dremio-sql-query-editor.png` - Query editor with results
+6. `06-superset-bi-dashboard.png` - Superset BI
+7. `07-airbyte-data-connections.png` - Airbyte connections
+8. `08-dbt-data-lineage.png` - dbt documentation
+9. `09-platform-services-running.png` - All 17 services
+
+## 📐 Specifications
+
+- **Resolution**: 1920x1080 (Full HD)
+- **Format**: PNG
+- **Size**: < 2MB per file
+- **Quality**: Professional, clean, high-contrast
+
+## 📖 Guide
+
+Follow the detailed guide: `../PLATFORM_SCREENSHOTS_GUIDE.md`
+
+---
+
+**Note**: This `.gitkeep` file ensures the v1.1 directory is tracked by Git even when empty.
+Once screenshots are added, this file can be removed.

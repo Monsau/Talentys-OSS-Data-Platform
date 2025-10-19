@@ -1,0 +1,103 @@
+# OpenMetadata Standalone Configuration with Talentys Branding
+# Based on official OpenMetadata quick-start setup
+# This uses a single all-in-one container that includes everything
+
+version: '3.9'
+
+services:
+  # PostgreSQL Database (lighter than MySQL for standalone)
+  postgresql:
+    image: postgres:15-alpine
+    container_name: openmetadata-postgresql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: openmetadata_db
+    ports:
+      - "5433:5432"  # Changed port to avoid conflicts
+    volumes:
+      - openmetadata-postgres-data:/var/lib/postgresql/data
+    networks:
+      - openmetadata-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # OpenMetadata All-in-One Server
+  openmetadata:
+    image: openmetadata/server:1.3.3
+    container_name: openmetadata-standalone
+    environment:
+      # Database Configuration
+      - DB_DRIVER_CLASS=org.postgresql.Driver
+      - DB_SCHEME=postgresql
+      - DB_USE_SSL=false
+      - DB_USER=postgres
+      - DB_USER_PASSWORD=password
+      - DB_HOST=postgresql
+      - DB_PORT=5432
+      - OM_DATABASE=openmetadata_db
+      
+      # Elasticsearch - Using embedded for simplicity
+      - SEARCH_TYPE=elasticsearch
+      - ELASTICSEARCH_SOCKET_TIMEOUT_SECS=60
+      - ELASTICSEARCH_CONNECTION_TIMEOUT_SECS=60
+      - ELASTICSEARCH_BATCH_SIZE=10
+      
+      # Pipeline Service
+      - PIPELINE_SERVICE_CLIENT_ENABLED=false
+      
+      # Authentication - Basic Auth
+      - AUTHORIZER_CLASS_NAME=org.openmetadata.service.security.DefaultAuthorizer
+      - AUTHORIZER_REQUEST_FILTER=org.openmetadata.service.security.JwtFilter
+      - AUTHORIZER_ADMIN_PRINCIPALS=[admin]
+      - AUTHORIZER_ALLOWED_REGISTRATION_DOMAIN=["all"]
+      - AUTHENTICATION_PROVIDER=basic
+      - AUTHENTICATION_PUBLIC_KEYS=[http://localhost:8585/api/v1/system/config/jwks]
+      
+      # JWT Configuration
+      - RSA_PUBLIC_KEY_FILE_PATH=./conf/public_key.der
+      - RSA_PRIVATE_KEY_FILE_PATH=./conf/private_key.der
+      - JWT_ISSUER=open-metadata.org
+      - JWT_KEY_ID=Gb389a-9f76-gdjs-a92j-0242bk94356
+      
+      # Server Configuration
+      - SERVER_HOST_API_URL=http://localhost:8585/api
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8585
+      - SERVER_ADMIN_PORT=8586
+      
+      # Airflow - Disabled for standalone
+      - AIRFLOW_HOST=http://localhost:8080
+      
+      # Logging
+      - LOG_LEVEL=INFO
+      
+    ports:
+      - "8585:8585"
+      - "8586:8586"
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    volumes:
+      - ./openmetadata/conf/talentys-logo.png:/opt/openmetadata/static/talentys-logo.png:ro
+      - ./openmetadata/conf/talentys-theme.css:/opt/openmetadata/static/css/talentys-theme.css:ro
+      - ./openmetadata/conf/customization.json:/opt/openmetadata/customization.json:ro
+    networks:
+      - openmetadata-network
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8585/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+
+volumes:
+  openmetadata-postgres-data:
+    driver: local
+
+networks:
+  openmetadata-network:
+    driver: bridge

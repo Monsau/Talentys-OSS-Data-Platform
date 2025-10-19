@@ -1,40 +1,40 @@
-# Guida Visiva alle Porte Dremio
+# Guida visiva dei porti Dremio
 
-**Versione**: 3.2.5  
+**Versione**: 3.2.3  
 **Ultimo aggiornamento**: 16 ottobre 2025  
-**Lingua**: Italiano
+**Lingua**: francese
 
 ---
 
-## Panoramica delle 3 Porte Dremio
+## Panoramica dei 3 porti Dremio
 
 ```mermaid
 graph TB
-    subgraph "Porta 9047 - REST API"
+    subgraph "Port 9047 - REST API"
         direction TB
-        A1[🌐 Interfaccia Web UI]
-        A2[🔧 Amministrazione]
-        A3[📊 Monitoraggio]
-        A4[🔐 Autenticazione]
+        A1[🌐 Interface Web UI]
+        A2[🔧 Administration]
+        A3[📊 Monitoring]
+        A4[🔐 Authentification]
     end
     
-    subgraph "Porta 31010 - PostgreSQL Proxy"
+    subgraph "Port 31010 - Proxy PostgreSQL"
         direction TB
-        B1[💼 Strumenti BI legacy]
-        B2[🔌 JDBC/ODBC standard]
-        B3[🐘 Compatibilità PostgreSQL]
-        B4[🔄 Migrazione facile]
+        B1[💼 Outils BI Legacy]
+        B2[🔌 JDBC/ODBC Standard]
+        B3[🐘 Compatibilité PostgreSQL]
+        B4[🔄 Migration Facile]
     end
     
-    subgraph "Porta 32010 - Arrow Flight"
+    subgraph "Port 32010 - Arrow Flight"
         direction TB
-        C1[⚡ Massime prestazioni]
+        C1[⚡ Performance Max]
         C2[🎯 dbt Core]
         C3[📈 Apache Superset]
         C4[🐍 Python pyarrow]
     end
     
-    D[🗄️ Dremio Coordinator<br/>Dremio 26.0 OSS]
+    D[🗄️ Dremio Coordinateur<br/>Dremio 26.0 OSS]
     
     A1 & A2 & A3 & A4 --> D
     B1 & B2 & B3 & B4 --> D
@@ -63,13 +63,13 @@ graph TB
 
 ---
 
-## Architettura Dettagliata PostgreSQL Proxy
+## Architettura dettagliata del proxy PostgreSQL
 
-### Flusso di Connessione Client → Dremio
+### Flusso di connessione del cliente → Dremio
 
 ```mermaid
 graph LR
-    subgraph "Applicazioni Client"
+    subgraph "Applications Clientes"
         direction TB
         A1[psql CLI]
         A2[DBeaver]
@@ -79,22 +79,22 @@ graph LR
         A6[Tableau Desktop]
     end
     
-    subgraph "Protocollo PostgreSQL Wire"
-        P[Porta 31010<br/>PostgreSQL Proxy]
+    subgraph "Protocole PostgreSQL Wire"
+        P[Port 31010<br/>Proxy PostgreSQL]
     end
     
-    subgraph "Motore Dremio"
+    subgraph "Moteur Dremio"
         direction TB
-        M1[SQL Parser]
-        M2[Optimizer]
-        M3[Executor]
+        M1[Parser SQL]
+        M2[Optimiseur]
+        M3[Exécuteur]
     end
     
-    subgraph "Sorgenti Dati"
+    subgraph "Sources de Données"
         direction TB
-        S1[📦 File Parquet<br/>MinIO S3]
-        S2[💾 Tabelle PostgreSQL]
-        S3[🔍 Indici Elasticsearch]
+        S1[📦 Fichiers Parquet<br/>MinIO S3]
+        S2[💾 Tables PostgreSQL]
+        S3[🔍 Index Elasticsearch]
     end
     
     A1 & A2 & A3 --> P
@@ -114,34 +114,34 @@ graph LR
 
 ---
 
-## Confronto Prestazioni
+## Confronto delle prestazioni
 
-### Benchmark: Scansione 100 GB di Dati
+### Benchmark: scansione di 100 GB di dati
 
 ```mermaid
 gantt
-    title Tempo di Esecuzione per Protocollo (secondi)
+    title Temps d'Exécution par Protocole (secondes)
     dateFormat X
-    axisFormat %s secondi
+    axisFormat %s sec
     
     section REST API :9047
-    Trasferimento 100 GB     :0, 180
+    Transfert 100 GB     :0, 180
     
     section PostgreSQL :31010
-    Trasferimento 100 GB     :0, 90
+    Transfert 100 GB     :0, 90
     
     section Arrow Flight :32010
-    Trasferimento 100 GB     :0, 5
+    Transfert 100 GB     :0, 5
 ```
 
-### Throughput Dati
+### Velocità dati
 
 ```mermaid
 graph LR
-    subgraph "Prestazioni di Rete per Protocollo"
-        A["Porta 9047<br/>REST API<br/>📊 ~500 MB/s<br/>⏱️ Standard"]
-        B["Porta 31010<br/>PostgreSQL Wire<br/>📊 ~1-2 GB/s<br/>⏱️ Buono"]
-        C["Porta 32010<br/>Arrow Flight<br/>📊 ~20 GB/s<br/>⏱️ Eccellente"]
+    subgraph "Débit Réseau par Protocole"
+        A["Port 9047<br/>REST API<br/>📊 ~500 MB/s<br/>⏱️ Standard"]
+        B["Port 31010<br/>PostgreSQL Wire<br/>📊 ~1-2 GB/s<br/>⏱️ Bon"]
+        C["Port 32010<br/>Arrow Flight<br/>📊 ~20 GB/s<br/>⏱️ Excellent"]
     end
     
     style A fill:#FF9800,color:#fff
@@ -149,37 +149,37 @@ graph LR
     style C fill:#2196F3,color:#fff
 ```
 
-### Latenza Query Semplici
+### Latenza delle query semplici
 
-| Protocollo | Porta | Latenza Media | Overhead di Rete |
-|----------|------|----------------|------------------|
-| **REST API** | 9047 | 50-100 ms | JSON (verboso) |
-| **PostgreSQL Proxy** | 31010 | 20-50 ms | Wire Protocol (compatto) |
-| **Arrow Flight** | 32010 | 5-10 ms | Apache Arrow (binario colonnare) |
+| Protocollo | Porto | Latenza media | Sovraccarico di rete |
+|---------------|------|------------------|-----------------|
+| **API REST** | 9047| 50-100ms | JSON (verboso) |
+| **Proxy PostgreSQL** | 31010| 20-50ms | Protocollo Wire (compatto) |
+| **Volo della freccia** | 32010| 5-10 ms | Apache Arrow (colonnare binario) |
 
 ---
 
-## Casi d'Uso per Porta
+## Caso d'uso per porto
 
-### Porta 9047 - REST API
+### Porta 9047 - API REST
 
 ```mermaid
 graph TB
-    A[Porta 9047<br/>REST API]
+    A[Port 9047<br/>REST API]
     
-    A --> B1[🌐 Interfaccia Browser Web]
-    A --> B2[🔧 Configurazione Servizi]
-    A --> B3[👤 Gestione Utenti]
-    A --> B4[📊 Dashboard Monitoraggio]
-    A --> B5[🔐 Login OAuth/SAML]
+    A --> B1[🌐 Interface Web Browser]
+    A --> B2[🔧 Configuration Services]
+    A --> B3[👤 Gestion Utilisateurs]
+    A --> B4[📊 Monitoring Dashboards]
+    A --> B5[🔐 OAuth/SAML Login]
     
-    B1 --> C1[Crea Space/Cartelle]
-    B1 --> C2[Definisci VDS]
-    B1 --> C3[Esplora Dataset]
+    B1 --> C1[Créer Spaces/Folders]
+    B1 --> C2[Définir VDS]
+    B1 --> C3[Explorer Datasets]
     
-    B2 --> C4[Aggiungi Sorgenti]
-    B2 --> C5[Configura Reflections]
-    B2 --> C6[Configurazione Sistema]
+    B2 --> C4[Ajouter Sources]
+    B2 --> C5[Configurer Reflections]
+    B2 --> C6[Paramètres Système]
     
     style A fill:#4CAF50,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#81C784,color:#fff
@@ -189,27 +189,27 @@ graph TB
     style B5 fill:#81C784,color:#fff
 ```
 
-### Porta 31010 - PostgreSQL Proxy
+### Porta 31010 - Proxy PostgreSQL
 
 ```mermaid
 graph TB
-    A[Porta 31010<br/>PostgreSQL Proxy]
+    A[Port 31010<br/>Proxy PostgreSQL]
     
-    A --> B1[💼 Strumenti BI Legacy]
-    A --> B2[🔄 Migrazione PostgreSQL]
-    A --> B3[🔌 Driver Standard]
+    A --> B1[💼 Outils BI Legacy]
+    A --> B2[🔄 Migration PostgreSQL]
+    A --> B3[🔌 Drivers Standard]
     
-    B1 --> C1[Tableau Desktop<br/>Senza Arrow Flight]
+    B1 --> C1[Tableau Desktop<br/>sans Arrow Flight]
     B1 --> C2[Power BI Desktop<br/>ODBC]
     B1 --> C3[QlikView<br/>JDBC PostgreSQL]
     
-    B2 --> D1[Codice JDBC Esistente<br/>Senza Modifiche]
-    B2 --> D2[Script psql<br/>100% Compatibili]
-    B2 --> D3[App Python<br/>psycopg2]
+    B2 --> D1[Code JDBC existant<br/>aucune modification]
+    B2 --> D2[Scripts psql<br/>compatibles 100%]
+    B2 --> D3[Applications Python<br/>psycopg2]
     
     B3 --> E1[PostgreSQL ODBC Driver]
     B3 --> E2[PostgreSQL JDBC Driver]
-    B3 --> E3[Driver Nativi SO]
+    B3 --> E3[Pilotes natifs OS]
     
     style A fill:#336791,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#5C6BC0,color:#fff
@@ -217,27 +217,27 @@ graph TB
     style B3 fill:#5C6BC0,color:#fff
 ```
 
-### Porta 32010 - Arrow Flight
+### Porto 32010 - Volo della Freccia
 
 ```mermaid
 graph TB
-    A[Porta 32010<br/>Arrow Flight]
+    A[Port 32010<br/>Arrow Flight]
     
-    A --> B1[⚡ Massime Prestazioni]
-    A --> B2[🎯 Strumenti Moderni]
-    A --> B3[🐍 Ecosistema Python]
+    A --> B1[⚡ Performance Maximale]
+    A --> B2[🎯 Outils Modernes]
+    A --> B3[🐍 Python Ecosystem]
     
-    B1 --> C1[Scansioni TB/PB]
-    B1 --> C2[Aggregazioni Grandi]
-    B1 --> C3[Trasferimento Zero-Copy]
+    B1 --> C1[Scans de TB/PB]
+    B1 --> C2[Agrégations Massives]
+    B1 --> C3[Transferts Zero-Copy]
     
     B2 --> D1[dbt Core<br/>profiles.yml]
-    B2 --> D2[Apache Superset<br/>Configurazione Database]
+    B2 --> D2[Apache Superset<br/>Database Config]
     B2 --> D3[Jupyter Notebooks<br/>pandas/polars]
     
-    B3 --> E1[Libreria pyarrow]
+    B3 --> E1[pyarrow Library]
     B3 --> E2[pandas via Arrow]
-    B3 --> E3[Integrazione Polars]
+    B3 --> E3[Polars Integration]
     
     style A fill:#FF5722,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#FF7043,color:#fff
@@ -247,57 +247,25 @@ graph TB
 
 ---
 
-## Albero Decisionale: Quale Porta Usare?
+## Albero decisionale: quale porta utilizzare?
 
-```mermaid
-graph TB
-    Start[Devo connettermi a Dremio]
-    
-    Start --> Q1{Tipo di applicazione?}
-    
-    Q1 -->|Interfaccia web<br/>Amministrazione| Port9047[✅ Porta 9047<br/>REST API]
-    
-    Q1 -->|Strumento BI/SQL Client| Q2{Supporto Arrow Flight?}
-    
-    Q2 -->|No<br/>Strumento legacy| Port31010[✅ Porta 31010<br/>PostgreSQL Proxy]
-    Q2 -->|Sì<br/>Strumento moderno| Q3{Prestazioni importanti?}
-    
-    Q3 -->|Sì<br/>Produzione| Port32010[✅ Porta 32010<br/>Arrow Flight]
-    Q3 -->|No<br/>Dev/Test| Port31010b[⚠️ Porta 31010<br/>Più Facile]
-    
-    Q1 -->|Applicazione Personalizzata| Q4{Linguaggio di programmazione?}
-    
-    Q4 -->|Python/Java| Q5{Prestazioni importanti?}
-    Q5 -->|Sì| Port32010b[✅ Porta 32010<br/>Arrow Flight]
-    Q5 -->|No| Port31010c[✅ Porta 31010<br/>JDBC/psycopg2]
-    
-    Q4 -->|Altro<br/>Go/Rust/.NET| Port31010d[✅ Porta 31010<br/>PostgreSQL Wire]
-    
-    style Start fill:#2196F3,color:#fff
-    style Port9047 fill:#4CAF50,color:#fff,stroke:#000,stroke-width:2px
-    style Port31010 fill:#336791,color:#fff,stroke:#000,stroke-width:2px
-    style Port31010b fill:#336791,color:#fff,stroke:#000,stroke-width:2px
-    style Port31010c fill:#336791,color:#fff,stroke:#000,stroke-width:2px
-    style Port31010d fill:#336791,color:#fff,stroke:#000,stroke-width:2px
-    style Port32010 fill:#FF5722,color:#fff,stroke:#000,stroke-width:2px
-    style Port32010b fill:#FF5722,color:#fff,stroke:#000,stroke-width:2px
-```
+§§§CODICE_7§§§
 
 ---
 
-## Esempi di Connessione PostgreSQL Proxy
+## Esempi di connessione proxy PostgreSQL
 
-### 1. psql CLI
+### 1. CLI psql
 
 ```bash
-# Connessione semplice
+# Connexion simple
 psql -h localhost -p 31010 -U admin -d datalake
 
-# Query diretta
+# Avec requête directe
 psql -h localhost -p 31010 -U admin -d datalake \
   -c "SELECT COUNT(*) FROM MinIO.datalake.customers;"
 
-# Modalità interattiva
+# Mode interactif
 $ psql -h localhost -p 31010 -U admin -d datalake
 Password for user admin: ****
 psql (16.0, server 26.0)
@@ -314,25 +282,25 @@ datalake=> \dt
 datalake=> SELECT customer_id, name, state FROM customers LIMIT 5;
 ```
 
-### 2. Configurazione DBeaver
+### 2. Configurazione di DBeaver
 
 ```yaml
-Tipo di Connessione: PostgreSQL
-Nome Connessione: Dremio via PostgreSQL Proxy
+Connection Type: PostgreSQL
+Connection Name: Dremio via PostgreSQL Proxy
 
-Principale:
+Main:
   Host: localhost
-  Porta: 31010
+  Port: 31010
   Database: datalake
-  Utente: admin
-  Password: [your-password]
+  Username: admin
+  Password: [votre-mot-de-passe]
   
-Proprietà Driver:
+Driver Properties:
   ssl: false
   
-Avanzate:
-  Timeout connessione: 30000
-  Timeout query: 0
+Advanced:
+  Connection timeout: 30000
+  Query timeout: 0
 ```
 
 ### 3. Python con psycopg2
@@ -341,32 +309,32 @@ Avanzate:
 import psycopg2
 from psycopg2 import sql
 
-# Connessione
+# Connexion
 conn = psycopg2.connect(
     host="localhost",
     port=31010,
     database="datalake",
     user="admin",
-    password="your-password"
+    password="votre-mot-de-passe"
 )
 
-# Cursore
+# Cursor
 cursor = conn.cursor()
 
-# Query semplice
+# Requête simple
 cursor.execute("SELECT * FROM MinIO.datalake.customers LIMIT 10")
 rows = cursor.fetchall()
 
 for row in rows:
     print(row)
 
-# Query parametrizzata
+# Requête avec paramètres
 query = sql.SQL("SELECT * FROM {} WHERE state = %s").format(
     sql.Identifier("MinIO", "datalake", "customers")
 )
 cursor.execute(query, ("CA",))
 
-# Chiudi
+# Fermeture
 cursor.close()
 conn.close()
 ```
@@ -380,7 +348,7 @@ public class DremioPostgreSQLProxy {
     public static void main(String[] args) {
         String url = "jdbc:postgresql://localhost:31010/datalake";
         String user = "admin";
-        String password = "your-password";
+        String password = "votre-mot-de-passe";
         
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
             Statement stmt = conn.createStatement();
@@ -404,7 +372,7 @@ public class DremioPostgreSQLProxy {
 }
 ```
 
-### 5. Stringa di Connessione ODBC (DSN)
+### 5. Stringa ODBC (DSN)
 
 ```ini
 [ODBC Data Sources]
@@ -417,16 +385,16 @@ Server=localhost
 Port=31010
 Database=datalake
 Username=admin
-Password=your-password
+Password=votre-mot-de-passe
 SSLMode=disable
 Protocol=7.4
 ```
 
 ---
 
-## Configurazione Docker Compose
+## Configurazione Docker Componi
 
-### Mappatura Porte Dremio
+### Mappatura del porto di Dremio
 
 ```yaml
 services:
@@ -434,13 +402,13 @@ services:
     image: dremio/dremio-oss:26.0
     container_name: dremio
     ports:
-      # Porta 9047 - REST API / Web UI
+      # Port 9047 - REST API / Web UI
       - "9047:9047"
       
-      # Porta 31010 - PostgreSQL Proxy (ODBC/JDBC)
+      # Port 31010 - Proxy PostgreSQL (ODBC/JDBC)
       - "31010:31010"
       
-      # Porta 32010 - Arrow Flight (Prestazioni)
+      # Port 32010 - Arrow Flight (Performance)
       - "32010:32010"
     environment:
       - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Xms4g -Xmx8g
@@ -450,19 +418,19 @@ services:
       - data-platform
 ```
 
-### Verifica Porte
+### Controllo della porta
 
 ```bash
-# Controlla che tutte e tre le porte siano aperte
+# Vérifier que les 3 ports sont ouverts
 netstat -an | grep -E '9047|31010|32010'
 
-# Test REST API
+# Tester REST API
 curl -v http://localhost:9047
 
-# Test PostgreSQL Proxy
+# Tester Proxy PostgreSQL
 psql -h localhost -p 31010 -U admin -d datalake -c "SELECT 1;"
 
-# Test Arrow Flight (con Python)
+# Tester Arrow Flight (avec Python)
 python3 -c "
 from pyarrow import flight
 client = flight.connect('grpc://localhost:32010')
@@ -472,33 +440,33 @@ print('Arrow Flight OK')
 
 ---
 
-## Riepilogo Visivo Rapido
+## Riepilogo visivo rapido
 
-### 3 Porte a Colpo d'Occhio
+### I 3 porti in sintesi
 
-| Porta | Protocollo | Uso Principale | Prestazioni | Compatibilità |
-|------|-----------|-------------|------------|----------------|
-| **9047** | REST API | 🌐 Web UI, Admin | ⭐⭐ Standard | ⭐⭐⭐ Universale |
-| **31010** | PostgreSQL Wire | 💼 Strumenti BI, Migrazione | ⭐⭐⭐ Buone | ⭐⭐⭐ Eccellente |
-| **32010** | Arrow Flight | ⚡ Produzione, dbt, Superset | ⭐⭐⭐⭐⭐ Massime | ⭐⭐ Limitata |
+| Porto | Protocollo | Uso principale | Prestazioni | Compatibilità |
+|------|----------|-----------------------|-------------|---------------|
+| **9047** | API REST | 🌐Interfaccia Web, Amministrazione | ⭐⭐Standard | ⭐⭐⭐ Universale |
+| **31010** | Filo PostgreSQL | 💼Strumenti BI, Migrazione | ⭐⭐⭐ Buono | ⭐⭐⭐ Eccellente |
+| **32010** | Volo della freccia | ⚡ Produzione, dbt, Superset | ⭐⭐⭐⭐⭐ Massimo | ⭐⭐ Limitato |
 
-### Matrice di Selezione
+### Matrice di selezione
 
 ```mermaid
 graph TB
-    subgraph "Guida alla Selezione"
-        A["🎯 Caso d'Uso"]
+    subgraph "Guide de Sélection"
+        A["🎯 Cas d'Usage"]
         
-        A --> B1["Interfaccia Web<br/>Configurazione"]
-        A --> B2["Strumento BI Legacy<br/>Senza Arrow Flight"]
-        A --> B3["Migrazione PostgreSQL<br/>Codice JDBC Esistente"]
-        A --> B4["dbt, Superset<br/>Produzione"]
-        A --> B5["Python pyarrow<br/>Analytics"]
+        A --> B1["Interface Web<br/>Configuration"]
+        A --> B2["Outil BI Legacy<br/>Sans Arrow Flight"]
+        A --> B3["Migration PostgreSQL<br/>Code JDBC existant"]
+        A --> B4["dbt, Superset<br/>Production"]
+        A --> B5["Python pyarrow<br/>Analytique"]
         
-        B1 --> C1["Porta 9047<br/>REST API"]
-        B2 --> C2["Porta 31010<br/>PostgreSQL"]
+        B1 --> C1["Port 9047<br/>REST API"]
+        B2 --> C2["Port 31010<br/>PostgreSQL"]
         B3 --> C2
-        B4 --> C3["Porta 32010<br/>Arrow Flight"]
+        B4 --> C3["Port 32010<br/>Arrow Flight"]
         B5 --> C3
     end
     
@@ -510,22 +478,22 @@ graph TB
 
 ---
 
-## Risorse Aggiuntive
+## Risorse aggiuntive
 
-### Documentazione Correlata
+### Documentazione correlata
 
 - [Architettura - Componenti](./components.md) - Sezione "PostgreSQL Proxy per Dremio"
-- [Guida - Setup Dremio](../guides/dremio-setup.md) - Sezione "Connessione tramite PostgreSQL Proxy"
-- [Configurazione - Dremio](../getting-started/configuration.md) - Configurazione `dremio.conf`
+- [Guida - Configurazione di Dremio](../guides/dremio-setup.md) - Sezione "Connessione tramite proxy PostgreSQL"
+- [Configurazione - Dremio](../getting-started/configuration.md) - Parametri `dremio.conf`
 
-### Link Ufficiali
+### Link ufficiali
 
 - **Documentazione Dremio**: https://docs.dremio.com/
 - **Protocollo PostgreSQL Wire**: https://www.postgresql.org/docs/current/protocol.html
-- **Apache Arrow Flight**: https://arrow.apache.org/docs/format/Flight.html
+- **Volo Apache Arrow**: https://arrow.apache.org/docs/format/Flight.html
 
 ---
 
-**Versione**: 3.2.5  
+**Versione**: 3.2.3  
 **Ultimo aggiornamento**: 16 ottobre 2025  
-**Stato**: ✅ Completato
+**Stato**: ✅ Completo

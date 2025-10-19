@@ -1,0 +1,23 @@
+# Documentation i18n - Fichiers à ignorer
+
+# Documents temporaires
+*_TEMP.md
+*_DRAFT.md
+*_WIP.md
+*.tmp.md
+
+# Rapports intermédiaires (sauf logs de version)
+*_REPORT.md
+!CLEANUP_REPORT.md
+*_COMPLETE.md
+*_VALIDATION.md
+*_INDEX.md
+
+# Sauvegardes
+*.bak
+*.backup
+*~
+
+# OS
+.DS_Store
+Thumbs.db

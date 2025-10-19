@@ -1,40 +1,40 @@
-# Dremio पोर्ट्स के लिए विज़ुअल गाइड
+# ड्रेमियो पोर्ट्स विज़ुअल गाइड
 
-**संस्करण**: 3.2.5  
-**अंतिम अपडेट**: 16 अक्टूबर 2025  
-**भाषा**: हिन्दी
+**संस्करण**: 3.2.3  
+**अंतिम अद्यतन**: 16 अक्टूबर, 2025  
+**भाषा**: फ्रेंच
 
 ---
 
-## Dremio के 3 पोर्ट्स का अवलोकन
+## 3 ड्रेमियो बंदरगाहों का अवलोकन
 
 ```mermaid
 graph TB
-    subgraph "पोर्ट 9047 - REST API"
+    subgraph "Port 9047 - REST API"
         direction TB
-        A1[🌐 वेब UI इंटरफ़ेस]
-        A2[🔧 प्रशासन]
-        A3[📊 निगरानी]
-        A4[🔐 प्रमाणीकरण]
+        A1[🌐 Interface Web UI]
+        A2[🔧 Administration]
+        A3[📊 Monitoring]
+        A4[🔐 Authentification]
     end
     
-    subgraph "पोर्ट 31010 - PostgreSQL प्रॉक्सी"
+    subgraph "Port 31010 - Proxy PostgreSQL"
         direction TB
-        B1[💼 लिगेसी BI टूल्स]
-        B2[🔌 मानक JDBC/ODBC]
-        B3[🐘 PostgreSQL संगतता]
-        B4[🔄 आसान माइग्रेशन]
+        B1[💼 Outils BI Legacy]
+        B2[🔌 JDBC/ODBC Standard]
+        B3[🐘 Compatibilité PostgreSQL]
+        B4[🔄 Migration Facile]
     end
     
-    subgraph "पोर्ट 32010 - Arrow Flight"
+    subgraph "Port 32010 - Arrow Flight"
         direction TB
-        C1[⚡ अधिकतम प्रदर्शन]
+        C1[⚡ Performance Max]
         C2[🎯 dbt Core]
         C3[📈 Apache Superset]
         C4[🐍 Python pyarrow]
     end
     
-    D[🗄️ Dremio समन्वयक<br/>Dremio 26.0 OSS]
+    D[🗄️ Dremio Coordinateur<br/>Dremio 26.0 OSS]
     
     A1 & A2 & A3 & A4 --> D
     B1 & B2 & B3 & B4 --> D
@@ -63,13 +63,13 @@ graph TB
 
 ---
 
-## PostgreSQL प्रॉक्सी विस्तृत आर्किटेक्चर
+## PostgreSQL प्रॉक्सी का विस्तृत आर्किटेक्चर
 
-### क्लाइंट → Dremio कनेक्शन प्रवाह
+### ग्राहक कनेक्शन प्रवाह → ड्रेमियो
 
 ```mermaid
 graph LR
-    subgraph "क्लाइंट एप्लिकेशन"
+    subgraph "Applications Clientes"
         direction TB
         A1[psql CLI]
         A2[DBeaver]
@@ -79,22 +79,22 @@ graph LR
         A6[Tableau Desktop]
     end
     
-    subgraph "PostgreSQL Wire प्रोटोकॉल"
-        P[पोर्ट 31010<br/>PostgreSQL प्रॉक्सी]
+    subgraph "Protocole PostgreSQL Wire"
+        P[Port 31010<br/>Proxy PostgreSQL]
     end
     
-    subgraph "Dremio इंजन"
+    subgraph "Moteur Dremio"
         direction TB
-        M1[SQL पार्सर]
-        M2[ऑप्टिमाइज़र]
-        M3[एक्ज़ीक्यूटर]
+        M1[Parser SQL]
+        M2[Optimiseur]
+        M3[Exécuteur]
     end
     
-    subgraph "डेटा स्रोत"
+    subgraph "Sources de Données"
         direction TB
-        S1[📦 Parquet फ़ाइलें<br/>MinIO S3]
-        S2[💾 PostgreSQL तालिकाएँ]
-        S3[🔍 Elasticsearch इंडेक्स]
+        S1[📦 Fichiers Parquet<br/>MinIO S3]
+        S2[💾 Tables PostgreSQL]
+        S3[🔍 Index Elasticsearch]
     end
     
     A1 & A2 & A3 --> P
@@ -116,32 +116,32 @@ graph LR
 
 ## प्रदर्शन तुलना
 
-### बेंचमार्क: 100 GB डेटा स्कैन
+### बेंचमार्क: 100 जीबी डेटा का स्कैन
 
 ```mermaid
 gantt
-    title प्रोटोकॉल द्वारा निष्पादन समय (सेकंड)
+    title Temps d'Exécution par Protocole (secondes)
     dateFormat X
-    axisFormat %s सेकंड
+    axisFormat %s sec
     
     section REST API :9047
-    100 GB स्थानांतरण     :0, 180
+    Transfert 100 GB     :0, 180
     
     section PostgreSQL :31010
-    100 GB स्थानांतरण     :0, 90
+    Transfert 100 GB     :0, 90
     
     section Arrow Flight :32010
-    100 GB स्थानांतरण     :0, 5
+    Transfert 100 GB     :0, 5
 ```
 
-### डेटा थ्रूपुट
+### आधार - सामग्री दर
 
 ```mermaid
 graph LR
-    subgraph "प्रोटोकॉल द्वारा नेटवर्क प्रदर्शन"
-        A["पोर्ट 9047<br/>REST API<br/>📊 ~500 MB/s<br/>⏱️ मानक"]
-        B["पोर्ट 31010<br/>PostgreSQL Wire<br/>📊 ~1-2 GB/s<br/>⏱️ अच्छा"]
-        C["पोर्ट 32010<br/>Arrow Flight<br/>📊 ~20 GB/s<br/>⏱️ उत्कृष्ट"]
+    subgraph "Débit Réseau par Protocole"
+        A["Port 9047<br/>REST API<br/>📊 ~500 MB/s<br/>⏱️ Standard"]
+        B["Port 31010<br/>PostgreSQL Wire<br/>📊 ~1-2 GB/s<br/>⏱️ Bon"]
+        C["Port 32010<br/>Arrow Flight<br/>📊 ~20 GB/s<br/>⏱️ Excellent"]
     end
     
     style A fill:#FF9800,color:#fff
@@ -149,37 +149,37 @@ graph LR
     style C fill:#2196F3,color:#fff
 ```
 
-### सरल क्वेरी लेटेंसी
+### सरल क्वेरी विलंबता
 
-| प्रोटोकॉल | पोर्ट | औसत लेटेंसी | नेटवर्क ओवरहेड |
-|----------|------|----------------|------------------|
-| **REST API** | 9047 | 50-100 ms | JSON (विस्तृत) |
-| **PostgreSQL प्रॉक्सी** | 31010 | 20-50 ms | Wire Protocol (संक्षिप्त) |
-| **Arrow Flight** | 32010 | 5-10 ms | Apache Arrow (बाइनरी कॉलमर) |
+| प्रोटोकॉल | बंदरगाह | औसत विलंबता | नेटवर्क ओवरहेड |
+|----------------------|------|-----------------|-----------------|
+| **रेस्ट एपीआई** | 9047 | 50-100 एमएस | JSON (वर्बोज़) |
+| **पोस्टग्रेएसक्यूएल प्रॉक्सी** | 31010 | 20-50ms | वायर प्रोटोकॉल (कॉम्पैक्ट) |
+| **तीर की उड़ान** | 32010 | 5-10ms | अपाचे एरो (बाइनरी कॉलमर) |
 
 ---
 
-## पोर्ट द्वारा उपयोग के मामले
+## पोर्ट द्वारा केस का उपयोग करें
 
-### पोर्ट 9047 - REST API
+### पोर्ट 9047 - रेस्ट एपीआई
 
 ```mermaid
 graph TB
-    A[पोर्ट 9047<br/>REST API]
+    A[Port 9047<br/>REST API]
     
-    A --> B1[🌐 वेब ब्राउज़र इंटरफ़ेस]
-    A --> B2[🔧 सेवा कॉन्फ़िगरेशन]
-    A --> B3[👤 उपयोगकर्ता प्रबंधन]
-    A --> B4[📊 निगरानी डैशबोर्ड]
-    A --> B5[🔐 OAuth/SAML लॉगिन]
+    A --> B1[🌐 Interface Web Browser]
+    A --> B2[🔧 Configuration Services]
+    A --> B3[👤 Gestion Utilisateurs]
+    A --> B4[📊 Monitoring Dashboards]
+    A --> B5[🔐 OAuth/SAML Login]
     
-    B1 --> C1[स्पेस/फ़ोल्डर बनाएं]
-    B1 --> C2[VDS परिभाषित करें]
-    B1 --> C3[डेटासेट एक्सप्लोर करें]
+    B1 --> C1[Créer Spaces/Folders]
+    B1 --> C2[Définir VDS]
+    B1 --> C3[Explorer Datasets]
     
-    B2 --> C4[स्रोत जोड़ें]
-    B2 --> C5[Reflections कॉन्फ़िगर करें]
-    B2 --> C6[सिस्टम कॉन्फ़िगरेशन]
+    B2 --> C4[Ajouter Sources]
+    B2 --> C5[Configurer Reflections]
+    B2 --> C6[Paramètres Système]
     
     style A fill:#4CAF50,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#81C784,color:#fff
@@ -189,27 +189,27 @@ graph TB
     style B5 fill:#81C784,color:#fff
 ```
 
-### पोर्ट 31010 - PostgreSQL प्रॉक्सी
+### पोर्ट 31010 - पोस्टग्रेएसक्यूएल प्रॉक्सी
 
 ```mermaid
 graph TB
-    A[पोर्ट 31010<br/>PostgreSQL प्रॉक्सी]
+    A[Port 31010<br/>Proxy PostgreSQL]
     
-    A --> B1[💼 लिगेसी BI टूल्स]
-    A --> B2[🔄 PostgreSQL माइग्रेशन]
-    A --> B3[🔌 मानक ड्राइवर]
+    A --> B1[💼 Outils BI Legacy]
+    A --> B2[🔄 Migration PostgreSQL]
+    A --> B3[🔌 Drivers Standard]
     
-    B1 --> C1[Tableau Desktop<br/>Arrow Flight के बिना]
+    B1 --> C1[Tableau Desktop<br/>sans Arrow Flight]
     B1 --> C2[Power BI Desktop<br/>ODBC]
     B1 --> C3[QlikView<br/>JDBC PostgreSQL]
     
-    B2 --> D1[मौजूदा JDBC कोड<br/>बिना संशोधन के]
-    B2 --> D2[psql स्क्रिप्ट<br/>100% संगत]
-    B2 --> D3[Python ऐप्स<br/>psycopg2]
+    B2 --> D1[Code JDBC existant<br/>aucune modification]
+    B2 --> D2[Scripts psql<br/>compatibles 100%]
+    B2 --> D3[Applications Python<br/>psycopg2]
     
     B3 --> E1[PostgreSQL ODBC Driver]
     B3 --> E2[PostgreSQL JDBC Driver]
-    B3 --> E3[OS नेटिव ड्राइवर]
+    B3 --> E3[Pilotes natifs OS]
     
     style A fill:#336791,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#5C6BC0,color:#fff
@@ -217,27 +217,27 @@ graph TB
     style B3 fill:#5C6BC0,color:#fff
 ```
 
-### पोर्ट 32010 - Arrow Flight
+### पोर्ट 32010 - एरो फ़्लाइट
 
 ```mermaid
 graph TB
-    A[पोर्ट 32010<br/>Arrow Flight]
+    A[Port 32010<br/>Arrow Flight]
     
-    A --> B1[⚡ अधिकतम प्रदर्शन]
-    A --> B2[🎯 आधुनिक टूल्स]
-    A --> B3[🐍 Python इकोसिस्टम]
+    A --> B1[⚡ Performance Maximale]
+    A --> B2[🎯 Outils Modernes]
+    A --> B3[🐍 Python Ecosystem]
     
-    B1 --> C1[TB/PB स्कैन]
-    B1 --> C2[बड़े पैमाने पर एग्रीगेशन]
-    B1 --> C3[ज़ीरो-कॉपी ट्रांसफ़र]
+    B1 --> C1[Scans de TB/PB]
+    B1 --> C2[Agrégations Massives]
+    B1 --> C3[Transferts Zero-Copy]
     
     B2 --> D1[dbt Core<br/>profiles.yml]
     B2 --> D2[Apache Superset<br/>Database Config]
     B2 --> D3[Jupyter Notebooks<br/>pandas/polars]
     
-    B3 --> E1[pyarrow लाइब्रेरी]
+    B3 --> E1[pyarrow Library]
     B3 --> E2[pandas via Arrow]
-    B3 --> E3[Polars इंटीग्रेशन]
+    B3 --> E3[Polars Integration]
     
     style A fill:#FF5722,color:#fff,stroke:#000,stroke-width:3px
     style B1 fill:#FF7043,color:#fff
@@ -251,27 +251,27 @@ graph TB
 
 ```mermaid
 graph TB
-    Start[मुझे Dremio से कनेक्ट करना है]
+    Start[Besoin de se connecter à Dremio]
     
-    Start --> Q1{एप्लिकेशन प्रकार?}
+    Start --> Q1{Type d'application ?}
     
-    Q1 -->|वेब इंटरफ़ेस<br/>प्रशासन| Port9047[✅ पोर्ट 9047<br/>REST API]
+    Q1 -->|Interface Web<br/>Administration| Port9047[✅ Port 9047<br/>REST API]
     
-    Q1 -->|BI टूल/SQL क्लाइंट| Q2{Arrow Flight समर्थन?}
+    Q1 -->|Outil BI/Client SQL| Q2{Supporte Arrow Flight ?}
     
-    Q2 -->|नहीं<br/>लिगेसी टूल| Port31010[✅ पोर्ट 31010<br/>PostgreSQL प्रॉक्सी]
-    Q2 -->|हाँ<br/>आधुनिक टूल| Q3{प्रदर्शन महत्वपूर्ण?}
+    Q2 -->|Non<br/>Legacy Tool| Port31010[✅ Port 31010<br/>Proxy PostgreSQL]
+    Q2 -->|Oui<br/>Modern Tool| Q3{Performance critique ?}
     
-    Q3 -->|हाँ<br/>प्रोडक्शन| Port32010[✅ पोर्ट 32010<br/>Arrow Flight]
-    Q3 -->|नहीं<br/>Dev/Test| Port31010b[⚠️ पोर्ट 31010<br/>आसान]
+    Q3 -->|Oui<br/>Production| Port32010[✅ Port 32010<br/>Arrow Flight]
+    Q3 -->|Non<br/>Dev/Test| Port31010b[⚠️ Port 31010<br/>Plus facile]
     
-    Q1 -->|कस्टम एप्लिकेशन| Q4{प्रोग्रामिंग भाषा?}
+    Q1 -->|Application Custom| Q4{Langage ?}
     
-    Q4 -->|Python/Java| Q5{प्रदर्शन महत्वपूर्ण?}
-    Q5 -->|हाँ| Port32010b[✅ पोर्ट 32010<br/>Arrow Flight]
-    Q5 -->|नहीं| Port31010c[✅ पोर्ट 31010<br/>JDBC/psycopg2]
+    Q4 -->|Python/Java| Q5{Performance importante ?}
+    Q5 -->|Oui| Port32010b[✅ Port 32010<br/>Arrow Flight]
+    Q5 -->|Non| Port31010c[✅ Port 31010<br/>JDBC/psycopg2]
     
-    Q4 -->|अन्य<br/>Go/Rust/.NET| Port31010d[✅ पोर्ट 31010<br/>PostgreSQL Wire]
+    Q4 -->|Autre<br/>Go/Rust/.NET| Port31010d[✅ Port 31010<br/>PostgreSQL Wire]
     
     style Start fill:#2196F3,color:#fff
     style Port9047 fill:#4CAF50,color:#fff,stroke:#000,stroke-width:2px
@@ -287,17 +287,17 @@ graph TB
 
 ## PostgreSQL प्रॉक्सी कनेक्शन उदाहरण
 
-### 1. psql CLI
+### 1. पीएसक्यूएल सीएलआई
 
 ```bash
-# सरल कनेक्शन
+# Connexion simple
 psql -h localhost -p 31010 -U admin -d datalake
 
-# सीधी क्वेरी
+# Avec requête directe
 psql -h localhost -p 31010 -U admin -d datalake \
   -c "SELECT COUNT(*) FROM MinIO.datalake.customers;"
 
-# इंटरैक्टिव मोड
+# Mode interactif
 $ psql -h localhost -p 31010 -U admin -d datalake
 Password for user admin: ****
 psql (16.0, server 26.0)
@@ -314,64 +314,64 @@ datalake=> \dt
 datalake=> SELECT customer_id, name, state FROM customers LIMIT 5;
 ```
 
-### 2. DBeaver कॉन्फ़िगरेशन
+### 2. डीबीवर कॉन्फ़िगरेशन
 
 ```yaml
-कनेक्शन प्रकार: PostgreSQL
-कनेक्शन नाम: Dremio via PostgreSQL Proxy
+Connection Type: PostgreSQL
+Connection Name: Dremio via PostgreSQL Proxy
 
-मुख्य:
-  होस्ट: localhost
-  पोर्ट: 31010
-  डेटाबेस: datalake
-  उपयोगकर्ता: admin
-  पासवर्ड: [your-password]
+Main:
+  Host: localhost
+  Port: 31010
+  Database: datalake
+  Username: admin
+  Password: [votre-mot-de-passe]
   
-ड्राइवर गुण:
+Driver Properties:
   ssl: false
   
-उन्नत:
-  कनेक्शन टाइमआउट: 30000
-  क्वेरी टाइमआउट: 0
+Advanced:
+  Connection timeout: 30000
+  Query timeout: 0
 ```
 
-### 3. Python psycopg2 के साथ
+### 3. psycopg2 के साथ पायथन
 
 ```python
 import psycopg2
 from psycopg2 import sql
 
-# कनेक्शन
+# Connexion
 conn = psycopg2.connect(
     host="localhost",
     port=31010,
     database="datalake",
     user="admin",
-    password="your-password"
+    password="votre-mot-de-passe"
 )
 
-# कर्सर
+# Cursor
 cursor = conn.cursor()
 
-# सरल क्वेरी
+# Requête simple
 cursor.execute("SELECT * FROM MinIO.datalake.customers LIMIT 10")
 rows = cursor.fetchall()
 
 for row in rows:
     print(row)
 
-# पैरामीटराइज़्ड क्वेरी
+# Requête avec paramètres
 query = sql.SQL("SELECT * FROM {} WHERE state = %s").format(
     sql.Identifier("MinIO", "datalake", "customers")
 )
 cursor.execute(query, ("CA",))
 
-# बंद करें
+# Fermeture
 cursor.close()
 conn.close()
 ```
 
-### 4. Java JDBC
+### 4. जावा जेडीबीसी
 
 ```java
 import java.sql.*;
@@ -380,7 +380,7 @@ public class DremioPostgreSQLProxy {
     public static void main(String[] args) {
         String url = "jdbc:postgresql://localhost:31010/datalake";
         String user = "admin";
-        String password = "your-password";
+        String password = "votre-mot-de-passe";
         
         try (Connection conn = DriverManager.getConnection(url, user, password)) {
             Statement stmt = conn.createStatement();
@@ -404,7 +404,7 @@ public class DremioPostgreSQLProxy {
 }
 ```
 
-### 5. ODBC कनेक्शन स्ट्रिंग (DSN)
+### 5. ओडीबीसी स्ट्रिंग (डीएसएन)
 
 ```ini
 [ODBC Data Sources]
@@ -417,16 +417,16 @@ Server=localhost
 Port=31010
 Database=datalake
 Username=admin
-Password=your-password
+Password=votre-mot-de-passe
 SSLMode=disable
 Protocol=7.4
 ```
 
 ---
 
-## Docker Compose कॉन्फ़िगरेशन
+## डॉकर कंपोज़ कॉन्फ़िगरेशन
 
-### Dremio पोर्ट मैपिंग
+### ड्रेमियो पोर्ट मैपिंग
 
 ```yaml
 services:
@@ -434,13 +434,13 @@ services:
     image: dremio/dremio-oss:26.0
     container_name: dremio
     ports:
-      # पोर्ट 9047 - REST API / Web UI
+      # Port 9047 - REST API / Web UI
       - "9047:9047"
       
-      # पोर्ट 31010 - PostgreSQL प्रॉक्सी (ODBC/JDBC)
+      # Port 31010 - Proxy PostgreSQL (ODBC/JDBC)
       - "31010:31010"
       
-      # पोर्ट 32010 - Arrow Flight (प्रदर्शन)
+      # Port 32010 - Arrow Flight (Performance)
       - "32010:32010"
     environment:
       - DREMIO_JAVA_SERVER_EXTRA_OPTS=-Xms4g -Xmx8g
@@ -450,19 +450,19 @@ services:
       - data-platform
 ```
 
-### पोर्ट सत्यापन
+### पोर्ट जांच
 
 ```bash
-# तीनों पोर्ट खुले हैं या नहीं जाँचें
+# Vérifier que les 3 ports sont ouverts
 netstat -an | grep -E '9047|31010|32010'
 
-# REST API परीक्षण
+# Tester REST API
 curl -v http://localhost:9047
 
-# PostgreSQL प्रॉक्सी परीक्षण
+# Tester Proxy PostgreSQL
 psql -h localhost -p 31010 -U admin -d datalake -c "SELECT 1;"
 
-# Arrow Flight परीक्षण (Python के साथ)
+# Tester Arrow Flight (avec Python)
 python3 -c "
 from pyarrow import flight
 client = flight.connect('grpc://localhost:32010')
@@ -474,31 +474,31 @@ print('Arrow Flight OK')
 
 ## त्वरित दृश्य सारांश
 
-### एक नज़र में 3 पोर्ट
+### तीन बंदरगाह एक नज़र में
 
-| पोर्ट | प्रोटोकॉल | मुख्य उपयोग | प्रदर्शन | संगतता |
-|------|-----------|-------------|------------|----------------|
-| **9047** | REST API | 🌐 Web UI, Admin | ⭐⭐ मानक | ⭐⭐⭐ सार्वभौमिक |
-| **31010** | PostgreSQL Wire | 💼 BI टूल्स, माइग्रेशन | ⭐⭐⭐ अच्छा | ⭐⭐⭐ उत्कृष्ट |
-| **32010** | Arrow Flight | ⚡ प्रोडक्शन, dbt, Superset | ⭐⭐⭐⭐⭐ अधिकतम | ⭐⭐ सीमित |
+| बंदरगाह | प्रोटोकॉल | मुख्य उपयोग | प्रदर्शन | अनुकूलता |
+|------|----------|--------------------------------|--|----------------------|
+| **9047** | बाकी एपीआई | 🌐 वेब इंटरफ़ेस, एडमिन | ⭐⭐मानक | ⭐⭐⭐ यूनिवर्सल |
+| **31010** | PostgreSQL वायर | 💼बीआई उपकरण, प्रवासन | ⭐⭐⭐ अच्छा | ⭐⭐⭐ उत्कृष्ट |
+| **32010** | तीर उड़ान | ⚡ उत्पादन, डीबीटी, सुपरसेट | ⭐⭐⭐⭐⭐ अधिकतम | ⭐⭐ लिमिटेड |
 
 ### चयन मैट्रिक्स
 
 ```mermaid
 graph TB
-    subgraph "चयन गाइड"
-        A["🎯 उपयोग का मामला"]
+    subgraph "Guide de Sélection"
+        A["🎯 Cas d'Usage"]
         
-        A --> B1["वेब इंटरफ़ेस<br/>कॉन्फ़िगरेशन"]
-        A --> B2["लिगेसी BI टूल<br/>Arrow Flight नहीं"]
-        A --> B3["PostgreSQL माइग्रेशन<br/>मौजूदा JDBC कोड"]
-        A --> B4["dbt, Superset<br/>प्रोडक्शन"]
-        A --> B5["Python pyarrow<br/>विश्लेषण"]
+        A --> B1["Interface Web<br/>Configuration"]
+        A --> B2["Outil BI Legacy<br/>Sans Arrow Flight"]
+        A --> B3["Migration PostgreSQL<br/>Code JDBC existant"]
+        A --> B4["dbt, Superset<br/>Production"]
+        A --> B5["Python pyarrow<br/>Analytique"]
         
-        B1 --> C1["पोर्ट 9047<br/>REST API"]
-        B2 --> C2["पोर्ट 31010<br/>PostgreSQL"]
+        B1 --> C1["Port 9047<br/>REST API"]
+        B2 --> C2["Port 31010<br/>PostgreSQL"]
         B3 --> C2
-        B4 --> C3["पोर्ट 32010<br/>Arrow Flight"]
+        B4 --> C3["Port 32010<br/>Arrow Flight"]
         B5 --> C3
     end
     
@@ -512,20 +512,20 @@ graph TB
 
 ## अतिरिक्त संसाधन
 
-### संबंधित दस्तावेज़ीकरण
+### संबंधित दस्तावेज
 
-- [आर्किटेक्चर - घटक](./components.md) - "Dremio के लिए PostgreSQL प्रॉक्सी" अनुभाग
-- [गाइड - Dremio सेटअप](../guides/dremio-setup.md) - "PostgreSQL प्रॉक्सी के माध्यम से कनेक्शन" अनुभाग
-- [कॉन्फ़िगरेशन - Dremio](../getting-started/configuration.md) - `dremio.conf` कॉन्फ़िगरेशन
+- [आर्किटेक्चर - घटक](./components.md) - "ड्रेमियो के लिए पोस्टग्रेएसक्यूएल प्रॉक्सी" अनुभाग
+- [गाइड - सेटअप ड्रेमियो](../guides/dremio-setup.md) - "पोस्टग्रेएसक्यूएल प्रॉक्सी के माध्यम से कनेक्शन" अनुभाग
+- [कॉन्फ़िगरेशन - ड्रेमियो](../getting-started/configuration.md) - पैरामीटर्स `dremio.conf`
 
 ### आधिकारिक लिंक
 
-- **Dremio दस्तावेज़ीकरण**: https://docs.dremio.com/
-- **PostgreSQL Wire प्रोटोकॉल**: https://www.postgresql.org/docs/current/protocol.html
-- **Apache Arrow Flight**: https://arrow.apache.org/docs/format/Flight.html
+- **ड्रेमियो दस्तावेज़ीकरण**: https://docs.dremio.com/
+- **पोस्टग्रेएसक्यूएल वायर प्रोटोकॉल**: https://www.postgresql.org/docs/current/protocol.html
+- **अपाचे एरो फ़्लाइट**: https://row.apache.org/docs/format/Flight.html
 
 ---
 
-**संस्करण**: 3.2.5  
-**अंतिम अपडेट**: 16 अक्टूबर 2025  
+**संस्करण**: 3.2.3  
+**अंतिम अद्यतन**: 16 अक्टूबर, 2025  
 **स्थिति**: ✅ पूर्ण
