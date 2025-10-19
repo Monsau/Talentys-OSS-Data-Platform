@@ -2,9 +2,11 @@
 # These will be downloaded automatically when running Ollama
 models/
 
-# Keep SSH keys if needed
-!id_ed25519
-!id_ed25519.pub
+# Ignore SSH keys (SECURITY)
+id_ed25519
+id_ed25519.pub
+*.pem
+*.key
 
 # Keep this .gitignore
 !.gitignore
